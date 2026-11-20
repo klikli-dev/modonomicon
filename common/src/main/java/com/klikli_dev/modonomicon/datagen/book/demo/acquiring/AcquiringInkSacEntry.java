@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.datagen.book.demo.crafting;
+package com.klikli_dev.modonomicon.datagen.book.demo.acquiring;
 
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
@@ -14,10 +14,10 @@ import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.world.item.Items;
 
-public class CraftingStickEntry extends EntryProvider {
-    public static final String ID = "crafting_stick";
+public class AcquiringInkSacEntry extends EntryProvider {
+    public static final String ID = "acquiring_ink_sac";
 
-    public CraftingStickEntry(CategoryProvider parent) {
+    public AcquiringInkSacEntry(CategoryProvider parent) {
         super(parent);
     }
 
@@ -26,18 +26,18 @@ public class CraftingStickEntry extends EntryProvider {
         this.page("info", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
-        this.pageTitle("Stick Crafted");
-        this.pageText("You crafted a stick! This entry unlocked because the item_crafted trigger fired for sticks.");
+        this.pageTitle("Ink Gathered");
+        this.pageText("You gathered an ink sac! This entry unlocked because the item_acquired trigger fired. Ink is what turns a blank note into a completed one.");
     }
 
     @Override
     protected String entryName() {
-        return "Stick Crafted";
+        return "Ink Gathered";
     }
 
     @Override
     protected String entryDescription() {
-        return "Unlocked when you craft a stick.";
+        return "Unlocked when you acquire an ink sac.";
     }
 
     @Override
@@ -47,7 +47,7 @@ public class CraftingStickEntry extends EntryProvider {
 
     @Override
     protected BookIconModel entryIcon() {
-        return BookIconModel.create(Items.STICK);
+        return BookIconModel.create(Items.INK_SAC);
     }
 
     @Override

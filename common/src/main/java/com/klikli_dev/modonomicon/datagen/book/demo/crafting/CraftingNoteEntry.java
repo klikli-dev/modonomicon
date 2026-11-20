@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.datagen.book.demo.acquiring;
+package com.klikli_dev.modonomicon.datagen.book.demo.crafting;
 
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
@@ -14,10 +14,10 @@ import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.world.item.Items;
 
-public class AcquiringCobblestoneEntry extends EntryProvider {
-    public static final String ID = "acquiring_cobblestone";
+public class CraftingNoteEntry extends EntryProvider {
+    public static final String ID = "crafting_note";
 
-    public AcquiringCobblestoneEntry(CategoryProvider parent) {
+    public CraftingNoteEntry(CategoryProvider parent) {
         super(parent);
     }
 
@@ -26,18 +26,18 @@ public class AcquiringCobblestoneEntry extends EntryProvider {
         this.page("info", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
-        this.pageTitle("Cobblestone Acquired");
-        this.pageText("You acquired cobblestone! This entry unlocked because the item_acquired trigger fired.");
+        this.pageTitle("Note Crafted");
+        this.pageText("You crafted a completed research note! This entry unlocked because the item_crafted trigger fired for the note, the same trigger the Transcription row of the Scholarship entry uses.");
     }
 
     @Override
     protected String entryName() {
-        return "Cobblestone Acquired";
+        return "Note Crafted";
     }
 
     @Override
     protected String entryDescription() {
-        return "Unlocked when you acquire cobblestone.";
+        return "Unlocked when you craft a completed research note.";
     }
 
     @Override
@@ -47,7 +47,7 @@ public class AcquiringCobblestoneEntry extends EntryProvider {
 
     @Override
     protected BookIconModel entryIcon() {
-        return BookIconModel.create(Items.COBBLESTONE);
+        return BookIconModel.create(Items.PAPER);
     }
 
     @Override

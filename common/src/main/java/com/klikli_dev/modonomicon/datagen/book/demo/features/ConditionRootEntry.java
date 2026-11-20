@@ -24,9 +24,9 @@ public class ConditionRootEntry extends EntryProvider {
         this.page("info", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
-        this.pageTitle("Condition Root");
+        this.pageTitle("Reading Room");
         this.pageText("""
-                Root page for our condition / unlock tests.
+                The reading room of the research category. Read it to unlock the catalogue entry, which is gated by this one.
                 """);
     }
 

@@ -39,7 +39,7 @@ public class NoneProgressionEntry extends EntryProvider {
         this.pageTitle("No requirements display");
         this.pageText("""
                 This entry has no requirements display, so nothing is listed on its pages.
-                Its research is hand-authored: the first page below needs an oak log, the last page needs iron ingots and 5 cobblestone.
+                Its research is hand-authored: the first page below needs an ink sac, the last page needs an iron ingot and 5 paper.
                 Pages after a stage are only visible once the stage is complete, the content is gated without a block.
                 """);
 
@@ -47,18 +47,18 @@ public class NoneProgressionEntry extends EntryProvider {
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
                 .withCondition(this.condition().researchStageCompleted(DemoResearch.REQUIREMENTS_STAGED, DemoResearch.REQUIREMENTS_STAGE_1)));
-        this.pageTitle("Oak log collected");
+        this.pageTitle("Ink gathered");
         this.pageText("""
-                You collected an oak log, so this page is visible. This is the hand-authored stage 1 of the requirements research.
+                You gathered an ink sac, so this page is visible. This is the hand-authored stage 1 of the requirements research.
                 """);
 
         this.page("after_iron", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
                 .withCondition(this.condition().researchStageCompleted(DemoResearch.REQUIREMENTS_STAGED, DemoResearch.REQUIREMENTS_STAGE_2)));
-        this.pageTitle("Iron and cobblestone collected");
+        this.pageTitle("Iron and paper collected");
         this.pageText("""
-                The last stage is complete. Its requirement is the iron ingot and 5 cobblestone of the requirements research.
+                The last stage is complete. Its requirements are the iron ingot and 5 paper of the requirements research.
                 """);
     }
 

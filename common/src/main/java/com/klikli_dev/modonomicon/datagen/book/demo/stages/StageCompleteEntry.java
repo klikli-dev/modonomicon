@@ -4,7 +4,6 @@
 
 package com.klikli_dev.modonomicon.datagen.book.demo.stages;
 
-import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
@@ -13,13 +12,11 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchStageCompletedConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
-import net.minecraft.resources.Identifier;
+import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
 
 public class StageCompleteEntry extends EntryProvider {
     public static final String ID = "stage_complete";
-    private static final Identifier NODE_ID = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "demo/stages_demo");
-    private static final Identifier FINAL_STAGE_ID = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "demo/stages_demo_stage_3");
 
     public StageCompleteEntry(CategoryProvider parent) {
         super(parent);
@@ -32,14 +29,14 @@ public class StageCompleteEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Research Complete");
         this.pageText("""
-                All stages have been completed.
+                All stages have been completed. The bound volume is finished.
                 This entry unlocks only after the entire multi-stage research node finishes.
                 """);
     }
 
     @Override
     protected String entryName() {
-        return "Stages Complete";
+        return "Bound Volume";
     }
 
     @Override
@@ -50,8 +47,8 @@ public class StageCompleteEntry extends EntryProvider {
     @Override
     protected BookEntryModel additionalSetup(BookEntryModel entry) {
         return entry.withCondition(BookResearchStageCompletedConditionModel.create()
-                .withNode(NODE_ID)
-                .withStage(FINAL_STAGE_ID));
+                .withNode(DemoResearch.WRITABLE_BOOK_STAGES.id())
+                .withStage(DemoResearch.WRITABLE_BOOK_STAGE_3.id()));
     }
 
     @Override

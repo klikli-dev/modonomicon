@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-package com.klikli_dev.modonomicon.datagen.book.demo.progression;
+package com.klikli_dev.modonomicon.datagen.book.demo.scholarship;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
@@ -20,10 +20,10 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 
 /**
- * A staged progression demonstrating research actions, the take, process and submit loop of an item_used fact, rewards and manual completion.
+ * The entry point of the book: a staged progression demonstrating research actions, the take, process and submit loop of an item_used fact, rewards and manual completion.
  */
 public class ScholarshipEntry extends EntryProvider {
-    public static final String ID = "scholarship";
+    public static final String ID = "notes";
     public static final Identifier SYNTHESIS_FUNCTION = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "demo/scholarship_synthesis");
     /**
      * The demo recipe that processes a blank research note into a completed one, see {@code data/modonomicon/recipe/crafting/demo_research_note.json}.
@@ -42,7 +42,8 @@ public class ScholarshipEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Scholarship");
         this.pageText("""
-                This entry is a research progression with three stages, each one teaching a mechanic.
+                Welcome to the scholar's notebook. This entry is the start of the storyline: it teaches you to take and study research notes, and rewards you with insight.
+                The Research and Progression categories build on it, with conditions, markers and staged requirements.
                 The requirements of the current stage are listed at the bottom of this page.
                 """);
 

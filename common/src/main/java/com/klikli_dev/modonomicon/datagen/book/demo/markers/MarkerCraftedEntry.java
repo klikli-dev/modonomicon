@@ -27,7 +27,7 @@ public class MarkerCraftedEntry extends EntryProvider {
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
         this.pageTitle("Crafted Marker");
-        this.pageText("This entry shows a marker until a stick has been crafted. The backing research is generated automatically via markerUntilCrafted.");
+        this.pageText("This entry shows a marker until a writable book has been crafted. The backing research is generated automatically via markerUntilCrafted.");
     }
 
     @Override
@@ -37,7 +37,7 @@ public class MarkerCraftedEntry extends EntryProvider {
 
     @Override
     protected String entryDescription() {
-        return "Marker cleared by crafting a stick.";
+        return "Marker cleared by crafting a writable book.";
     }
 
     @Override
@@ -47,7 +47,7 @@ public class MarkerCraftedEntry extends EntryProvider {
 
     @Override
     protected BookIconModel entryIcon() {
-        return BookIconModel.create(Items.STICK);
+        return BookIconModel.create(Items.WRITABLE_BOOK);
     }
 
     @Override

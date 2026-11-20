@@ -50,8 +50,8 @@ public class PlacedPageProgressionEntry extends EntryProvider {
 
         this.stage("tools", s -> s
                 .craft(Items.STONE_PICKAXE)
-                .title("Mining tools")
-                .description("Craft a stone pickaxe."));
+                .title("Carving tools")
+                .description("Craft a stone pickaxe to carve your seals."));
 
         this.page("equipped", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())

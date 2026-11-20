@@ -28,7 +28,7 @@ public class FirstPageProgressionEntry extends EntryProvider {
         this.page("intro", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
-        this.pageTitle("First page requirements");
+        this.pageTitle("Setting up the desk");
         this.pageText("""
                 This is the default display: the requirements of the next stage are listed at the bottom of this first page.
                 Stage 1 needs a crafting table and any log. Each requirement gets a check mark once you have it.
@@ -76,8 +76,8 @@ public class FirstPageProgressionEntry extends EntryProvider {
 
         this.stage("reading", s -> s
                 .read(this.modLoc(ResearchCategory.ID + "/" + ConditionRootEntry.ID))
-                .title("Reading the features")
-                .description("Read the Condition Root entry in the Features category."));
+                .title("Reading the Reading Room")
+                .description("Read the Reading Room entry in the Research category."));
 
         this.page("finished", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())

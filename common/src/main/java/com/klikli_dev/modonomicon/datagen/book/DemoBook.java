@@ -15,8 +15,7 @@ import com.klikli_dev.modonomicon.datagen.book.demo.FormattingCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.IndexModeCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.ProgressionCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.ResearchCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionRootEntry;
-import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
+import com.klikli_dev.modonomicon.datagen.book.demo.ScholarshipCategory;
 import net.minecraft.resources.Identifier;
 
 public class DemoBook extends SingleBookSubProvider {
@@ -60,6 +59,9 @@ public class DemoBook extends SingleBookSubProvider {
 
     @Override
     protected void generateCategories() {
+        //the scholarship category is the entry point of the book and is therefore the first tab, it is not gated
+        var scholarshipCategory = this.add(new ScholarshipCategory(this).generate());
+
         //for the two big categories we use the category provider
         var featuresCategory = this.add(new FeaturesCategory(this).generate());
         var formattingCategory = this.add(new FormattingCategory(this).generate());
@@ -68,8 +70,7 @@ public class DemoBook extends SingleBookSubProvider {
 
         var researchCategory = this.add(new ResearchCategory(this).generate());
 
-        var progressionCategory = this.add(new ProgressionCategory(this).generate())
-                .withCondition(DemoResearch.CONDITION_LEVEL_1);
+        var progressionCategory = this.add(new ProgressionCategory(this).generate());
     }
 
     @Override

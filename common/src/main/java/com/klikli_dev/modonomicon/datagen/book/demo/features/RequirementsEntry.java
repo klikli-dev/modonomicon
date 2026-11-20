@@ -38,7 +38,7 @@ public class RequirementsEntry extends EntryProvider {
         this.pageTitle("Requirements");
         this.pageText("""
                 The requirements at the bottom of this page list what is needed to understand this entry. Completed requirements get a check mark.
-                Requirements are grouped into categories, one row each: research, items, knowledge and progress. The demo category Rituals gets its own row for the iron ingot.
+                Requirements are grouped into categories, one row each: research, items, knowledge and progress. The demo category Smithing gets its own row for the iron ingot.
                 Below the rows, the stage line shows the stage that is required. Use its arrows to look at the stages you have already reached.
                 """);
 

@@ -10,10 +10,10 @@ import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookTrueConditionModel;
-import com.klikli_dev.modonomicon.datagen.book.demo.crafting.CraftingIntroEntry;
-import com.klikli_dev.modonomicon.datagen.book.demo.crafting.CraftingStickEntry;
-import com.klikli_dev.modonomicon.datagen.book.demo.acquiring.AcquiringCobblestoneEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.acquiring.AcquiringInkSacEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.acquiring.AcquiringIntroEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.crafting.CraftingIntroEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.crafting.CraftingNoteEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionAdvancementEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionLevel1Entry;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionLevel2Entry;
@@ -43,7 +43,7 @@ public class ResearchCategory extends CategoryProvider {
     protected void generateEntries() {
         //independent chains, each starting with a root entry (no parent), laid out side by side
 
-        //condition chain: level 1 needs the root viewed, level 2 needs level 1 viewed, two parents need root and level 2
+        //condition chain: catalogue needs the reading room viewed, index needs catalogue viewed, cross-reference needs reading room and index
         var conditionRootEntry = this.add(new ConditionRootEntry(this).generate());
         this.layout().entry(conditionRootEntry).at(0, 0);
 
@@ -75,22 +75,25 @@ public class ResearchCategory extends CategoryProvider {
         var conditionNotEntry = this.add(new ConditionNotEntry(this).generate());
         this.layout().entry(conditionNotEntry).at(12, 0);
 
+        //crafting chain: crafting a completed research note unlocks the note entry
         var craftingIntroEntry = this.add(new CraftingIntroEntry(this).generate());
         this.layout().entry(craftingIntroEntry).at(15, 0);
 
-        var craftingStickEntry = this.add(new CraftingStickEntry(this).generate()
-                .withCondition(DemoResearch.CRAFTING_STICK)
+        var craftingNoteEntry = this.add(new CraftingNoteEntry(this).generate()
+                .withCondition(DemoResearch.CRAFTING_NOTE)
                 .withParent(craftingIntroEntry));
-        this.layout().entry(craftingStickEntry).rightOf(craftingIntroEntry, 3);
+        this.layout().entry(craftingNoteEntry).rightOf(craftingIntroEntry, 3);
 
+        //acquiring chain: gathering ink unlocks the ink entry
         var acquiringIntroEntry = this.add(new AcquiringIntroEntry(this).generate());
         this.layout().entry(acquiringIntroEntry).at(0, 5);
 
-        var acquiringCobblestoneEntry = this.add(new AcquiringCobblestoneEntry(this).generate()
-                .withCondition(DemoResearch.ACQUIRE_COBBLESTONE)
+        var acquiringInkSacEntry = this.add(new AcquiringInkSacEntry(this).generate()
+                .withCondition(DemoResearch.ACQUIRE_INK_SAC)
                 .withParent(acquiringIntroEntry));
-        this.layout().entry(acquiringCobblestoneEntry).rightOf(acquiringIntroEntry, 3);
+        this.layout().entry(acquiringInkSacEntry).rightOf(acquiringIntroEntry, 3);
 
+        //value chain: each source viewed counts one, the bibliography unlocks once all three are consulted
         var collectorAEntry = this.add(new CollectorAEntry(this).generate());
         this.layout().entry(collectorAEntry).at(7, 5);
 
@@ -101,7 +104,7 @@ public class ResearchCategory extends CategoryProvider {
         this.layout().entry(collectorCEntry).at(9, 5);
 
         var collectorCompleteEntry = this.add(new CollectorCompleteEntry(this).generate()
-                .withCondition(DemoResearch.COLLECTOR_COMPLETE));
+                .withCondition(DemoResearch.BIBLIOGRAPHY_COMPLETE));
         this.layout().entry(collectorCompleteEntry).at(8, 6);
 
         var markerIntroEntry = this.add(new MarkerIntroEntry(this).generate());
@@ -125,17 +128,17 @@ public class ResearchCategory extends CategoryProvider {
                 .withParent(markerIntroEntry));
         this.layout().entry(markerViewedEntry).below(markerIntroEntry, 3);
 
-        //auto-generated marker research: dot clears once a stick has been crafted
+        //auto-generated marker research: dot clears once a writable book has been crafted
         var markerCraftedEntry = this.add(new MarkerCraftedEntry(this).generate()
                 .withCondition(alwaysUnlocked)
-                .markerUntilCrafted(Items.STICK)
+                .markerUntilCrafted(Items.WRITABLE_BOOK)
                 .withParent(markerIntroEntry));
         this.layout().entry(markerCraftedEntry).rightOf(markerViewedEntry, 3);
 
         //same as above, but authored through the ConditionHelper instead of the entry model
         var markerAcquiredEntry = this.add(new MarkerAcquiredEntry(this).generate()
                 .withCondition(alwaysUnlocked)
-                .withMarkerCondition(this.condition().markerUntilAcquired(Items.COBBLESTONE))
+                .withMarkerCondition(this.condition().markerUntilAcquired(Items.IRON_INGOT))
                 .withParent(markerIntroEntry));
         this.layout().entry(markerAcquiredEntry).below(markerViewedEntry, 3);
     }

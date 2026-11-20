@@ -27,7 +27,7 @@ public class MarkerAcquiredEntry extends EntryProvider {
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
         this.pageTitle("Acquired Marker");
-        this.pageText("This entry shows a marker until cobblestone has been acquired. The backing research is generated automatically via the ConditionHelper markerUntilAcquired variant.");
+        this.pageText("This entry shows a marker until an iron ingot has been acquired. The backing research is generated automatically via the ConditionHelper markerUntilAcquired variant.");
     }
 
     @Override
@@ -37,7 +37,7 @@ public class MarkerAcquiredEntry extends EntryProvider {
 
     @Override
     protected String entryDescription() {
-        return "Marker cleared by acquiring cobblestone.";
+        return "Marker cleared by acquiring an iron ingot.";
     }
 
     @Override
@@ -47,7 +47,7 @@ public class MarkerAcquiredEntry extends EntryProvider {
 
     @Override
     protected BookIconModel entryIcon() {
-        return BookIconModel.create(Items.COBBLESTONE);
+        return BookIconModel.create(Items.IRON_INGOT);
     }
 
     @Override

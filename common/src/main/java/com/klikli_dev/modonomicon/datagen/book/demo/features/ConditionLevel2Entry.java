@@ -25,9 +25,9 @@ public class ConditionLevel2Entry extends EntryProvider {
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
         );
-        this.pageTitle("Condition Level 2");
+        this.pageTitle("Index");
         this.pageText("""
-                This entry depends on Condition Level 1 being read.
+                This entry depends on the Catalogue being read.
                 The research node was generated automatically via entryViewedOnce().
                 """);
     }

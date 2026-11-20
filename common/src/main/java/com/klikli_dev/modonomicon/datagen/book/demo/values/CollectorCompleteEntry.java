@@ -24,10 +24,10 @@ public class CollectorCompleteEntry extends EntryProvider {
         this.page("info", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
-        this.pageTitle("Collector Complete");
+        this.pageTitle("Full Bibliography");
         this.pageText("""
-                Congratulations! You have viewed all three collector entries.
-                This entry is unlocked because the collector count reached 3.
+                Congratulations! You have consulted all three sources.
+                This entry is unlocked because the sources consulted reached 3.
                 """);
     }
 

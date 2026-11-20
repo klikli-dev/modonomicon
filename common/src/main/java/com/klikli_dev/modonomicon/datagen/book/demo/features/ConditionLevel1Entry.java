@@ -25,9 +25,9 @@ public class ConditionLevel1Entry extends EntryProvider {
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
         );
-        this.pageTitle("Condition Level 1");
+        this.pageTitle("Catalogue");
         this.pageText("""
-                This entry depends on Condition Root being read.
+                This entry depends on the Reading Room being read.
                 """);
     }
 

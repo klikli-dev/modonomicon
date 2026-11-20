@@ -4,7 +4,6 @@
 
 package com.klikli_dev.modonomicon.datagen.book.demo;
 
-import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
@@ -14,17 +13,14 @@ import com.klikli_dev.modonomicon.datagen.book.demo.progression.ChildProgression
 import com.klikli_dev.modonomicon.datagen.book.demo.progression.FirstPageProgressionEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.progression.NoneProgressionEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.progression.PlacedPageProgressionEntry;
-import com.klikli_dev.modonomicon.datagen.book.demo.progression.ScholarshipEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.progression.TrailingPageProgressionEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.stages.StageCompleteEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.stages.StageProgressionEntry;
-import net.minecraft.resources.Identifier;
+import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
 
 public class ProgressionCategory extends CategoryProvider {
     public static final String ID = "progression";
-    private static final Identifier STAGES_NODE_ID = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "demo/stages_demo");
-    private static final Identifier FINAL_STAGE_ID = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "demo/stages_demo_stage_3");
 
     public ProgressionCategory(SingleBookSubProvider parent) {
         super(parent);
@@ -52,22 +48,19 @@ public class ProgressionCategory extends CategoryProvider {
                 .withParent(placedPage);
         this.layout().entry(none).below(placedPage, 2);
 
-        //independent chain: a stage progression with a stage complete entry that unlocks once the final stage is reached
+        //independent chain: the bookbinding stages with a stage complete entry that unlocks once the final stage is reached
         var stageProgression = this.add(new StageProgressionEntry(this).generate());
         this.layout().entry(stageProgression).at(7, 0);
 
         var stageComplete = this.add(new StageCompleteEntry(this).generate()
                 .withCondition(BookResearchStageCompletedConditionModel.create()
-                        .withNode(STAGES_NODE_ID)
-                        .withStage(FINAL_STAGE_ID))
+                        .withNode(DemoResearch.WRITABLE_BOOK_STAGES.id())
+                        .withStage(DemoResearch.WRITABLE_BOOK_STAGE_3.id()))
                 .withParent(stageProgression));
         this.layout().entry(stageComplete).below(stageProgression, 2);
 
         var requirements = this.add(new RequirementsEntry(this).generate());
         this.layout().entry(requirements).at(11, 0);
-
-        var scholarship = this.add(new ScholarshipEntry(this).generate());
-        this.layout().entry(scholarship).at(13, 0);
     }
 
     @Override

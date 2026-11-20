@@ -27,7 +27,7 @@ public class CraftingIntroEntry extends EntryProvider {
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
         this.pageTitle("Crafting");
-        this.pageText("Crafting items triggers research progression. Craft a stick to unlock the next entry.");
+        this.pageText("Crafting items triggers research progression. Craft a completed research note to unlock the next entry.");
     }
 
     @Override

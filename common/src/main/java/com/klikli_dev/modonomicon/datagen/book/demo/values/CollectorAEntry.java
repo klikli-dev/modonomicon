@@ -24,9 +24,9 @@ public class CollectorAEntry extends EntryProvider {
         this.page("info", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
-        this.pageTitle("Collector A");
+        this.pageTitle("Source A");
         this.pageText("""
-                First collector entry. Viewing this increments the collector count.
+                First source consulted. Viewing this counts it in your sources consulted.
                 """);
     }
 

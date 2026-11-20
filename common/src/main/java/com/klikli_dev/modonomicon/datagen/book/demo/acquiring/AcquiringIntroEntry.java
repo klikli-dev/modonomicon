@@ -27,7 +27,7 @@ public class AcquiringIntroEntry extends EntryProvider {
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
         this.pageTitle("Acquiring");
-        this.pageText("Acquiring items triggers research progression. Pick up a cobblestone to unlock the next entry.");
+        this.pageText("Acquiring items triggers research progression. Gather an ink sac to unlock the next entry.");
     }
 
     @Override
