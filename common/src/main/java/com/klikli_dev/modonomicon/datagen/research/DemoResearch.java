@@ -68,6 +68,8 @@ public class DemoResearch extends SingleResearchSubProvider {
     private static final String DEMO_SMITHING_TITLE = "modonomicon.demo.category.smithing.title";
     private static final String DEMO_SMITHING_DESCRIPTION = "modonomicon.demo.category.smithing.description";
     private static final String PAPER_COLLECTED_TITLE = "modonomicon.demo.scholarship.paper_collected.title";
+    private static final String SOURCES_CONSULTED_TITLE = "modonomicon.demo.scholarship.sources_consulted.title";
+    private static final String WRITABLE_BOOKS_CRAFTED_TITLE = "modonomicon.demo.scholarship.writable_books_crafted.title";
     private static final String INK_SAC_ACQUIRED_TITLE = "modonomicon.demo.scholarship.ink_sac_acquired.title";
     /**
      * Granted by the take action of the blank note, so the row ticks once a note was taken while the action stays repeatable.
@@ -122,6 +124,8 @@ public class DemoResearch extends SingleResearchSubProvider {
         this.ingress()
                 .onEntryViewedOnce(this.modLoc(ScholarshipCategory.ID + "/" + SourcesEntry.ID))
                 .incrementValue("demo/scholarship/source_hook", sourcesConsulted, 1);
+        this.research().display(sourcesConsulted, ResearchDisplayModel.create().withIcon(Items.BOOKSHELF).withTitle(SOURCES_CONSULTED_TITLE));
+        this.add(SOURCES_CONSULTED_TITLE, "Sources consulted");
 
         // Explicit marker: a manually authored node, cleared once the index entry has been viewed
         var indexViewed = this.ingress()
@@ -173,6 +177,8 @@ public class DemoResearch extends SingleResearchSubProvider {
         this.ingress()
                 .onItemCrafted(new ItemStackTemplate(Items.WRITABLE_BOOK))
                 .incrementValue("demo/writable_books_hook", writableBooksCrafted, 1);
+        this.research().display(writableBooksCrafted, ResearchDisplayModel.create().withIcon(Items.WRITABLE_BOOK).withTitle(WRITABLE_BOOKS_CRAFTED_TITLE));
+        this.add(WRITABLE_BOOKS_CRAFTED_TITLE, "Writable books crafted");
 
         // Multi-stage node: 3 value-based stages unlocked directly by crafting writable books
         this.nodeBuilder(WRITABLE_BOOK_STAGES)
