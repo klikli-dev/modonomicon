@@ -67,6 +67,14 @@ public class DemoResearch extends SingleResearchSubProvider {
     private static final String DEMO_RITUALS_TITLE = "modonomicon.demo.category.rituals.title";
     private static final String DEMO_RITUALS_DESCRIPTION = "modonomicon.demo.category.rituals.description";
     private static final String PROGRESSION_DIRT_TITLE = "modonomicon.demo.progression.dirt.title";
+    /**
+     * Granted by the take action of the blank note, so the row ticks once a note was taken while the action stays repeatable.
+     */
+    public static final ResearchFactRef SCHOLARSHIP_NOTE_TAKEN = factRef("demo/scholarship/note_taken");
+    /**
+     * Granted by crafting a completed note, the row for making the note from a blank one.
+     */
+    public static final ResearchFactRef SCHOLARSHIP_NOTE_CRAFTED = factRef("demo/scholarship/note_crafted");
     public static final ResearchFactRef SCHOLARSHIP_NOTE_STUDIED = factRef("demo/scholarship/note_studied");
     public static final ResearchFactRef SCHOLARSHIP_NOTES_READ = factRef("demo/scholarship/notes_read");
     public static final ResearchValueRef SCHOLARSHIP_INSIGHT = valueRef("demo/insight");
@@ -78,7 +86,10 @@ public class DemoResearch extends SingleResearchSubProvider {
      * A completed research note, made by crafting a blank note with an ink sac. Using it in the air studies it and consumes it.
      */
     public static final ItemStackTemplate RESEARCH_NOTE = researchNote("Research Note", "research_note");
-    private static final String SCHOLARSHIP_NOTE_TITLE = "modonomicon.demo.scholarship.research_note.title";
+    private static final String SCHOLARSHIP_NOTE_TAKEN_TITLE = "modonomicon.demo.scholarship.note_taken.title";
+    private static final String SCHOLARSHIP_NOTE_CRAFTED_TITLE = "modonomicon.demo.scholarship.note_crafted.title";
+    private static final String SCHOLARSHIP_NOTE_CRAFTED_DESCRIPTION = "modonomicon.demo.scholarship.note_crafted.description";
+    private static final String SCHOLARSHIP_NOTE_STUDIED_TITLE = "modonomicon.demo.scholarship.note_studied.title";
     private static final String SCHOLARSHIP_INSIGHT_TITLE = "modonomicon.demo.scholarship.insight.title";
     private static final String SCHOLARSHIP_NOTES_READ_TITLE = "modonomicon.demo.scholarship.notes_read.title";
 
@@ -245,19 +256,36 @@ public class DemoResearch extends SingleResearchSubProvider {
         this.research().display(progressionDirt, ResearchDisplayModel.create().withIcon(Items.DIRT).withTitle(PROGRESSION_DIRT_TITLE));
         this.add(PROGRESSION_DIRT_TITLE, "Dirt collected");
 
-        // Scholarship chain: take a blank note from an action, process it by crafting, then submit the completed note by using it
+        // Scholarship chain: take a blank note from an action, make the completed note by crafting, then study it by using it.
+        // The take action grants its own fact, so its row is met once a note was taken and the action stays repeatable.
         this.research().fact(SCHOLARSHIP_NOTES_READ.id().getPath());
+        this.research().fact(SCHOLARSHIP_NOTE_TAKEN.id().getPath());
+        this.research().display(SCHOLARSHIP_NOTE_TAKEN, ResearchDisplayModel.create()
+                .withIcon(Items.PAPER)
+                .withTitle(SCHOLARSHIP_NOTE_TAKEN_TITLE)
+                .withAction(ResearchActionModel.create()
+                        .cost(ResearchCostModel.create().item(Items.PAPER).durability(Items.SHEARS, 1))
+                        .effect(ResearchEffectModel.giveItem(BLANK_RESEARCH_NOTE, false))
+                        .grantsFact()
+                        .repeatable()));
+        this.add(SCHOLARSHIP_NOTE_TAKEN_TITLE, "Take a blank research note");
+        var noteCrafted = this.ingress()
+                .onItemCrafted(RESEARCH_NOTE)
+                .declareFact(SCHOLARSHIP_NOTE_CRAFTED.id().getPath());
+        this.research().display(noteCrafted, ResearchDisplayModel.create()
+                .withIcon(RESEARCH_NOTE)
+                .withTitle(SCHOLARSHIP_NOTE_CRAFTED_TITLE)
+                .withDescription(SCHOLARSHIP_NOTE_CRAFTED_DESCRIPTION));
+        this.add(SCHOLARSHIP_NOTE_CRAFTED_TITLE, "Make a completed research note");
+        this.add(SCHOLARSHIP_NOTE_CRAFTED_DESCRIPTION, "Craft a blank research note together with an ink sac.");
         var noteStudied = this.ingress()
                 .onItemUsed(RESEARCH_NOTE)
                 .consume(1)
                 .declareFact(SCHOLARSHIP_NOTE_STUDIED.id().getPath());
         this.research().display(noteStudied, ResearchDisplayModel.create()
-                .withTitle(SCHOLARSHIP_NOTE_TITLE)
-                .withAction(ResearchActionModel.create()
-                        .cost(ResearchCostModel.create().item(Items.PAPER).durability(Items.SHEARS, 1))
-                        .effect(ResearchEffectModel.giveItem(BLANK_RESEARCH_NOTE, false))
-                        .repeatable()));
-        this.add(SCHOLARSHIP_NOTE_TITLE, "Take a blank research note");
+                .withIcon(RESEARCH_NOTE)
+                .withTitle(SCHOLARSHIP_NOTE_STUDIED_TITLE));
+        this.add(SCHOLARSHIP_NOTE_STUDIED_TITLE, "Study a completed research note");
         this.research().display(SCHOLARSHIP_NOTES_READ, ResearchDisplayModel.create().withIcon(Items.WRITABLE_BOOK).withTitle(SCHOLARSHIP_NOTES_READ_TITLE));
         this.add(SCHOLARSHIP_NOTES_READ_TITLE, "Notes transcribed");
         var insight = this.value(SCHOLARSHIP_INSIGHT.id().getPath());

@@ -98,6 +98,20 @@
     "value_id": "modonomicon:demo/progression_dirt_collected"
   },
   {
+    "fact_id": "modonomicon:demo/scholarship/note_crafted",
+    "id": "modonomicon:demo/scholarship/note_crafted_hook",
+    "trigger_target": {
+      "components": {
+        "minecraft:custom_data": {
+          "modonomicon_demo": "research_note"
+        },
+        "minecraft:custom_name": "Research Note"
+      },
+      "id": "minecraft:paper"
+    },
+    "trigger_type": "modonomicon:item_crafted"
+  },
+  {
     "consume": 1,
     "fact_id": "modonomicon:demo/scholarship/note_studied",
     "id": "modonomicon:demo/scholarship/note_studied_hook",
