@@ -122,6 +122,13 @@ public final class ResearchCostModel {
         return this;
     }
 
+    /**
+     * True if the cost has no entries, i.e. nothing is consumed.
+     */
+    public boolean isEmpty() {
+        return this.entries.isEmpty();
+    }
+
     public ResearchCost toResearchCost() {
         return new ResearchCost(List.copyOf(this.entries));
     }

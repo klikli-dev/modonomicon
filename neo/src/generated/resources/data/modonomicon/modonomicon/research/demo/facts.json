@@ -77,10 +77,51 @@
             }
           }
         ],
+        "grants_fact": true,
         "repeatable": true
       },
+      "icon": {
+        "id": "minecraft:paper"
+      },
       "title": {
-        "translate": "modonomicon.demo.scholarship.research_note.title"
+        "translate": "modonomicon.demo.scholarship.note_taken.title"
+      }
+    },
+    "id": "modonomicon:demo/scholarship/note_taken"
+  },
+  {
+    "display": {
+      "description": {
+        "translate": "modonomicon.demo.scholarship.note_crafted.description"
+      },
+      "icon": {
+        "components": {
+          "minecraft:custom_data": {
+            "modonomicon_demo": "research_note"
+          },
+          "minecraft:custom_name": "Research Note"
+        },
+        "id": "minecraft:paper"
+      },
+      "title": {
+        "translate": "modonomicon.demo.scholarship.note_crafted.title"
+      }
+    },
+    "id": "modonomicon:demo/scholarship/note_crafted"
+  },
+  {
+    "display": {
+      "icon": {
+        "components": {
+          "minecraft:custom_data": {
+            "modonomicon_demo": "research_note"
+          },
+          "minecraft:custom_name": "Research Note"
+        },
+        "id": "minecraft:paper"
+      },
+      "title": {
+        "translate": "modonomicon.demo.scholarship.note_studied.title"
       }
     },
     "id": "modonomicon:demo/scholarship/note_studied"
