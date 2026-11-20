@@ -129,10 +129,10 @@ The entry tab sprites are not set in `theme.json`. Custom themes override them b
 
 | Relative path (default theme) | Size | Used for |
 |-------------------------------|------|----------|
-| `content/buttons/entry_tab/entry_tab_right.png` | 44x20 | Entry tab on the right edge |
-| `content/buttons/entry_tab/entry_tab_left.png` | 44x20 | Entry tab on the left edge |
-| `content/buttons/entry_tab/entry_tab_right_active.png` | 44x20 | Right entry tab while its tab page is open |
-| `content/buttons/entry_tab/entry_tab_left_active.png` | 44x20 | Left entry tab while its tab page is open |
+| `content/buttons/entry_tab/entry_tab_right.png` | 32x18 | Entry tab on the right edge |
+| `content/buttons/entry_tab/entry_tab_left.png` | 32x18 | Entry tab on the left edge |
+| `content/buttons/entry_tab/entry_tab_right_active.png` | 32x18 | Right entry tab while its tab page is open |
+| `content/buttons/entry_tab/entry_tab_left_active.png` | 32x18 | Left entry tab while its tab page is open |
 | `content/backgrounds/book/tab_page_background.png` | 145x178 | Background of the tab page shown over the book |
 | `content/buttons/entry_tab/tab_close_button_normal.png` and `tab_close_button_hover.png` | 12x12 | Close button of the tab page |
 

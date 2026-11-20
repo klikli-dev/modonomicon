@@ -63,7 +63,7 @@ this.nodeBuilder(this.node("mymod/my_node"))
 | Method | Effect |
 |--------|--------|
 | `declareFact(String path)` | Declares a new fact and authors a hook that grants it. |
-| `declareFact(ResearchFactRef ref)` | Same, for a fact that already has a ref, e.g. from `this.fact(...)` or another namespace. |
+| `declareFact(ResearchFactRef ref)` | Same, for a ref that has **not been declared yet**, e.g. a constant created with `ResearchFactRef.of(...)` or a ref in another namespace. Refs returned by `this.fact(...)` are already declared: pass them to `grant(ref)` instead. |
 | `grant(ResearchFactRef ref)` | Authors a hook that grants an already declared fact. Several triggers may grant the same fact. |
 | `grantFact(String hookPath, ResearchFactRef ref)` | Like `grant`, with an explicit hook id. |
 | `declareValue(String path, int increment)` / `declareValue(ResearchValueRef ref, int increment)` | Declares a new value and authors a hook that increments it. |
