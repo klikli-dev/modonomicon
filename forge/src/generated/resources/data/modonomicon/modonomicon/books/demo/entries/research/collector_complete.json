@@ -8,7 +8,7 @@
   "category": "modonomicon:research",
   "condition": {
     "type": "modonomicon:research_node_unlocked",
-    "node_id": "modonomicon:demo/collector_complete"
+    "node_id": "modonomicon:demo/bibliography_complete"
   },
   "description": "book.modonomicon.demo.research.collector_complete.description",
   "icon": {

@@ -8,8 +8,8 @@
   "category": "modonomicon:progression",
   "condition": {
     "type": "modonomicon:research_stage_completed",
-    "node_id": "modonomicon:demo/stages_demo",
-    "stage_id": "modonomicon:demo/stages_demo_stage_3"
+    "node_id": "modonomicon:demo/writable_books",
+    "stage_id": "modonomicon:demo/writable_books_stage_3"
   },
   "description": "book.modonomicon.demo.progression.stage_complete.description",
   "icon": {

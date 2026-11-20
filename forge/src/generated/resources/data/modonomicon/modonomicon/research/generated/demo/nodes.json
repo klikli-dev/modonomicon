@@ -36,21 +36,111 @@
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/item_crafted/minecraft/stick",
+    "id": "modonomicon:generated/demo/nodes/item_crafted/minecraft/writable_book",
     "required_facts": [
-      "modonomicon:generated/demo/facts/item_crafted/minecraft/stick"
+      "modonomicon:generated/demo/facts/item_crafted/minecraft/writable_book"
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/item_acquired/minecraft/cobblestone",
+    "id": "modonomicon:generated/demo/nodes/item_acquired/minecraft/iron_ingot",
     "required_facts": [
-      "modonomicon:generated/demo/facts/item_acquired/minecraft/cobblestone"
+      "modonomicon:generated/demo/facts/item_acquired/minecraft/iron_ingot"
     ]
   },
   {
     "id": "modonomicon:generated/demo/nodes/item_acquired/tag_minecraft/logs",
     "required_facts": [
       "modonomicon:generated/demo/facts/item_acquired/tag_minecraft/logs"
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_notes",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_notes"
+    ],
+    "stages": [
+      {
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.scholarship.notes.stage.observation.description"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.scholarship.notes.stage.observation.title"
+          }
+        },
+        "id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_notes/stages/observation",
+        "required_facts": [
+          "modonomicon:generated/demo/nodes/entry_progression/scholarship_notes/stages/observation/observation"
+        ],
+        "rewards": [
+          {
+            "type": "modonomicon:experience",
+            "amount": 10
+          }
+        ]
+      },
+      {
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.scholarship.notes.stage.transcription.description"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.scholarship.notes.stage.transcription.title"
+          }
+        },
+        "id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_notes/stages/transcription",
+        "required_facts": [
+          "modonomicon:demo/scholarship/note_taken",
+          "modonomicon:demo/scholarship/note_crafted",
+          "modonomicon:demo/scholarship/note_studied"
+        ],
+        "rewards": [
+          {
+            "type": "modonomicon:add_value",
+            "value": "modonomicon:demo/insight"
+          },
+          {
+            "type": "modonomicon:grant_fact",
+            "fact": "modonomicon:demo/scholarship/notes_read"
+          }
+        ]
+      },
+      {
+        "completion": {
+          "cost": [
+            {
+              "type": "modonomicon:item",
+              "count": 2,
+              "item": {
+                "count": 2,
+                "id": "minecraft:iron_ingot"
+              }
+            }
+          ],
+          "mode": "manual"
+        },
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.scholarship.notes.stage.synthesis.description"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.scholarship.notes.stage.synthesis.title"
+          }
+        },
+        "id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_notes/stages/synthesis",
+        "rewards": [
+          {
+            "type": "modonomicon:give_item",
+            "stack": {
+              "id": "minecraft:emerald"
+            }
+          },
+          {
+            "type": "modonomicon:function",
+            "function": "modonomicon:demo/scholarship_synthesis"
+          }
+        ]
+      }
     ]
   },
   {
@@ -102,20 +192,20 @@
       {
         "display": {
           "description": {
-            "translate": "book.modonomicon.demo.progression.trailing_page_progression.stage.dirt.description"
+            "translate": "book.modonomicon.demo.progression.trailing_page_progression.stage.paper.description"
           },
           "icon": {
-            "id": "minecraft:dirt"
+            "id": "minecraft:paper"
           },
           "title": {
-            "translate": "book.modonomicon.demo.progression.trailing_page_progression.stage.dirt.title"
+            "translate": "book.modonomicon.demo.progression.trailing_page_progression.stage.paper.title"
           }
         },
-        "id": "modonomicon:generated/demo/nodes/entry_progression/progression_trailing_page_progression/stages/dirt",
+        "id": "modonomicon:generated/demo/nodes/entry_progression/progression_trailing_page_progression/stages/paper",
         "required_values": [
           {
             "threshold": 5,
-            "value_id": "modonomicon:demo/progression_dirt_collected"
+            "value_id": "modonomicon:demo/scholarship/paper_collected"
           }
         ]
       },
@@ -176,97 +266,6 @@
         "id": "modonomicon:generated/demo/nodes/entry_progression/progression_placed_page_progression/stages/tools",
         "required_facts": [
           "modonomicon:generated/demo/facts/item_crafted/minecraft/stone_pickaxe"
-        ]
-      }
-    ]
-  },
-  {
-    "id": "modonomicon:generated/demo/nodes/entry_progression/progression_scholarship",
-    "required_facts": [
-      "modonomicon:generated/demo/facts/entry_viewed_once/progression_scholarship"
-    ],
-    "stages": [
-      {
-        "display": {
-          "description": {
-            "translate": "book.modonomicon.demo.progression.scholarship.stage.observation.description"
-          },
-          "title": {
-            "translate": "book.modonomicon.demo.progression.scholarship.stage.observation.title"
-          }
-        },
-        "id": "modonomicon:generated/demo/nodes/entry_progression/progression_scholarship/stages/observation",
-        "required_facts": [
-          "modonomicon:generated/demo/nodes/entry_progression/progression_scholarship/stages/observation/observation"
-        ],
-        "rewards": [
-          {
-            "type": "modonomicon:experience",
-            "amount": 10
-          }
-        ]
-      },
-      {
-        "display": {
-          "description": {
-            "translate": "book.modonomicon.demo.progression.scholarship.stage.transcription.description"
-          },
-          "title": {
-            "translate": "book.modonomicon.demo.progression.scholarship.stage.transcription.title"
-          }
-        },
-        "id": "modonomicon:generated/demo/nodes/entry_progression/progression_scholarship/stages/transcription",
-        "required_facts": [
-          "modonomicon:demo/scholarship/note_studied"
-        ],
-        "rewards": [
-          {
-            "type": "modonomicon:add_value",
-            "value": "modonomicon:demo/insight"
-          },
-          {
-            "type": "modonomicon:grant_fact",
-            "fact": "modonomicon:demo/scholarship/notes_read"
-          }
-        ]
-      },
-      {
-        "completion": {
-          "cost": [
-            {
-              "type": "modonomicon:item",
-              "count": 2,
-              "item": {
-                "count": 2,
-                "id": "minecraft:iron_ingot"
-              }
-            }
-          ],
-          "mode": "manual"
-        },
-        "display": {
-          "description": {
-            "translate": "book.modonomicon.demo.progression.scholarship.stage.synthesis.description"
-          },
-          "title": {
-            "translate": "book.modonomicon.demo.progression.scholarship.stage.synthesis.title"
-          }
-        },
-        "id": "modonomicon:generated/demo/nodes/entry_progression/progression_scholarship/stages/synthesis",
-        "required_facts": [
-          "modonomicon:demo/scholarship/note_studied"
-        ],
-        "rewards": [
-          {
-            "type": "modonomicon:give_item",
-            "stack": {
-              "id": "minecraft:emerald"
-            }
-          },
-          {
-            "type": "modonomicon:function",
-            "function": "modonomicon:demo/scholarship_synthesis"
-          }
         ]
       }
     ]

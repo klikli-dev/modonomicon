@@ -4,7 +4,7 @@
     "type": "modonomicon:not",
     "child": {
       "type": "modonomicon:research_node_unlocked",
-      "node_id": "modonomicon:demo/crafting_stick"
+      "node_id": "modonomicon:demo/crafting_note"
     }
   },
   "id": "hint",

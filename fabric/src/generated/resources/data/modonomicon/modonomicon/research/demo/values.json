@@ -1,28 +1,20 @@
 [
   {
-    "id": "modonomicon:demo/collector_count"
+    "id": "modonomicon:demo/scholarship/sources_consulted"
   },
   {
-    "id": "modonomicon:demo/stages_planks_crafted"
-  },
-  {
-    "display": {
-      "title": {
-        "translate": "modonomicon.demo.requirements.cobblestone.title"
-      }
-    },
-    "id": "modonomicon:demo/requirements_cobblestone_collected"
+    "id": "modonomicon:demo/writable_books_crafted"
   },
   {
     "display": {
       "icon": {
-        "id": "minecraft:dirt"
+        "id": "minecraft:paper"
       },
       "title": {
-        "translate": "modonomicon.demo.progression.dirt.title"
+        "translate": "modonomicon.demo.scholarship.paper_collected.title"
       }
     },
-    "id": "modonomicon:demo/progression_dirt_collected"
+    "id": "modonomicon:demo/scholarship/paper_collected"
   },
   {
     "display": {

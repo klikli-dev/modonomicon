@@ -20,7 +20,7 @@
   },
   "description": "book.modonomicon.demo.progression.trailing_page_progression.description",
   "icon": {
-    "id": "minecraft:dirt"
+    "id": "minecraft:paper"
   },
   "id": "modonomicon:progression/trailing_page_progression",
   "marker_condition": {

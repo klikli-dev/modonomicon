@@ -9,28 +9,42 @@
     "id": "modonomicon:demo/advancement_ride_boat_with_goat_completed"
   },
   {
-    "id": "modonomicon:demo/stick_crafted"
+    "display": {
+      "description": {
+        "translate": "modonomicon.demo.scholarship.note_crafted.description"
+      },
+      "icon": {
+        "components": {
+          "minecraft:custom_data": {
+            "modonomicon_demo": "research_note"
+          },
+          "minecraft:custom_name": "Research Note"
+        },
+        "id": "minecraft:paper"
+      },
+      "title": {
+        "translate": "modonomicon.demo.scholarship.note_crafted.title"
+      }
+    },
+    "id": "modonomicon:demo/scholarship/note_crafted"
   },
   {
-    "id": "modonomicon:demo/cobblestone_acquired"
+    "display": {
+      "icon": {
+        "id": "minecraft:ink_sac"
+      },
+      "title": {
+        "translate": "modonomicon.demo.scholarship.ink_sac_acquired.title"
+      }
+    },
+    "id": "modonomicon:demo/scholarship/ink_sac_acquired"
   },
   {
     "id": "modonomicon:demo/marker_intro_viewed"
   },
   {
     "display": {
-      "icon": {
-        "id": "minecraft:oak_log"
-      },
-      "title": {
-        "translate": "modonomicon.demo.requirements.oak_log.title"
-      }
-    },
-    "id": "modonomicon:demo/requirements_oak_log_acquired"
-  },
-  {
-    "display": {
-      "category": "modonomicon:demo_rituals"
+      "category": "modonomicon:demo_smithing"
     },
     "id": "modonomicon:demo/requirements_iron_ingot_acquired"
   },
@@ -88,26 +102,6 @@
       }
     },
     "id": "modonomicon:demo/scholarship/note_taken"
-  },
-  {
-    "display": {
-      "description": {
-        "translate": "modonomicon.demo.scholarship.note_crafted.description"
-      },
-      "icon": {
-        "components": {
-          "minecraft:custom_data": {
-            "modonomicon_demo": "research_note"
-          },
-          "minecraft:custom_name": "Research Note"
-        },
-        "id": "minecraft:paper"
-      },
-      "title": {
-        "translate": "modonomicon.demo.scholarship.note_crafted.title"
-      }
-    },
-    "id": "modonomicon:demo/scholarship/note_crafted"
   },
   {
     "display": {

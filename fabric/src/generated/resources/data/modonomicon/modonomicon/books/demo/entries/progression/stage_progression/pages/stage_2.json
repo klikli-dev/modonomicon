@@ -2,8 +2,8 @@
   "type": "modonomicon:text",
   "condition": {
     "type": "modonomicon:research_stage_completed",
-    "node_id": "modonomicon:demo/stages_demo",
-    "stage_id": "modonomicon:demo/stages_demo_stage_2"
+    "node_id": "modonomicon:demo/writable_books",
+    "stage_id": "modonomicon:demo/writable_books_stage_2"
   },
   "id": "stage_2",
   "show_title_separator": true,

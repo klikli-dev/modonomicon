@@ -16,7 +16,7 @@
   "id": "modonomicon:index_markers/index_marker_explicit",
   "marker_condition": {
     "type": "modonomicon:research_node_unlocked",
-    "node_id": "modonomicon:demo/crafting_stick"
+    "node_id": "modonomicon:demo/crafting_note"
   },
   "name": "book.modonomicon.demo_index.index_markers.index_marker_explicit.name",
   "sort_number": 1,

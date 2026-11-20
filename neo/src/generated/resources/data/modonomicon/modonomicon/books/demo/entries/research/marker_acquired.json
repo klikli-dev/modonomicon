@@ -11,12 +11,12 @@
   },
   "description": "book.modonomicon.demo.research.marker_acquired.description",
   "icon": {
-    "id": "minecraft:cobblestone"
+    "id": "minecraft:iron_ingot"
   },
   "id": "modonomicon:research/marker_acquired",
   "marker_condition": {
     "type": "modonomicon:research_node_unlocked",
-    "node_id": "modonomicon:generated/demo/nodes/item_acquired/minecraft/cobblestone"
+    "node_id": "modonomicon:generated/demo/nodes/item_acquired/minecraft/iron_ingot"
   },
   "name": "book.modonomicon.demo.research.marker_acquired.name",
   "parents": [

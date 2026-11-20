@@ -42,18 +42,18 @@
     "trigger_type": "modonomicon:item_crafted"
   },
   {
-    "fact_id": "modonomicon:generated/demo/facts/item_crafted/minecraft/stick",
-    "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/stick_hook",
+    "fact_id": "modonomicon:generated/demo/facts/item_crafted/minecraft/writable_book",
+    "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/writable_book_hook",
     "trigger_target": {
-      "id": "minecraft:stick"
+      "id": "minecraft:writable_book"
     },
     "trigger_type": "modonomicon:item_crafted"
   },
   {
-    "fact_id": "modonomicon:generated/demo/facts/item_acquired/minecraft/cobblestone",
-    "id": "modonomicon:generated/demo/facts/item_acquired/minecraft/cobblestone_hook",
+    "fact_id": "modonomicon:generated/demo/facts/item_acquired/minecraft/iron_ingot",
+    "id": "modonomicon:generated/demo/facts/item_acquired/minecraft/iron_ingot_hook",
     "trigger_target": {
-      "id": "minecraft:cobblestone"
+      "id": "minecraft:iron_ingot"
     },
     "trigger_type": "modonomicon:item_acquired"
   },
@@ -64,6 +64,12 @@
       "tag": "minecraft:logs"
     },
     "trigger_type": "modonomicon:item_acquired"
+  },
+  {
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_notes",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_notes_hook",
+    "trigger_target": "modonomicon:scholarship/notes",
+    "trigger_type": "modonomicon:entry_viewed_once"
   },
   {
     "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/progression_first_page_progression",
@@ -81,12 +87,6 @@
     "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/progression_placed_page_progression",
     "id": "modonomicon:generated/demo/facts/entry_viewed_once/progression_placed_page_progression_hook",
     "trigger_target": "modonomicon:progression/placed_page_progression",
-    "trigger_type": "modonomicon:entry_viewed_once"
-  },
-  {
-    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/progression_scholarship",
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/progression_scholarship_hook",
-    "trigger_target": "modonomicon:progression/scholarship",
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {

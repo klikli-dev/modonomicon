@@ -11,12 +11,12 @@
   },
   "description": "book.modonomicon.demo.research.marker_crafted.description",
   "icon": {
-    "id": "minecraft:stick"
+    "id": "minecraft:writable_book"
   },
   "id": "modonomicon:research/marker_crafted",
   "marker_condition": {
     "type": "modonomicon:research_node_unlocked",
-    "node_id": "modonomicon:generated/demo/nodes/item_crafted/minecraft/stick"
+    "node_id": "modonomicon:generated/demo/nodes/item_crafted/minecraft/writable_book"
   },
   "name": "book.modonomicon.demo.research.marker_crafted.name",
   "parents": [

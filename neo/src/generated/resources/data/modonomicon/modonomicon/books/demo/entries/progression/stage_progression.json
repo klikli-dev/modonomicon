@@ -11,7 +11,7 @@
   },
   "description": "book.modonomicon.demo.progression.stage_progression.description",
   "icon": {
-    "id": "minecraft:oak_planks"
+    "id": "minecraft:writable_book"
   },
   "id": "modonomicon:progression/stage_progression",
   "marker_condition": {
