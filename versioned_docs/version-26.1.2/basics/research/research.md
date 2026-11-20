@@ -34,6 +34,7 @@ Hooks connect external events to research progress. Each hook triggers on an eve
 | `entry_viewed_once` | A book entry is viewed for the first time | `Identifier` (entry id) |
 | `item_crafted` | A matching item is crafted | `ResearchItemMatcher`: item template (`{"id": ...}`) or tag (`{"tag": ...}`) |
 | `item_acquired` | A matching item appears in inventory | `ResearchItemMatcher`: item template (`{"id": ...}`) or tag (`{"tag": ...}`) |
+| `item_used` | A matching item is used in the air, see [Item Used](./item-used.md) | `ResearchItemMatcher`: item template (`{"id": ...}`) or tag (`{"tag": ...}`) |
 | `advancement` | A vanilla advancement is earned | `Identifier` (advancement id) |
 
 Third-party mods can register custom trigger types with arbitrary target and context types via `TriggerTypeRegistry.register()`.
@@ -67,7 +68,7 @@ Changes that happen outside a hook batch, such as admin commands, are saved with
 
 ### Stages
 
-A node's stages are completed in order. The next stage becomes the current one once the current stage is completed. In JSON and datagen, stages are referenced by their 0-based index. The stored progress is an internal detail, so authors do not need to handle it.
+A node's stages are completed in order. The next stage becomes the current one once the current stage is completed. In JSON and datagen, stages are referenced by their id: `required_stages` of a dependency uses `stage_id`, and the `research_stage_completed` condition uses `stage_id`. The 0-based stage index is internal to the player's research state. Only the `stage` command takes an index, as `stage <player> <node> <stageIndex>`.
 
 ## Further reading
 

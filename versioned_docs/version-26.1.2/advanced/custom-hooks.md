@@ -24,13 +24,14 @@ The trigger type ID is used in the `hooks.json` research data file as the
 
 ## Built-in Trigger Types
 
-Modonomicon ships with four trigger types:
+Modonomicon ships with five trigger types:
 
 | Trigger Type ID | Event | Target Type | Context Type | Notes |
 |----------------|-------|-------------|-------------|-------|
 | `modonomicon:entry_viewed_once` | A book entry is viewed for the first time | `Identifier` | `EntryViewedContext` | |
 | `modonomicon:item_crafted` | A matching item is crafted | `ResearchItemMatcher` | `ItemCraftedContext` | Item template (`{"id": ...}`, components checked) or item tag (`{"tag": ...}`) |
 | `modonomicon:item_acquired` | A matching item appears in inventory | `ResearchItemMatcher` | `ItemAcquiredContext` | Item template (`{"id": ...}`, components checked) or item tag (`{"tag": ...}`) |
+| `modonomicon:item_used` | A matching item is used in the air | `ResearchItemMatcher` | `ItemUsedContext` | Item template or item tag. A hook can `consume` items of the used stack, see [Item Used](../basics/research/item-used.md) |
 | `modonomicon:advancement` | A vanilla advancement is earned | `Identifier` | `AdvancementContext` | Supports replay on login |
 
 ## TriggerHandler Interface
@@ -343,6 +344,11 @@ this.ingress().onItemAcquired(new ItemStackTemplate(Items.NETHER_STAR))
 // Advancement earned
 this.ingress().onAdvancementEarned(advancementId)
     .declareFact("mymod/advancement_hook");
+
+// Item used in the air, the hook consumes one of the used stack
+this.ingress().onItemUsed(new ItemStackTemplate(Items.PAPER))
+    .consume(1)
+    .declareFact("mymod/used_hook");
 ```
 
 `onItemCrafted` and `onItemAcquired` accept an `ItemStackTemplate`, an `ItemLike`, a `TagKey<Item>` or a `ResearchItemMatcher`. See [Research Datagen](../basics/research/datagen.md#item-triggers-and-tags).
