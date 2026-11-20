@@ -11,8 +11,8 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FormattingCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.ConditionsCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionLevel1Entry;
+import com.klikli_dev.modonomicon.datagen.book.demo.ScholarshipCategory;
+import com.klikli_dev.modonomicon.datagen.book.demo.features.TwoParentEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.MultiblockEntry;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.world.item.Items;
@@ -53,7 +53,7 @@ public class LinkFormattingEntry extends EntryProvider {
                         {4}
                         """,
                 this.entryLink("View a Multiblock", FeaturesCategory.ID, MultiblockEntry.ID),
-                this.entryLink("View a Condition", ConditionsCategory.ID, ConditionLevel1Entry.ID),
+                this.entryLink("View a Condition", ScholarshipCategory.ID, TwoParentEntry.ID),
                 this.entryLink("View basic formatting", FormattingCategory.ID, BasicFormattingEntry.ID),
                 this.entryLink("Always locked", FormattingCategory.ID, AlwaysLockedEntry.ID),
                 this.categoryLink("View Features Category", FeaturesCategory.ID)

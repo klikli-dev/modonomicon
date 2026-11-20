@@ -10,8 +10,12 @@ import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
+import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
 
+/**
+ * Placed page progression: requirements pages are placed between the content, they keep showing progress after a stage is complete.
+ */
 public class PlacedPageProgressionEntry extends EntryProvider {
     public static final String ID = "placed_page_progression";
 
@@ -28,48 +32,52 @@ public class PlacedPageProgressionEntry extends EntryProvider {
         this.pageText("""
                 The next page is a requirements page. It lists what the first stage needs, and it is placed here, not at the bottom of a page.
                 Requirements pages are never hidden, so they keep showing your progress after a stage is complete.
+                The marker of this entry clears once you have crafted a writable book.
                 """);
 
-        this.requirementsPage("requirements_start");
+        this.requirementsPage("requirements_iron");
 
-        this.stage("lighting", s -> s
-                .craft(Items.TORCH)
-                .title("Lighting the way")
-                .description("Craft a torch."));
+        this.stage("iron", s -> s
+                .fact(DemoResearch.IRON_INGOT_ACQUIRED)
+                .icon(Items.IRON_INGOT)
+                .title("Acquire iron")
+                .description("Get an iron ingot."));
 
-        this.page("lit", () -> BookTextPageModel.create()
+        this.page("iron_done", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
-        this.pageTitle("Lit");
+        this.pageTitle("Iron acquired");
         this.pageText("""
-                You crafted a torch, so this page is unlocked. The requirements page before it now shows the first stage with check marks.
+                You have an iron ingot, so this page is unlocked. The requirements page before it now shows the first stage with check marks.
                 The requirements page below shows the stage that comes next.
                 """);
 
-        this.requirementsPage("requirements_next");
+        this.requirementsPage("requirements_ink");
 
-        this.stage("tools", s -> s
-                .craft(Items.STONE_PICKAXE)
-                .title("Carving tools")
-                .description("Craft a stone pickaxe to carve your seals."));
+        this.stage("ink", s -> s
+                .fact(DemoResearch.INK_SAC_ACQUIRED)
+                .icon(Items.INK_SAC)
+                .title("Gather ink")
+                .description("Get an ink sac."));
 
-        this.page("equipped", () -> BookTextPageModel.create()
+        this.page("ink_done", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
-        this.pageTitle("Equipped");
+        this.pageTitle("Ink gathered");
         this.pageText("""
-                You crafted a stone pickaxe. Both stages are complete, and every requirements page of this entry shows its requirements as done.
+                Both stages are complete, and every requirements page of this entry shows its requirements as done.
+                The next entry, Cross-reference, is unlocked by this one, and it asks for an advancement.
                 """);
     }
 
     @Override
     protected String entryName() {
-        return "Placed Page Progression";
+        return "Index";
     }
 
     @Override
     protected String entryDescription() {
-        return "Staged progression with requirements pages placed between the content.";
+        return "Placed requirements pages between the content.";
     }
 
     @Override

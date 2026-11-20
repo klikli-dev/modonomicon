@@ -42,8 +42,8 @@ public class ScholarshipEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Scholarship");
         this.pageText("""
-                Welcome to the scholar's notebook. This entry is the start of the storyline: it teaches you to take and study research notes, and rewards you with insight.
-                The Research and Progression categories build on it, with conditions, markers and staged requirements.
+                Welcome to the scholar's notebook. This entry starts the storyline: it teaches you to take, make and study research notes, and rewards you with insight.
+                Finish the synthesis to unlock the next entry, Setting up the desk. Each entry lists what is missing for the next one at the bottom of its page.
                 The requirements of the current stage are listed at the bottom of this page.
                 """);
 

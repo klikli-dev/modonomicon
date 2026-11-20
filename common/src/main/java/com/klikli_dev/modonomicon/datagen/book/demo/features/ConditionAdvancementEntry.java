@@ -14,6 +14,9 @@ import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
 
+/**
+ * Gated by an advancement on the entry itself. Its pages demonstrate the not and node unlocked conditions, and its stage asks for the next advancement.
+ */
 public class ConditionAdvancementEntry extends EntryProvider {
     public static final String ID = "condition_advancement";
 
@@ -22,49 +25,59 @@ public class ConditionAdvancementEntry extends EntryProvider {
     }
 
     @Override
-    protected void generatePages() {
-        this.page("info", () -> BookTextPageModel.create()
-                .withTitle(this.context().pageTitle())
-                .withText(this.context().pageText())
-        );
-        this.pageTitle("Advancement Condition");
-        this.pageText("""
-                Advancement Conditions unlock, as the name implies, if a player has an advancement.
-                """);
-
-        //set up a condition for a conditional page
-        var pageCondition = this.condition().researchNodeUnlocked(DemoResearch.ADVANCEMENT_MINE_STONE);
-
-        this.page("conditional_page", () -> BookTextPageModel.create()
-                .withTitle(this.context().pageTitle())
-                .withText(this.context().pageText())
-                .withCondition(pageCondition)
-        );
-        this.pageTitle("Conditional Condition");
-        this.pageText("""
-                Conditional pages unlock if a player has satisfied their condition.
-                """);
-
-        this.stage("ride", s -> s
-                .fact(DemoResearch.ADVANCEMENT_RIDE_BOAT_WITH_GOAT_COMPLETED)
-                .title("Ride a boat with a goat")
-                .description("Earn the advancement Ride a Boat with a Goat."));
-    }
-
-    @Override
     protected BookEntryModel additionalSetup(BookEntryModel entry) {
-        //Set up the condition for the entry.
+        //the entry itself is unlocked by the advancement, see the two parents entry for the stage that asks for it
         return entry.withCondition(DemoResearch.ADVANCEMENT_RIDE_BOAT_WITH_GOAT);
     }
 
     @Override
+    protected void generatePages() {
+        this.page("intro", () -> BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText()));
+        this.pageTitle("Field work");
+        this.pageText("""
+                This entry is gated by an advancement, the entry itself is only shown once you earned Ride a Boat with a Goat.
+                Advancement conditions unlock, as the name implies, if a player has an advancement.
+                """);
+
+        //not condition: the hint is shown until the mine stone research node is unlocked
+        this.page("hint", () -> BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText())
+                .withCondition(this.condition().not(
+                        this.condition().researchNodeUnlocked(DemoResearch.ADVANCEMENT_MINE_STONE))));
+        this.pageTitle("Hint");
+        this.pageText("""
+                Mine a stone block to earn the advancement Mine Stone, the next stage on this entry asks for it.
+                This hint disappears once the research node of that advancement is unlocked.
+                """);
+
+        //node unlocked condition: the page is only shown once the mine stone research node is unlocked
+        this.page("conditional_page", () -> BookTextPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText())
+                .withCondition(this.condition().researchNodeUnlocked(DemoResearch.ADVANCEMENT_MINE_STONE)));
+        this.pageTitle("Quarried");
+        this.pageText("""
+                You mined a stone block. Conditional pages unlock if a player has satisfied their condition.
+                """);
+
+        this.stage("mine", s -> s
+                .fact(DemoResearch.ADVANCEMENT_MINE_STONE_COMPLETED)
+                .icon(Items.STONE_PICKAXE)
+                .title("Mine stone")
+                .description("Earn the advancement Mine Stone."));
+    }
+
+    @Override
     protected String entryName() {
-        return "Advancement Condition Entry";
+        return "Field Work";
     }
 
     @Override
     protected String entryDescription() {
-        return "Depends on an advancement being unlocked.";
+        return "Gated by an advancement, with not and node conditions on its pages.";
     }
 
     @Override
@@ -82,4 +95,3 @@ public class ConditionAdvancementEntry extends EntryProvider {
         return ID;
     }
 }
-

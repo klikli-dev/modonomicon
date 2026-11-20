@@ -32,7 +32,7 @@ public class IndexMarkersCategory extends CategoryProvider {
         //explicit marker condition pointing at a manually authored research node.
         //research nodes are shared across books, so this reuses the demo book research.
         this.add(new IndexMarkerExplicitEntry(this).generate()
-                .withMarker(DemoResearch.CRAFTING_NOTE));
+                .withMarker(DemoResearch.MARKER_EXPLICIT));
 
         //auto-generated marker research into this book's own generated bundle:
         //dot clears once a diamond sword has been crafted.

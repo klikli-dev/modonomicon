@@ -12,10 +12,13 @@ import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.world.item.Items;
 
-public class CollectorAEntry extends EntryProvider {
-    public static final String ID = "collector_a";
+/**
+ * The sources shelf. Viewing it once increments the sources consulted value, which the catalogue requires.
+ */
+public class SourcesEntry extends EntryProvider {
+    public static final String ID = "sources";
 
-    public CollectorAEntry(CategoryProvider parent) {
+    public SourcesEntry(CategoryProvider parent) {
         super(parent);
     }
 
@@ -24,20 +27,21 @@ public class CollectorAEntry extends EntryProvider {
         this.page("info", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
-        this.pageTitle("Source A");
+        this.pageTitle("Sources shelf");
         this.pageText("""
-                First source consulted. Viewing this counts it in your sources consulted.
+                This shelf is always open. Viewing it once counts as one source consulted, the value collector of the research.
+                The catalogue asks for one consulted source before it can be completed.
                 """);
     }
 
     @Override
     protected String entryName() {
-        return "Collector A";
+        return "Sources Shelf";
     }
 
     @Override
     protected String entryDescription() {
-        return "First of three collector entries.";
+        return "Ungated value collector: viewing it counts a source.";
     }
 
     @Override
@@ -47,7 +51,7 @@ public class CollectorAEntry extends EntryProvider {
 
     @Override
     protected BookIconModel entryIcon() {
-        return BookIconModel.create(Items.REDSTONE);
+        return BookIconModel.create(Items.BOOKSHELF);
     }
 
     @Override

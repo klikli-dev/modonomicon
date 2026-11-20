@@ -7,15 +7,15 @@ package com.klikli_dev.modonomicon.datagen.book.demo.progression;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
-import com.klikli_dev.modonomicon.api.datagen.book.BookEntryTabModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
-import com.klikli_dev.modonomicon.datagen.book.demo.ConditionsCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionRootEntry;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
+/**
+ * First page progression: its requirements are listed at the bottom of the first page (the default display). It is the child of the scholarship entry.
+ */
 public class FirstPageProgressionEntry extends EntryProvider {
     public static final String ID = "first_page_progression";
 
@@ -30,72 +30,35 @@ public class FirstPageProgressionEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Setting up the desk");
         this.pageText("""
-                This is the default display: the requirements of the next stage are listed at the bottom of this first page.
-                Stage 1 needs a crafting table and any log. Each requirement gets a check mark once you have it.
-                Until the stage is complete, the pages and tabs after it stay hidden.
+                This entry unlocked when the synthesis of the scholarship entry was completed.
+                The requirements of the next stage are listed at the bottom of this first page, that is the default display.
+                Each requirement gets a check mark once you have it. Complete them to unlock the catalogue.
+                The marker on this entry clears once you have read the sources shelf.
                 """);
 
-        this.tab("notes", () -> BookEntryTabModel.create()
-                .withPage(BookTextPageModel.create()
-                        .withTitle(this.tabTitleKey())
-                        .withText(this.tabTextKey()))
-                .withIcon(Items.WRITABLE_BOOK)
-                .withTitle(this.tabTitleKey())
-        );
-        this.tabTitle("Notes");
-        this.tabText("""
-                This tab is pinned to the first page. It is visible from the start, because it comes before the first stage.
-                """);
-
-        this.stage("workbench", s -> s
+        this.stage("desk", s -> s
                 .craft(Items.CRAFTING_TABLE)
                 .obtain(ItemTags.LOGS)
-                .title("Gathering wood")
+                .title("Set up the desk")
                 .description("Craft a crafting table and collect any log."));
-
-        this.page("workbench_unlocked", () -> BookTextPageModel.create()
-                .withTitle(this.context().pageTitle())
-                .withText(this.context().pageText()));
-        this.pageTitle("Workbench unlocked");
-        this.pageText("""
-                You have a crafting table and a log, so stage 1 is complete and this page was unlocked.
-                The tab below is pinned to this page and is gated by stage 1 as well.
-                """);
-
-        this.tab("workbench_notes", () -> BookEntryTabModel.create()
-                .withPage(BookTextPageModel.create()
-                        .withTitle(this.tabTitleKey())
-                        .withText(this.tabTextKey()))
-                .withIcon(Items.CRAFTING_TABLE)
-                .withTitle(this.tabTitleKey())
-        );
-        this.tabTitle("Workbench notes");
-        this.tabText("""
-                Tabs declared after a stage are gated by that stage, just like pages. This tab only shows up after stage 1 is complete.
-                """);
-
-        this.stage("reading", s -> s
-                .read(this.modLoc(ConditionsCategory.ID + "/" + ConditionRootEntry.ID))
-                .title("Reading the Reading Room")
-                .description("Read the Reading Room entry in the Research category."));
 
         this.page("finished", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
-        this.pageTitle("Finished");
+        this.pageTitle("Desk ready");
         this.pageText("""
-                Both stages are complete, so this page is visible. The entry is complete, which unlocks the child entry of this category.
+                The desk is set up, so the catalogue is unlocked. Pages after a stage stay hidden until the stage is complete.
                 """);
     }
 
     @Override
     protected String entryName() {
-        return "First Page Progression";
+        return "Setting up the desk";
     }
 
     @Override
     protected String entryDescription() {
-        return "Staged progression with the requirements on the first page, the default display.";
+        return "First page progression, unlocked by the scholarship entry.";
     }
 
     @Override

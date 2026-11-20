@@ -11,7 +11,6 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FormattingCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionLevel1Entry;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.MultiblockEntry;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.world.item.Items;

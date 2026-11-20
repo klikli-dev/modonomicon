@@ -25,7 +25,7 @@ public class IndexMarkerExplicitEntry extends EntryProvider {
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
         this.pageTitle("Explicit Index Marker");
-        this.pageText("This entry shows a marker until explicitly authored research unlocks. Research nodes are shared across books, so this reuses the note-crafting node from the demo book research.");
+        this.pageText("This entry shows a marker until explicitly authored research unlocks. Research nodes are shared across books, so this reuses the explicit marker node from the demo book research.");
     }
 
     @Override

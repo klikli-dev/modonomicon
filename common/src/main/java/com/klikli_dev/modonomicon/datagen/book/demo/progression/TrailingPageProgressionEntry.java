@@ -14,6 +14,9 @@ import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
 
+/**
+ * Trailing page progression: its requirements are listed on a trailing page after the last page. Value requirements are shown as progress bars.
+ */
 public class TrailingPageProgressionEntry extends EntryProvider {
     public static final String ID = "trailing_page_progression";
 
@@ -31,45 +34,38 @@ public class TrailingPageProgressionEntry extends EntryProvider {
         this.pageTitle("Trailing page requirements");
         this.pageText("""
                 The requirements of this entry are listed on a trailing page after the last page of the entry. Flip past the end of the entry to see them.
-                The first stage counts the paper you pick up, the progress is shown as a bar. Stages after the first one stay hidden until they are complete.
+                The first stage counts the paper you pick up, the second counts the sources you consulted on the shelf. The progress of each is shown as a bar.
                 """);
 
         this.stage("paper", s -> s
                 .value(DemoResearch.PAPER_COLLECTED, 5)
                 .icon(Items.PAPER)
-                .title("Gathering paper")
+                .title("Gather paper")
                 .description("Pick up 5 paper."));
 
-        this.page("paper_gathered", () -> BookTextPageModel.create()
+        this.stage("sources", s -> s
+                .value(DemoResearch.SOURCES_CONSULTED, 1)
+                .icon(Items.BOOK)
+                .title("Consult a source")
+                .description("Read the sources shelf of this category."));
+
+        this.page("catalogued", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
-        this.pageTitle("Paper gathered");
+        this.pageTitle("Catalogued");
         this.pageText("""
-                You picked up enough paper. The trailing page showed the progress of this stage while you were collecting it.
-                """);
-
-        this.stage("torch", s -> s
-                .craft(Items.TORCH)
-                .title("Lighting the reading lamp")
-                .description("Craft a torch to light the reading lamp."));
-
-        this.page("torch_lit", () -> BookTextPageModel.create()
-                .withTitle(this.context().pageTitle())
-                .withText(this.context().pageText()));
-        this.pageTitle("Torch lit");
-        this.pageText("""
-                Both stages are complete. Once the last stage is done, the trailing page only lists completed requirements.
+                Both stages are complete, so the index is unlocked. Once the last stage is done, the trailing page only lists completed requirements.
                 """);
     }
 
     @Override
     protected String entryName() {
-        return "Trailing Page Progression";
+        return "Catalogue";
     }
 
     @Override
     protected String entryDescription() {
-        return "Staged progression with a value requirement and the requirements on a trailing page.";
+        return "Trailing page progression with value requirements.";
     }
 
     @Override
