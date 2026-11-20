@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
+import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
 
 public class AcquiringInkSacEntry extends EntryProvider {
@@ -28,6 +29,11 @@ public class AcquiringInkSacEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Ink Gathered");
         this.pageText("You gathered an ink sac! This entry unlocked because the item_acquired trigger fired. Ink is what turns a blank note into a completed one.");
+
+        this.stage("gather", s -> s
+                .fact(DemoResearch.INK_SAC_ACQUIRED)
+                .title("Gather ink")
+                .description("Acquire an ink sac."));
     }
 
     @Override

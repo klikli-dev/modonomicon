@@ -20,12 +20,13 @@ import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageSpec;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchValueRef;
 import com.klikli_dev.modonomicon.api.datagen.research.SingleResearchSubProvider;
 import com.klikli_dev.modonomicon.book.BookIcon;
-import com.klikli_dev.modonomicon.datagen.book.demo.ResearchCategory;
+import com.klikli_dev.modonomicon.datagen.book.demo.ConditionsCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionRootEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.markers.MarkerIntroEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.values.CollectorAEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.values.CollectorBEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.values.CollectorCEntry;
+import com.klikli_dev.modonomicon.research.data.ResearchCategories;
 import com.klikli_dev.modonomicon.research.data.ResearchStageCompletion;
 import com.klikli_dev.modonomicon.research.data.ResearchToastDefinition;
 import net.minecraft.core.component.DataComponentPatch;
@@ -66,6 +67,7 @@ public class DemoResearch extends SingleResearchSubProvider {
     public static final ResearchValueRef SOURCES_CONSULTED = valueRef("demo/scholarship/sources_consulted");
     public static final ResearchValueRef WRITABLE_BOOKS_CRAFTED = valueRef("demo/writable_books_crafted");
     public static final ResearchFactRef INK_SAC_ACQUIRED = factRef("demo/scholarship/ink_sac_acquired");
+    public static final ResearchFactRef ADVANCEMENT_RIDE_BOAT_WITH_GOAT_COMPLETED = factRef("demo/advancement_ride_boat_with_goat_completed");
     public static final Identifier DEMO_SMITHING = Modonomicon.loc("demo_smithing");
     private static final Identifier DEMO_SMITHING_ICON = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "modonomicon/requirement_categories/demo_smithing");
     private static final String DEMO_SMITHING_TITLE = "modonomicon.demo.category.smithing.title";
@@ -111,14 +113,14 @@ public class DemoResearch extends SingleResearchSubProvider {
     @Override
     protected void generateResearch() {
         var conditionRootViewed = this.ingress()
-                .onEntryViewedOnce(this.modLoc(ResearchCategory.ID + "/" + ConditionRootEntry.ID))
+                .onEntryViewedOnce(this.modLoc(ConditionsCategory.ID + "/" + ConditionRootEntry.ID))
                 .declareFact("demo/condition_root_viewed");
         var advancementMineStoneCompleted = this.ingress()
                 .onAdvancementEarned(this.mcLoc("story/mine_stone"))
                 .declareFact("demo/advancement_mine_stone_completed");
         var advancementRideBoatWithGoatCompleted = this.ingress()
                 .onAdvancementEarned(this.mcLoc("husbandry/ride_a_boat_with_a_goat"))
-                .declareFact("demo/advancement_ride_boat_with_goat_completed");
+                .declareFact(ADVANCEMENT_RIDE_BOAT_WITH_GOAT_COMPLETED.id().getPath());
 
         this.node(CONDITION_LEVEL_1, conditionRootViewed);
         this.node(ADVANCEMENT_MINE_STONE, advancementMineStoneCompleted);
@@ -127,13 +129,13 @@ public class DemoResearch extends SingleResearchSubProvider {
         var sourcesConsulted = this.value(SOURCES_CONSULTED.id().getPath());
 
         this.ingress()
-                .onEntryViewedOnce(this.modLoc(ResearchCategory.ID + "/" + CollectorAEntry.ID))
+                .onEntryViewedOnce(this.modLoc(ConditionsCategory.ID + "/" + CollectorAEntry.ID))
                 .incrementValue("demo/scholarship/source_a_hook", sourcesConsulted, 1);
         this.ingress()
-                .onEntryViewedOnce(this.modLoc(ResearchCategory.ID + "/" + CollectorBEntry.ID))
+                .onEntryViewedOnce(this.modLoc(ConditionsCategory.ID + "/" + CollectorBEntry.ID))
                 .incrementValue("demo/scholarship/source_b_hook", sourcesConsulted, 1);
         this.ingress()
-                .onEntryViewedOnce(this.modLoc(ResearchCategory.ID + "/" + CollectorCEntry.ID))
+                .onEntryViewedOnce(this.modLoc(ConditionsCategory.ID + "/" + CollectorCEntry.ID))
                 .incrementValue("demo/scholarship/source_c_hook", sourcesConsulted, 1);
 
         this.node(BIBLIOGRAPHY_COMPLETE, List.of(), List.of(
@@ -205,7 +207,7 @@ public class DemoResearch extends SingleResearchSubProvider {
 
         // Explicit marker demo: clears once the markers intro entry has been viewed (manual pattern)
         var markerIntroViewed = this.ingress()
-                .onEntryViewedOnce(this.modLoc(ResearchCategory.ID + "/" + MarkerIntroEntry.ID))
+                .onEntryViewedOnce(this.modLoc(ConditionsCategory.ID + "/" + MarkerIntroEntry.ID))
                 .declareFact("demo/marker_intro_viewed");
         this.node(MARKER_EXPLICIT, markerIntroViewed);
 
@@ -249,6 +251,7 @@ public class DemoResearch extends SingleResearchSubProvider {
         this.research().display(SCHOLARSHIP_NOTE_TAKEN, ResearchDisplayModel.create()
                 .withIcon(Items.PAPER)
                 .withTitle(SCHOLARSHIP_NOTE_TAKEN_TITLE)
+                .withCategory(ResearchCategories.KNOWLEDGE)
                 .withAction(ResearchActionModel.create()
                         .cost(ResearchCostModel.create().item(Items.PAPER).durability(Items.SHEARS, 1))
                         .effect(ResearchEffectModel.giveItem(BLANK_RESEARCH_NOTE, false))
@@ -258,6 +261,7 @@ public class DemoResearch extends SingleResearchSubProvider {
         this.research().display(noteCrafted, ResearchDisplayModel.create()
                 .withIcon(RESEARCH_NOTE)
                 .withTitle(SCHOLARSHIP_NOTE_CRAFTED_TITLE)
+                .withCategory(ResearchCategories.KNOWLEDGE)
                 .withDescription(SCHOLARSHIP_NOTE_CRAFTED_DESCRIPTION));
         this.add(SCHOLARSHIP_NOTE_CRAFTED_TITLE, "Make a completed research note");
         this.add(SCHOLARSHIP_NOTE_CRAFTED_DESCRIPTION, "Craft a blank research note together with an ink sac.");
@@ -267,7 +271,8 @@ public class DemoResearch extends SingleResearchSubProvider {
                 .declareFact(SCHOLARSHIP_NOTE_STUDIED.id().getPath());
         this.research().display(noteStudied, ResearchDisplayModel.create()
                 .withIcon(RESEARCH_NOTE)
-                .withTitle(SCHOLARSHIP_NOTE_STUDIED_TITLE));
+                .withTitle(SCHOLARSHIP_NOTE_STUDIED_TITLE)
+                .withCategory(ResearchCategories.KNOWLEDGE));
         this.add(SCHOLARSHIP_NOTE_STUDIED_TITLE, "Study a completed research note");
         this.research().display(SCHOLARSHIP_NOTES_READ, ResearchDisplayModel.create().withIcon(Items.WRITABLE_BOOK).withTitle(SCHOLARSHIP_NOTES_READ_TITLE));
         this.add(SCHOLARSHIP_NOTES_READ_TITLE, "Notes transcribed");

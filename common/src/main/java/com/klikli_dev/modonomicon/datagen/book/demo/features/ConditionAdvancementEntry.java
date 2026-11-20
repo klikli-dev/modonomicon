@@ -44,6 +44,11 @@ public class ConditionAdvancementEntry extends EntryProvider {
         this.pageText("""
                 Conditional pages unlock if a player has satisfied their condition.
                 """);
+
+        this.stage("ride", s -> s
+                .fact(DemoResearch.ADVANCEMENT_RIDE_BOAT_WITH_GOAT_COMPLETED)
+                .title("Ride a boat with a goat")
+                .description("Earn the advancement Ride a Boat with a Goat."));
     }
 
     @Override

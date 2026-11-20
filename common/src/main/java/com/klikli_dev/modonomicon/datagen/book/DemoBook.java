@@ -10,11 +10,10 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCommandModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
+import com.klikli_dev.modonomicon.datagen.book.demo.ConditionsCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FormattingCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.IndexModeCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.ProgressionCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.ResearchCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.ScholarshipCategory;
 import net.minecraft.resources.Identifier;
 
@@ -68,9 +67,7 @@ public class DemoBook extends SingleBookSubProvider {
 
         var indexModeCategory = this.add(new IndexModeCategory(this).generate());
 
-        var researchCategory = this.add(new ResearchCategory(this).generate());
-
-        var progressionCategory = this.add(new ProgressionCategory(this).generate());
+        var conditionsCategory = this.add(new ConditionsCategory(this).generate());
     }
 
     @Override

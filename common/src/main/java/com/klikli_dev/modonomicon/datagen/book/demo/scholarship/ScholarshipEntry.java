@@ -71,6 +71,7 @@ public class ScholarshipEntry extends EntryProvider {
                 The first row of Transcription has an action that hands out a blank research note.
                 It costs one paper and wears down your shears. You can take a note even while you carry one.
                 The row is ticked once you have taken a note, but the action stays clickable, so you can take more notes later.
+                All three rows of Transcription are grouped under the Knowledge category of the requirements, so they are listed together.
                 """);
 
         this.page("transcription_process", () -> BookTextPageModel.create()

@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
+import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
 
 public class CraftingNoteEntry extends EntryProvider {
@@ -28,6 +29,11 @@ public class CraftingNoteEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Note Crafted");
         this.pageText("You crafted a completed research note! This entry unlocked because the item_crafted trigger fired for the note, the same trigger the Transcription row of the Scholarship entry uses.");
+
+        this.stage("make", s -> s
+                .fact(DemoResearch.SCHOLARSHIP_NOTE_CRAFTED)
+                .title("Make a completed note")
+                .description("Craft a blank research note together with an ink sac."));
     }
 
     @Override

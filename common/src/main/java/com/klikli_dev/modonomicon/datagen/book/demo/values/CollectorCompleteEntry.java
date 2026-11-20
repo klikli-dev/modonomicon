@@ -10,6 +10,7 @@ import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
+import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
 
 public class CollectorCompleteEntry extends EntryProvider {
@@ -29,6 +30,11 @@ public class CollectorCompleteEntry extends EntryProvider {
                 Congratulations! You have consulted all three sources.
                 This entry is unlocked because the sources consulted reached 3.
                 """);
+
+        this.stage("bibliography", s -> s
+                .value(DemoResearch.SOURCES_CONSULTED, 3)
+                .title("Consult three sources")
+                .description("View source A, B and C in this category."));
     }
 
     @Override

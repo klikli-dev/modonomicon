@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookEntryTabModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
-import com.klikli_dev.modonomicon.datagen.book.demo.ResearchCategory;
+import com.klikli_dev.modonomicon.datagen.book.demo.ConditionsCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionRootEntry;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
@@ -75,7 +75,7 @@ public class FirstPageProgressionEntry extends EntryProvider {
                 """);
 
         this.stage("reading", s -> s
-                .read(this.modLoc(ResearchCategory.ID + "/" + ConditionRootEntry.ID))
+                .read(this.modLoc(ConditionsCategory.ID + "/" + ConditionRootEntry.ID))
                 .title("Reading the Reading Room")
                 .description("Read the Reading Room entry in the Research category."));
 
