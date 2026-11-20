@@ -1,21 +1,12 @@
 [
   {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/conditions_condition_level_1"
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_trailing_page_progression"
   },
   {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/conditions_condition_root"
-  },
-  {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/conditions_marker_intro"
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_sources"
   },
   {
     "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/crafting_table"
-  },
-  {
-    "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/torch"
-  },
-  {
-    "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/stone_pickaxe"
   },
   {
     "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/writable_book"
@@ -24,7 +15,7 @@
     "id": "modonomicon:generated/demo/facts/item_acquired/tag_minecraft/logs"
   },
   {
-    "id": "modonomicon:generated/demo/facts/item_acquired/minecraft/iron_ingot"
+    "id": "modonomicon:generated/demo/facts/item_acquired/minecraft/diamond"
   },
   {
     "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_notes"
@@ -49,28 +40,16 @@
     "id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_notes/stages/observation/observation"
   },
   {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/conditions_condition_level_2"
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_first_page_progression"
   },
   {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/conditions_condition_advancement"
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_placed_page_progression"
   },
   {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/conditions_first_page_progression"
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_two_parents"
   },
   {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/conditions_trailing_page_progression"
-  },
-  {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/conditions_placed_page_progression"
-  },
-  {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/conditions_crafting_note"
-  },
-  {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/conditions_acquiring_ink_sac"
-  },
-  {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/conditions_collector_complete"
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_condition_advancement"
   },
   {
     "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_recipe"

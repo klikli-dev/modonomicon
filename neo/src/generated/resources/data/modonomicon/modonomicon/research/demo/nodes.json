@@ -1,11 +1,5 @@
 [
   {
-    "id": "modonomicon:demo/condition_level_1",
-    "required_facts": [
-      "modonomicon:demo/condition_root_viewed"
-    ]
-  },
-  {
     "id": "modonomicon:demo/advancement_mine_stone",
     "required_facts": [
       "modonomicon:demo/advancement_mine_stone_completed"
@@ -18,45 +12,10 @@
     ]
   },
   {
-    "id": "modonomicon:demo/bibliography_complete",
-    "required_values": [
-      {
-        "threshold": 3,
-        "value_id": "modonomicon:demo/scholarship/sources_consulted"
-      }
+    "id": "modonomicon:demo/marker_explicit",
+    "required_facts": [
+      "modonomicon:demo/marker_index_viewed"
     ]
-  },
-  {
-    "id": "modonomicon:demo/crafting_note",
-    "required_facts": [
-      "modonomicon:demo/scholarship/note_crafted"
-    ],
-    "toast": {
-      "description": "research_toast.modonomicon.note_crafted.title",
-      "icon": {
-        "components": {
-          "minecraft:custom_data": {
-            "modonomicon_demo": "research_note"
-          },
-          "minecraft:custom_name": "Research Note"
-        },
-        "id": "minecraft:paper"
-      },
-      "title": "research_toast.modonomicon.research_unlocked"
-    }
-  },
-  {
-    "id": "modonomicon:demo/acquire_ink_sac",
-    "required_facts": [
-      "modonomicon:demo/scholarship/ink_sac_acquired"
-    ],
-    "toast": {
-      "description": "research_toast.modonomicon.ink_sac_acquired.title",
-      "icon": {
-        "id": "minecraft:ink_sac"
-      },
-      "title": "research_toast.modonomicon.research_unlocked"
-    }
   },
   {
     "id": "modonomicon:demo/writable_books",
@@ -102,12 +61,6 @@
           "title": "research_toast.modonomicon.stage_complete"
         }
       }
-    ]
-  },
-  {
-    "id": "modonomicon:demo/marker_explicit",
-    "required_facts": [
-      "modonomicon:demo/marker_intro_viewed"
     ]
   },
   {

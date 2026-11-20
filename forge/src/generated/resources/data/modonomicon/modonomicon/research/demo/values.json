@@ -3,6 +3,17 @@
     "id": "modonomicon:demo/scholarship/sources_consulted"
   },
   {
+    "display": {
+      "icon": {
+        "id": "minecraft:enchanted_book"
+      },
+      "title": {
+        "translate": "modonomicon.demo.scholarship.insight.title"
+      }
+    },
+    "id": "modonomicon:demo/insight"
+  },
+  {
     "id": "modonomicon:demo/writable_books_crafted"
   },
   {
@@ -15,16 +26,5 @@
       }
     },
     "id": "modonomicon:demo/scholarship/paper_collected"
-  },
-  {
-    "display": {
-      "icon": {
-        "id": "minecraft:enchanted_book"
-      },
-      "title": {
-        "translate": "modonomicon.demo.scholarship.insight.title"
-      }
-    },
-    "id": "modonomicon:demo/insight"
   }
 ]

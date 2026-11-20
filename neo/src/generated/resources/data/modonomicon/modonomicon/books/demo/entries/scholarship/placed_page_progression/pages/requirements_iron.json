@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:stage_requirements",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "requirements_iron",
+  "sort_number": 1,
+  "stage": "modonomicon:generated/demo/nodes/entry_progression/scholarship_placed_page_progression/stages/iron",
+  "text": "modonomicon.gui.requirements.page.text",
+  "title": "modonomicon.gui.requirements.title"
+}

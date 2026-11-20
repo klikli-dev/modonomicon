@@ -1,0 +1,43 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "modonomicon:scholarship",
+  "condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/scholarship_none_progression",
+    "tooltip": {
+      "translate": "tooltip.modonomicon.condition.entry_unlocked",
+      "with": [
+        {
+          "translate": "book.modonomicon.demo.scholarship.none_progression.name"
+        }
+      ]
+    }
+  },
+  "description": "book.modonomicon.demo.scholarship.none_progression.description",
+  "icon": {
+    "id": "minecraft:glass"
+  },
+  "id": "modonomicon:scholarship/none_progression",
+  "marker_condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:demo/marker_explicit"
+  },
+  "name": "book.modonomicon.demo.scholarship.none_progression.name",
+  "parents": [
+    {
+      "entry": "modonomicon:scholarship/condition_advancement"
+    }
+  ],
+  "progression": {
+    "node": "modonomicon:demo/requirements_staged",
+    "requirements_display": "none"
+  },
+  "sort_number": 7,
+  "x": 18,
+  "y": 0
+}

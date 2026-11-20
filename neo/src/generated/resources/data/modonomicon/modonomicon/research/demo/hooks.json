@@ -1,11 +1,5 @@
 [
   {
-    "fact_id": "modonomicon:demo/condition_root_viewed",
-    "id": "modonomicon:demo/condition_root_viewed_hook",
-    "trigger_target": "modonomicon:conditions/condition_root",
-    "trigger_type": "modonomicon:entry_viewed_once"
-  },
-  {
     "fact_id": "modonomicon:demo/advancement_mine_stone_completed",
     "id": "modonomicon:demo/advancement_mine_stone_completed_hook",
     "trigger_target": "minecraft:story/mine_stone",
@@ -18,22 +12,16 @@
     "trigger_type": "modonomicon:advancement"
   },
   {
-    "id": "modonomicon:demo/scholarship/source_a_hook",
-    "trigger_target": "modonomicon:conditions/collector_a",
+    "id": "modonomicon:demo/scholarship/source_hook",
+    "trigger_target": "modonomicon:scholarship/sources",
     "trigger_type": "modonomicon:entry_viewed_once",
     "value_id": "modonomicon:demo/scholarship/sources_consulted"
   },
   {
-    "id": "modonomicon:demo/scholarship/source_b_hook",
-    "trigger_target": "modonomicon:conditions/collector_b",
-    "trigger_type": "modonomicon:entry_viewed_once",
-    "value_id": "modonomicon:demo/scholarship/sources_consulted"
-  },
-  {
-    "id": "modonomicon:demo/scholarship/source_c_hook",
-    "trigger_target": "modonomicon:conditions/collector_c",
-    "trigger_type": "modonomicon:entry_viewed_once",
-    "value_id": "modonomicon:demo/scholarship/sources_consulted"
+    "fact_id": "modonomicon:demo/marker_index_viewed",
+    "id": "modonomicon:demo/marker_index_viewed_hook",
+    "trigger_target": "modonomicon:scholarship/placed_page_progression",
+    "trigger_type": "modonomicon:entry_viewed_once"
   },
   {
     "fact_id": "modonomicon:demo/scholarship/note_crafted",
@@ -50,12 +38,19 @@
     "trigger_type": "modonomicon:item_crafted"
   },
   {
-    "fact_id": "modonomicon:demo/scholarship/ink_sac_acquired",
-    "id": "modonomicon:demo/scholarship/ink_sac_acquired_hook",
+    "consume": 1,
+    "fact_id": "modonomicon:demo/scholarship/note_studied",
+    "id": "modonomicon:demo/scholarship/note_studied_hook",
     "trigger_target": {
-      "id": "minecraft:ink_sac"
+      "components": {
+        "minecraft:custom_data": {
+          "modonomicon_demo": "research_note"
+        },
+        "minecraft:custom_name": "Research Note"
+      },
+      "id": "minecraft:paper"
     },
-    "trigger_type": "modonomicon:item_acquired"
+    "trigger_type": "modonomicon:item_used"
   },
   {
     "id": "modonomicon:demo/writable_books_hook",
@@ -66,10 +61,12 @@
     "value_id": "modonomicon:demo/writable_books_crafted"
   },
   {
-    "fact_id": "modonomicon:demo/marker_intro_viewed",
-    "id": "modonomicon:demo/marker_intro_viewed_hook",
-    "trigger_target": "modonomicon:conditions/marker_intro",
-    "trigger_type": "modonomicon:entry_viewed_once"
+    "fact_id": "modonomicon:demo/scholarship/ink_sac_acquired",
+    "id": "modonomicon:demo/scholarship/ink_sac_acquired_hook",
+    "trigger_target": {
+      "id": "minecraft:ink_sac"
+    },
+    "trigger_type": "modonomicon:item_acquired"
   },
   {
     "fact_id": "modonomicon:demo/requirements_iron_ingot_acquired",
@@ -86,20 +83,5 @@
     },
     "trigger_type": "modonomicon:item_acquired",
     "value_id": "modonomicon:demo/scholarship/paper_collected"
-  },
-  {
-    "consume": 1,
-    "fact_id": "modonomicon:demo/scholarship/note_studied",
-    "id": "modonomicon:demo/scholarship/note_studied_hook",
-    "trigger_target": {
-      "components": {
-        "minecraft:custom_data": {
-          "modonomicon_demo": "research_note"
-        },
-        "minecraft:custom_name": "Research Note"
-      },
-      "id": "minecraft:paper"
-    },
-    "trigger_type": "modonomicon:item_used"
   }
 ]

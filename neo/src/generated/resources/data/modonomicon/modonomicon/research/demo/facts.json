@@ -1,53 +1,12 @@
 [
   {
-    "id": "modonomicon:demo/condition_root_viewed"
-  },
-  {
     "id": "modonomicon:demo/advancement_mine_stone_completed"
   },
   {
     "id": "modonomicon:demo/advancement_ride_boat_with_goat_completed"
   },
   {
-    "display": {
-      "category": "modonomicon:knowledge",
-      "description": {
-        "translate": "modonomicon.demo.scholarship.note_crafted.description"
-      },
-      "icon": {
-        "components": {
-          "minecraft:custom_data": {
-            "modonomicon_demo": "research_note"
-          },
-          "minecraft:custom_name": "Research Note"
-        },
-        "id": "minecraft:paper"
-      },
-      "title": {
-        "translate": "modonomicon.demo.scholarship.note_crafted.title"
-      }
-    },
-    "id": "modonomicon:demo/scholarship/note_crafted"
-  },
-  {
-    "display": {
-      "icon": {
-        "id": "minecraft:ink_sac"
-      },
-      "title": {
-        "translate": "modonomicon.demo.scholarship.ink_sac_acquired.title"
-      }
-    },
-    "id": "modonomicon:demo/scholarship/ink_sac_acquired"
-  },
-  {
-    "id": "modonomicon:demo/marker_intro_viewed"
-  },
-  {
-    "display": {
-      "category": "modonomicon:demo_smithing"
-    },
-    "id": "modonomicon:demo/requirements_iron_ingot_acquired"
+    "id": "modonomicon:demo/marker_index_viewed"
   },
   {
     "display": {
@@ -108,6 +67,27 @@
   {
     "display": {
       "category": "modonomicon:knowledge",
+      "description": {
+        "translate": "modonomicon.demo.scholarship.note_crafted.description"
+      },
+      "icon": {
+        "components": {
+          "minecraft:custom_data": {
+            "modonomicon_demo": "research_note"
+          },
+          "minecraft:custom_name": "Research Note"
+        },
+        "id": "minecraft:paper"
+      },
+      "title": {
+        "translate": "modonomicon.demo.scholarship.note_crafted.title"
+      }
+    },
+    "id": "modonomicon:demo/scholarship/note_crafted"
+  },
+  {
+    "display": {
+      "category": "modonomicon:knowledge",
       "icon": {
         "components": {
           "minecraft:custom_data": {
@@ -122,5 +102,22 @@
       }
     },
     "id": "modonomicon:demo/scholarship/note_studied"
+  },
+  {
+    "display": {
+      "icon": {
+        "id": "minecraft:ink_sac"
+      },
+      "title": {
+        "translate": "modonomicon.demo.scholarship.ink_sac_acquired.title"
+      }
+    },
+    "id": "modonomicon:demo/scholarship/ink_sac_acquired"
+  },
+  {
+    "display": {
+      "category": "modonomicon:demo_smithing"
+    },
+    "id": "modonomicon:demo/requirements_iron_ingot_acquired"
   }
 ]
