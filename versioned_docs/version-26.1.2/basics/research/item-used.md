@@ -15,7 +15,7 @@ A hook of this trigger does one of two things when the item is used:
 - A **fact hook** counts if it grants a fact the player does not have yet. Counting handles the use: the vanilla use is cancelled and the item is consumed, if the hook has a `consume`.
 - A **value hook** counts if it increments its value and has a positive `consume`. Counting handles the use the same way.
 
-A value hook without `consume` still counts: it increments its value and the research state is synced. But it does not handle the use, so the vanilla use continues. Food is still eaten, potions are still drunk and buckets still fill. Use this for counters of things the player does with an item anyway.
+A value hook without `consume` does not count, but it still increments its value and the research state is synced. It does not handle the use, so the vanilla use continues. Food is still eaten, potions are still drunk and buckets still fill. Use this for counters of things the player does with an item anyway.
 
 ```java
 this.ingress()
@@ -31,7 +31,13 @@ The same hook in `hooks.json`:
   "id": "modonomicon:demo/scholarship/note_studied_hook",
   "fact_id": "modonomicon:demo/scholarship/note_studied",
   "trigger_type": "modonomicon:item_used",
-  "trigger_target": { "id": "minecraft:paper" },
+  "trigger_target": {
+    "id": "minecraft:paper",
+    "components": {
+      "minecraft:custom_data": { "modonomicon_demo": "research_note" },
+      "minecraft:custom_name": "Research Note"
+    }
+  },
   "consume": 1
 }
 ```
