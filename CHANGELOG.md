@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-2.21.0] - 2026-11-21
+### :sparkles: New Features
+- [`30fe705`](https://github.com/klikli-dev/modonomicon/commit/30fe705e81f8a058b879ede97be707333a396876) - entry tabs *(PR [#421](https://github.com/klikli-dev/modonomicon/pull/421) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`56a0bd2`](https://github.com/klikli-dev/modonomicon/commit/56a0bd2f2fc2824e67eb5820f1d3adde211cc0a8) - **research**: thaum-style entry progression with stages, costs, actions and effects *(PR [#427](https://github.com/klikli-dev/modonomicon/pull/427) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`df91438`](https://github.com/klikli-dev/modonomicon/commit/df91438b58050219a080238fd7db3efac3051574) - **research**: texture icons for research types and overlay badges *(PR [#430](https://github.com/klikli-dev/modonomicon/pull/430) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`f7a14d7`](https://github.com/klikli-dev/modonomicon/commit/f7a14d7fe3d92342477fd03628bbf244f449a286) - **demo**: retheme research and progression demo as scholarship storyline *(PR [#433](https://github.com/klikli-dev/modonomicon/pull/433) by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :bug: Bug Fixes
+- [`095b826`](https://github.com/klikli-dev/modonomicon/commit/095b8266a1ec369913ac969c576c975732bb5e9d) - **book**: size category button list to the space above the scroll button *(PR [#424](https://github.com/klikli-dev/modonomicon/pull/424) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`87695b8`](https://github.com/klikli-dev/modonomicon/commit/87695b8650635a6478b461062c0aa67d16f4d042) - **book**: require all stages completed for research_node_unlocked *(PR [#425](https://github.com/klikli-dev/modonomicon/pull/425) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`6258945`](https://github.com/klikli-dev/modonomicon/commit/6258945955b04ebe4cb6ef9591146489a1a19c11) - **demo**: scholarship take, make and study rows and stage 3 duplicate *(PR [#431](https://github.com/klikli-dev/modonomicon/pull/431) by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :recycle: Refactors
+- [`3e6576f`](https://github.com/klikli-dev/modonomicon/commit/3e6576f2018e040eeaaf0629edae036d5093bf31) - **datagen**: unify research ingress and add tag-based item triggers *(PR [#422](https://github.com/klikli-dev/modonomicon/pull/422) by [@klikli-dev](https://github.com/klikli-dev))*
+- [`134d93a`](https://github.com/klikli-dev/modonomicon/commit/134d93a1da85af29c02ab1e086c5cce63dcc37c2) - **research**: decouple, index and document the research runtime *(PR [#423](https://github.com/klikli-dev/modonomicon/pull/423) by [@klikli-dev](https://github.com/klikli-dev))*
+
+### :white_check_mark: Tests
+- [`d2ed58c`](https://github.com/klikli-dev/modonomicon/commit/d2ed58ce2c584c8614a46ad089c56e83fefadebd) - add gametest infrastructure and research progression gametests *(PR [#429](https://github.com/klikli-dev/modonomicon/pull/429) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-2.20.2] - 2026-11-16
 ### :bug: Bug Fixes
 - [`c191f03`](https://github.com/klikli-dev/modonomicon/commit/c191f038c956007e4d0e2ad981cb6ac3a4efea53) - (slightly) improve error handling during book build *(commit by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2486,3 +2506,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-2.20.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.19.0...release/v26.1.2-2.20.0
 [release/v26.1.2-2.20.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.20.0...release/v26.1.2-2.20.1
 [release/v26.1.2-2.20.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.20.1...release/v26.1.2-2.20.2
+[release/v26.1.2-2.21.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.20.2...release/v26.1.2-2.21.0
