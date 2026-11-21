@@ -7,16 +7,26 @@
   },
   "category": "modonomicon:scholarship",
   "condition": {
-    "type": "modonomicon:research_node_unlocked",
-    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/required/scholarship_trailing_page_progression",
-    "tooltip": {
-      "translate": "tooltip.modonomicon.condition.entry_unlocked",
-      "with": [
-        {
-          "translate": "book.modonomicon.demo.scholarship.trailing_page_progression.name"
+    "type": "modonomicon:and",
+    "children": [
+      {
+        "type": "modonomicon:research_node_unlocked",
+        "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/required/scholarship_trailing_page_progression",
+        "tooltip": {
+          "translate": "tooltip.modonomicon.condition.entry_unlocked",
+          "with": [
+            {
+              "translate": "book.modonomicon.demo.scholarship.trailing_page_progression.name"
+            }
+          ]
         }
-      ]
-    }
+      },
+      {
+        "type": "modonomicon:research_stage_completed",
+        "node_id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_trailing_page_progression",
+        "stage_id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_trailing_page_progression/stages/sources"
+      }
+    ]
   },
   "description": "book.modonomicon.demo.scholarship.placed_page_progression.description",
   "icon": {

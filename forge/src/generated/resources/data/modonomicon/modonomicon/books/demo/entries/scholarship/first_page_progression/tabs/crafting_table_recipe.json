@@ -1,0 +1,19 @@
+{
+  "anchor": "intro",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "crafting_table_recipe",
+  "page": {
+    "type": "modonomicon:crafting_recipe",
+    "condition": {
+      "type": "modonomicon:none"
+    },
+    "id": "crafting_table_recipe",
+    "recipe_id_1": "minecraft:crafting_table"
+  },
+  "sort_number": 0,
+  "title": {
+    "translate": "book.modonomicon.demo.scholarship.first_page_progression.tab.crafting_table_recipe.title"
+  }
+}

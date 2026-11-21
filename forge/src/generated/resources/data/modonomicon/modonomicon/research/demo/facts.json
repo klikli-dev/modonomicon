@@ -1,8 +1,24 @@
 [
   {
+    "display": {
+      "icon": {
+        "id": "minecraft:stone"
+      },
+      "title": {
+        "translate": "modonomicon.demo.scholarship.advancement_mine_stone.title"
+      }
+    },
     "id": "modonomicon:demo/advancement_mine_stone_completed"
   },
   {
+    "display": {
+      "icon": {
+        "id": "minecraft:oak_boat"
+      },
+      "title": {
+        "translate": "modonomicon.demo.scholarship.advancement_ride_boat_with_goat.title"
+      }
+    },
     "id": "modonomicon:demo/advancement_ride_boat_with_goat_completed"
   },
   {
