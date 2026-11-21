@@ -7,7 +7,9 @@ package com.klikli_dev.modonomicon.datagen.book.demo.progression;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
+import com.klikli_dev.modonomicon.api.datagen.book.BookEntryTabModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookCraftingRecipePageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.tags.ItemTags;
@@ -33,6 +35,11 @@ public class FirstPageProgressionEntry extends EntryProvider {
                 Requirements at the bottom of the page: craft a crafting table and collect any log. Check marks show progress.
                 The marker on this entry clears once you have read the sources shelf.
                 """);
+
+        this.tab("crafting_table_recipe", () -> BookEntryTabModel.create()
+                .withPage(BookCraftingRecipePageModel.create().withRecipeId1("minecraft:crafting_table"))
+                .withTitle(this.tabTitleKey()));
+        this.tabTitle("Crafting table recipe");
 
         this.stage("desk", s -> s
                 .craft(Items.CRAFTING_TABLE)

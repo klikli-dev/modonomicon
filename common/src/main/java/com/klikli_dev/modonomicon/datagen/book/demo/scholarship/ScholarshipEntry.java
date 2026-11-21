@@ -8,6 +8,8 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
+import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
+import com.klikli_dev.modonomicon.api.datagen.book.BookEntryTabModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookCraftingRecipePageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
@@ -73,11 +75,13 @@ public class ScholarshipEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Make a completed note");
         this.pageText("""
-                Craft the blank note with an ink sac. The recipe is on the next page.
+                Craft the blank note with an ink sac. The recipe is in the tab beside this page.
                 """);
 
-        this.page("transcription_recipe", () -> BookCraftingRecipePageModel.create()
-                .withRecipeId1(RESEARCH_NOTE_RECIPE));
+        this.tab("research_note_recipe", () -> BookEntryTabModel.create()
+                .withPage(BookCraftingRecipePageModel.create().withRecipeId1(RESEARCH_NOTE_RECIPE))
+                .withTitle(this.tabTitleKey()));
+        this.tabTitle("Research note recipe");
 
         this.page("transcription_submit", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())

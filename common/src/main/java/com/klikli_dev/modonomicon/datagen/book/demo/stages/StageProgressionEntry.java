@@ -7,8 +7,10 @@ package com.klikli_dev.modonomicon.datagen.book.demo.stages;
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
+import com.klikli_dev.modonomicon.api.datagen.book.BookEntryTabModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchStageCompletedConditionModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookCraftingRecipePageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookStageRequirementsPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
@@ -32,8 +34,13 @@ public class StageProgressionEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Bookbinding");
         this.pageText("""
-                Bind writable books to unlock pages. Craft writable books to progress.
+                Bind writable books to unlock pages. Craft writable books to progress. The recipe is in the tab beside this page.
                 """);
+
+        this.tab("writable_book_recipe", () -> BookEntryTabModel.create()
+                .withPage(BookCraftingRecipePageModel.create().withRecipeId1("minecraft:writable_book"))
+                .withTitle(this.tabTitleKey()));
+        this.tabTitle("Writable book recipe");
 
         this.page("progress", () -> BookStageRequirementsPageModel.create()
                 .withTitle(this.context().pageTitle())
