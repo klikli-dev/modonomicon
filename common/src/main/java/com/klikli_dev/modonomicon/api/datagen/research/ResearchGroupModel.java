@@ -36,17 +36,16 @@ public class ResearchGroupModel {
 
     protected ResearchGroupModel(Identifier id) {
         this.id = id;
+        this.title = Component.translatable(ResearchGroups.translationKey(id));
+        this.description = Component.translatable(ResearchGroups.translationKey(id) + ".description");
+        this.icon = ResearchGroups.RESEARCH_ICON;
     }
 
     /**
      * Creates a group model with the given id. The icon defaults to the research icon, the title to the translation key {@code research_group.<id>}.
      */
     public static ResearchGroupModel create(Identifier id) {
-        var model = new ResearchGroupModel(id);
-        model.title = Component.translatable(ResearchGroups.translationKey(id));
-        model.description = Component.translatable(ResearchGroups.translationKey(id) + ".description");
-        model.icon = ResearchGroups.RESEARCH_ICON;
-        return model;
+        return new ResearchGroupModel(id);
     }
 
     /**
