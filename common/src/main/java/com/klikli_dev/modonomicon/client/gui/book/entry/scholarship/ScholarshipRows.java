@@ -11,8 +11,8 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Research;
 import com.klikli_dev.modonomicon.book.BookIcon;
 import com.klikli_dev.modonomicon.research.cost.ItemCostEntry;
-import com.klikli_dev.modonomicon.research.data.ResearchCategories;
-import com.klikli_dev.modonomicon.research.data.ResearchCategoryDefinition;
+import com.klikli_dev.modonomicon.research.data.ResearchGroups;
+import com.klikli_dev.modonomicon.research.data.ResearchGroupDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchCost;
 import com.klikli_dev.modonomicon.research.data.ResearchDisplay;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
@@ -42,7 +42,7 @@ import java.util.function.Consumer;
 public final class ScholarshipRows {
 
     private static final ScholarshipIcon GENERIC_RESEARCH_ICON = ScholarshipIcons.icon(ScholarshipIcons.GENERIC);
-    private static final Set<Identifier> UNKNOWN_CATEGORIES = ConcurrentHashMap.newKeySet();
+    private static final Set<Identifier> UNKNOWN_GROUPS = ConcurrentHashMap.newKeySet();
 
     private ScholarshipRows() {
     }
@@ -87,11 +87,11 @@ public final class ScholarshipRows {
                 .or(() -> hookRow != null ? Optional.of(hookRow.title()) : Optional.empty())
                 .orElseGet(() -> Component.literal(factId.getPath()));
 
-        var category = rowCategory(display, hookRow, ResearchCategories.RESEARCH, context);
+        var group = rowGroup(display, hookRow, ResearchGroups.RESEARCH, context);
 
         boolean met = forceMet || context.state().hasFact(factId);
         var row = new ScholarshipRow(
-                category,
+                group,
                 iconsOr(display.icon(), hookRows, fallbackIcon),
                 title,
                 descriptionOr(display, hookRow != null ? hookRow.details() : List.of()),
@@ -128,7 +128,7 @@ public final class ScholarshipRows {
                 .orElseGet(() -> Component.literal(valueId.getPath()));
 
         return new ScholarshipRow(
-                rowCategory(display, hookRow, ResearchCategories.PROGRESS, context),
+                rowGroup(display, hookRow, ResearchGroups.PROGRESS, context),
                 iconsOr(display.icon(), hookRows),
                 title,
                 descriptionOr(display, List.of()),
@@ -295,7 +295,7 @@ public final class ScholarshipRows {
                 .orElseGet(() -> Component.literal(dependency.stageId().getPath()));
 
         out.accept(new ScholarshipRow(
-                category(ResearchCategories.RESEARCH, context),
+                group(ResearchGroups.RESEARCH, context),
                 iconsOr(display.icon(), List.of()),
                 Component.translatable(Gui.SCHOLARSHIP_STAGE_TITLE, nodeName, stageName),
                 descriptionOr(display, List.of()),
@@ -307,13 +307,13 @@ public final class ScholarshipRows {
     }
 
     /**
-     * The effects of a stage as rows of the effects category, met once the stage is completed.
+     * The effects of a stage as rows of the effects group, met once the stage is completed.
      */
     private static void effectRows(List<ResearchEffect> effects, boolean met, ScholarshipContext context, Consumer<ScholarshipRow> out) {
-        var category = category(ResearchCategories.EFFECTS, context);
+        var group = group(ResearchGroups.EFFECTS, context);
         for (var effect : effects) {
             out.accept(ScholarshipEffectPresenterRegistry.get(effect.type().id()).present(effect, context)
-                    .withCategory(category)
+                    .withGroup(group)
                     .withMet(met)
                     .withMissing(Component.translatable(Gui.SCHOLARSHIP_EFFECT_PENDING)));
         }
@@ -361,53 +361,53 @@ public final class ScholarshipRows {
      */
     public static ScholarshipRow unknown(Identifier id, ScholarshipContext context) {
         return ScholarshipRow.of(List.of(GENERIC_RESEARCH_ICON), Component.literal(id.toString()).withStyle(ChatFormatting.RED))
-                .withCategory(category(ResearchCategories.RESEARCH, context));
+                .withGroup(group(ResearchGroups.RESEARCH, context));
     }
 
     /**
-     * The rows presented by the trigger presenters of the hooks, grouped by the category claiming their trigger type.
+     * The rows presented by the trigger presenters of the hooks, grouped by the group claiming their trigger type.
      */
     private static List<ScholarshipRow> hookRows(List<ResearchHookDefinition<?>> hooks, ScholarshipContext context) {
         return hooks.stream()
                 .map(hook -> {
-                    var triggerCategory = context.data().categoryForTriggerType(hook.triggerType().id())
-                            .orElseGet(() -> category(ResearchCategories.RESEARCH, context));
-                    return ScholarshipTriggerPresenterRegistry.present(hook, context).withCategory(triggerCategory);
+                    var triggerGroup = context.data().groupForTriggerType(hook.triggerType().id())
+                            .orElseGet(() -> group(ResearchGroups.RESEARCH, context));
+                    return ScholarshipTriggerPresenterRegistry.present(hook, context).withGroup(triggerGroup);
                 })
                 .toList();
     }
 
     /**
-     * The category of a requirement row with a definition display and optionally a hook row. Precedence, first match wins:
+     * The group of a requirement row with a definition display and optionally a hook row. Precedence, first match wins:
      * <ol>
-     *     <li>the category set in the display of the definition (display override),</li>
-     *     <li>the category of the hook row, which is the category claiming the trigger type of its hook (trigger-type default),</li>
-     *     <li>the fallback category of the row kind.</li>
+     *     <li>the group set in the display of the definition (display override),</li>
+     *     <li>the group of the hook row, which is the group claiming the trigger type of its hook (trigger-type default),</li>
+     *     <li>the fallback group of the row kind.</li>
      * </ol>
-     * This is the only place that resolves row categories. Presenters that build rows directly use the same precedence.
+     * This is the only place that resolves row groups. Presenters that build rows directly use the same precedence.
      */
-    private static ResearchCategoryDefinition rowCategory(ResearchDisplay display, @Nullable ScholarshipRow hookRow, Identifier fallback, ScholarshipContext context) {
-        if (display.category().isPresent()) {
-            return category(display.category().get(), context);
+    private static ResearchGroupDefinition rowGroup(ResearchDisplay display, @Nullable ScholarshipRow hookRow, Identifier fallback, ScholarshipContext context) {
+        if (display.group().isPresent()) {
+            return group(display.group().get(), context);
         }
-        if (hookRow != null && hookRow.category() != null) {
-            return hookRow.category();
+        if (hookRow != null && hookRow.group() != null) {
+            return hookRow.group();
         }
-        return category(fallback, context);
+        return group(fallback, context);
     }
 
     /**
-     * Resolves a category id to its definition. Unknown ids fall back to the research category and are logged once.
+     * Resolves a group id to its definition. Unknown ids fall back to the research group and are logged once.
      */
-    public static ResearchCategoryDefinition category(Identifier categoryId, ScholarshipContext context) {
-        var category = context.data().categoryDefinitions().get(categoryId);
-        if (category != null) {
-            return category;
+    public static ResearchGroupDefinition group(Identifier groupId, ScholarshipContext context) {
+        var group = context.data().groupDefinitions().get(groupId);
+        if (group != null) {
+            return group;
         }
-        if (UNKNOWN_CATEGORIES.add(categoryId)) {
-            Modonomicon.LOG.warn("Unknown research category '{}', using '{}' instead", categoryId, ResearchCategories.RESEARCH);
+        if (UNKNOWN_GROUPS.add(groupId)) {
+            Modonomicon.LOG.warn("Unknown research group '{}', using '{}' instead", groupId, ResearchGroups.RESEARCH);
         }
-        return context.data().categoryDefinitions().get(ResearchCategories.RESEARCH);
+        return context.data().groupDefinitions().get(ResearchGroups.RESEARCH);
     }
 
     private static List<ScholarshipIcon> iconsOr(Optional<BookIcon> displayIcon, List<ScholarshipRow> hookRows) {

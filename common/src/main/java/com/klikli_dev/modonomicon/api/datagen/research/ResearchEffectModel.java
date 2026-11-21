@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.ItemLike;
 
 /**
- * Authoring-time builder for a {@link ResearchEffect}, used as a effect of a stage (see {@link ResearchStageSpec#effect})
+ * Authoring-time builder for a {@link ResearchEffect}, used as an effect of a stage (see {@link ResearchStageSpec#effect})
  * or as an effect of a {@link ResearchActionModel}. Use {@link #of(ResearchEffect)} to author effects of third-party types.
  */
 public final class ResearchEffectModel {

@@ -13,7 +13,7 @@ import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipI
 import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipRowAction;
 import com.klikli_dev.modonomicon.client.gui.book.theme.BookContentTheme;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
-import com.klikli_dev.modonomicon.research.data.ResearchCategoryDefinition;
+import com.klikli_dev.modonomicon.research.data.ResearchGroupDefinition;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -97,7 +97,7 @@ public final class EntryScholarshipRenderer {
     /**
      * A row of requirement icons of one category. Only the first row of a category shows the category icon.
      */
-    private record Line(ResearchCategoryDefinition category, boolean first, int y, List<ScholarshipRow> rows) {
+    private record Line(ResearchGroupDefinition category, boolean first, int y, List<ScholarshipRow> rows) {
     }
 
     /**
@@ -118,12 +118,12 @@ public final class EntryScholarshipRenderer {
     /**
      * The requirements grouped by category, categories in their sort order.
      */
-    public static Map<ResearchCategoryDefinition, List<ScholarshipRow>> group(List<ScholarshipRow> rows) {
-        var groups = new LinkedHashMap<ResearchCategoryDefinition, List<ScholarshipRow>>();
+    public static Map<ResearchGroupDefinition, List<ScholarshipRow>> group(List<ScholarshipRow> rows) {
+        var groups = new LinkedHashMap<ResearchGroupDefinition, List<ScholarshipRow>>();
         rows.stream()
-                .sorted(Comparator.comparingInt((ScholarshipRow row) -> row.category().sortOrder())
-                        .thenComparing(row -> row.category().id().toString()))
-                .forEach(row -> groups.computeIfAbsent(row.category(), k -> new ArrayList<>()).add(row));
+                .sorted(Comparator.comparingInt((ScholarshipRow row) -> row.group().sortOrder())
+                        .thenComparing(row -> row.group().id().toString()))
+                .forEach(row -> groups.computeIfAbsent(row.group(), k -> new ArrayList<>()).add(row));
         return groups;
     }
 
@@ -538,7 +538,7 @@ public final class EntryScholarshipRenderer {
         }
     }
 
-    private static List<Component> categoryTooltip(ResearchCategoryDefinition category) {
+    private static List<Component> categoryTooltip(ResearchGroupDefinition category) {
         var lines = new ArrayList<Component>();
         lines.add(category.title());
         category.description().ifPresent(description -> lines.add(description.copy().withStyle(ChatFormatting.GRAY)));

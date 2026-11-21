@@ -8,8 +8,8 @@ package com.klikli_dev.modonomicon.api.datagen.research;
 
 import com.klikli_dev.modonomicon.data.TriggerType;
 import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
-import com.klikli_dev.modonomicon.research.data.ResearchCategories;
-import com.klikli_dev.modonomicon.research.data.ResearchCategoryDefinition;
+import com.klikli_dev.modonomicon.research.data.ResearchGroups;
+import com.klikli_dev.modonomicon.research.data.ResearchGroupDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchFactDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
@@ -38,7 +38,7 @@ public final class ResearchDataBuilder {
     private final List<ResearchValueSpec> values = new ArrayList<>();
     private final List<ResearchNodeSpec> nodes = new ArrayList<>();
     private final List<ResearchHookSpec<?>> hooks = new ArrayList<>();
-    private final List<ResearchCategoryModel> categories = new ArrayList<>();
+    private final List<ResearchGroupModel> groups = new ArrayList<>();
 
     /**
      * Creates a builder that will namespace authored relative paths under the given namespace.
@@ -306,17 +306,17 @@ public final class ResearchDataBuilder {
     }
 
     /**
-     * Declares a requirement category of this bundle and returns its id. Assign it via {@link ResearchDisplayModel#withCategory(Identifier)}.
-     * Declaring a category with the id of a built-in category (see {@link ResearchCategories}) overrides the built-in one.
+     * Declares a requirement group of this bundle and returns its id. Assign it via {@link ResearchDisplayModel#withGroup(Identifier)}.
+     * Declaring a group with the id of a built-in group (see {@link ResearchGroups}) overrides the built-in one.
      *
-     * @throws IllegalArgumentException if a category with the same id was already declared
+     * @throws IllegalArgumentException if a group with the same id was already declared
      */
-    public Identifier category(ResearchCategoryModel category) {
-        if (this.categories.stream().anyMatch(existing -> existing.id().equals(category.id()))) {
-            throw new IllegalArgumentException("Research category '" + category.id() + "' is already declared");
+    public Identifier group(ResearchGroupModel group) {
+        if (this.groups.stream().anyMatch(existing -> existing.id().equals(group.id()))) {
+            throw new IllegalArgumentException("Research group '" + group.id() + "' is already declared");
         }
-        this.categories.add(category);
-        return category.id();
+        this.groups.add(group);
+        return group.id();
     }
 
     private int indexOfFact(ResearchFactRef ref) {
@@ -546,10 +546,10 @@ public final class ResearchDataBuilder {
     }
 
     /**
-     * Returns the compiled canonical category definitions declared in this bundle.
+     * Returns the compiled canonical group definitions declared in this bundle.
      */
-    public List<ResearchCategoryDefinition> categoryDefinitions() {
-        return this.categories.stream().map(ResearchCategoryModel::toDefinition).toList();
+    public List<ResearchGroupDefinition> groupDefinitions() {
+        return this.groups.stream().map(ResearchGroupModel::toDefinition).toList();
     }
 
     /**

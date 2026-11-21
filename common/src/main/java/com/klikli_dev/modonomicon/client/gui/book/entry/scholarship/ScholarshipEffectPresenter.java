@@ -14,14 +14,14 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Client side presentation of a {@link ResearchEffect} type. One presenter serves both uses of an effect:
- * as a effect row of the effects category, and as the description of an action that applies it.
+ * as an effect row of the effects group, and as the description of an action that applies it.
  * Mods register presenters for their own effect types via {@link ScholarshipEffectPresenterRegistry#register}.
  */
 public interface ScholarshipEffectPresenter {
 
     /**
-     * The row presenting the effect as a effect: its icons and a title starting with "Effect: ", plus optional details.
-     * The category, the met state and the missing line are set by the caller. Effect rows are never clickable.
+     * The row presenting the effect as an effect: its icons and a title starting with "Effect: ", plus optional details.
+     * The group, the met state and the missing line are set by the caller. Effect rows are never clickable.
      */
     ScholarshipRow present(ResearchEffect effect, ScholarshipContext context);
 

@@ -23,7 +23,7 @@ import java.util.Optional;
  *
  * @param title translatable key for the toast title (second line)
  * @param titleArgs static component arguments for the title (values auto-append current count)
- * @param description translatable key for the toast category/description (first line), null uses default
+ * @param description translatable key for the toast group/description (first line), null uses default
  * @param icon optional icon to render; null means no icon
  */
 public record ResearchToastDefinition(

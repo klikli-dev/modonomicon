@@ -53,7 +53,7 @@ public final class ScholarshipIcons {
     public static final Identifier TRIGGER_ENTRY_VIEWED = texture("trigger_entry_viewed");
     public static final Identifier TRIGGER_ADVANCEMENT = texture("trigger_advancement");
     /**
-     * The generic fallback, shares the artwork of the default research requirement category.
+     * The generic fallback, shares the artwork of the default research requirement group.
      */
     public static final Identifier GENERIC = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "textures/gui/sprites/modonomicon/scholarship/groups/research.png");
 

@@ -13,7 +13,7 @@ import com.klikli_dev.modonomicon.api.datagen.AbstractModonomiconLanguageProvide
 import com.klikli_dev.modonomicon.api.datagen.BookContextHelper;
 import com.klikli_dev.modonomicon.api.datagen.ModonomiconLanguageProvider;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
-import com.klikli_dev.modonomicon.research.data.ResearchCategories;
+import com.klikli_dev.modonomicon.research.data.ResearchGroups;
 import net.minecraft.data.PackOutput;
 
 public class EnUsProvider extends AbstractModonomiconLanguageProvider {
@@ -146,16 +146,16 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.BOOK_NOT_FOUND, "The book '%s' was not found or failed to load. Please check the log for errors.");
         this.add(Gui.SCHOLARSHIP_TITLE, "Requirements");
         this.add(Gui.SCHOLARSHIP_PAGE_TEXT, "These are the requirements of the next stage of this entry. Completed requirements get a check mark. Once all requirements are met, the content behind this stage is unlocked.");
-        this.add(ResearchCategories.translationKey(ResearchCategories.RESEARCH), "Research");
-        this.add(ResearchCategories.translationKey(ResearchCategories.RESEARCH) + ".description", "Research steps, e.g. reaching other research stages.");
-        this.add(ResearchCategories.translationKey(ResearchCategories.ITEMS), "Items");
-        this.add(ResearchCategories.translationKey(ResearchCategories.ITEMS) + ".description", "Crafting or obtaining items.");
-        this.add(ResearchCategories.translationKey(ResearchCategories.KNOWLEDGE), "Knowledge");
-        this.add(ResearchCategories.translationKey(ResearchCategories.KNOWLEDGE) + ".description", "Reading entries and earning advancements.");
-        this.add(ResearchCategories.translationKey(ResearchCategories.PROGRESS), "Progress");
-        this.add(ResearchCategories.translationKey(ResearchCategories.PROGRESS) + ".description", "Counted actions that have to reach a number.");
-        this.add(ResearchCategories.translationKey(ResearchCategories.EFFECTS), "Effects");
-        this.add(ResearchCategories.translationKey(ResearchCategories.EFFECTS) + ".description", "Granted when the stage is completed.");
+        this.add(ResearchGroups.translationKey(ResearchGroups.RESEARCH), "Research");
+        this.add(ResearchGroups.translationKey(ResearchGroups.RESEARCH) + ".description", "Research steps, e.g. reaching other research stages.");
+        this.add(ResearchGroups.translationKey(ResearchGroups.ITEMS), "Items");
+        this.add(ResearchGroups.translationKey(ResearchGroups.ITEMS) + ".description", "Crafting or obtaining items.");
+        this.add(ResearchGroups.translationKey(ResearchGroups.KNOWLEDGE), "Knowledge");
+        this.add(ResearchGroups.translationKey(ResearchGroups.KNOWLEDGE) + ".description", "Reading entries and earning advancements.");
+        this.add(ResearchGroups.translationKey(ResearchGroups.PROGRESS), "Progress");
+        this.add(ResearchGroups.translationKey(ResearchGroups.PROGRESS) + ".description", "Counted actions that have to reach a number.");
+        this.add(ResearchGroups.translationKey(ResearchGroups.EFFECTS), "Effects");
+        this.add(ResearchGroups.translationKey(ResearchGroups.EFFECTS) + ".description", "Granted when the stage is completed.");
         this.add(Gui.SCHOLARSHIP_NEXT_STEPS, "Next steps");
         this.add(Gui.SCHOLARSHIP_NEXT, "Next: %s");
         this.add(Gui.SCHOLARSHIP_COMPLETE, "Research complete");

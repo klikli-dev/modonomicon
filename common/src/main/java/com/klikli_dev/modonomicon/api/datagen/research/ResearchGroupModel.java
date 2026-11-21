@@ -7,8 +7,8 @@
 package com.klikli_dev.modonomicon.api.datagen.research;
 
 import com.klikli_dev.modonomicon.data.TriggerType;
-import com.klikli_dev.modonomicon.research.data.ResearchCategories;
-import com.klikli_dev.modonomicon.research.data.ResearchCategoryDefinition;
+import com.klikli_dev.modonomicon.research.data.ResearchGroups;
+import com.klikli_dev.modonomicon.research.data.ResearchGroupDefinition;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -18,12 +18,12 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Authoring-time model of a requirement category. Converts to {@link ResearchCategoryDefinition} via {@link #toDefinition()}.
+ * Authoring-time model of a requirement group. Converts to {@link ResearchGroupDefinition} via {@link #toDefinition()}.
  * <p>
- * Use {@link ResearchCategories} ids to change the grouping of built-in categories, or declare your own category with a new id.
+ * Use {@link ResearchGroups} ids to change the grouping of built-in groups, or declare your own group with a new id.
  * Titles and descriptions can be given as translation keys or as components. Null leaves the description unset.
  */
-public class ResearchCategoryModel {
+public class ResearchGroupModel {
     private final Identifier id;
     @Nullable
     private Identifier icon;
@@ -34,25 +34,25 @@ public class ResearchCategoryModel {
     private int sortOrder;
     private final List<Identifier> triggerTypes = new ArrayList<>();
 
-    private ResearchCategoryModel(Identifier id) {
+    private ResearchGroupModel(Identifier id) {
         this.id = id;
     }
 
     /**
-     * Creates a category model with the given id. The icon defaults to the research icon, the title to the translation key {@code research_category.<id>}.
+     * Creates a group model with the given id. The icon defaults to the research icon, the title to the translation key {@code research_group.<id>}.
      */
-    public static ResearchCategoryModel create(Identifier id) {
-        var model = new ResearchCategoryModel(id);
-        model.title = Component.translatable(ResearchCategories.translationKey(id));
-        model.description = Component.translatable(ResearchCategories.translationKey(id) + ".description");
-        model.icon = ResearchCategories.RESEARCH_ICON;
+    public static ResearchGroupModel create(Identifier id) {
+        var model = new ResearchGroupModel(id);
+        model.title = Component.translatable(ResearchGroups.translationKey(id));
+        model.description = Component.translatable(ResearchGroups.translationKey(id) + ".description");
+        model.icon = ResearchGroups.RESEARCH_ICON;
         return model;
     }
 
     /**
      * Sets the icon, a GUI sprite id such as {@code modonomicon:modonomicon/scholarship/groups/research}.
      */
-    public ResearchCategoryModel withIcon(Identifier icon) {
+    public ResearchGroupModel withIcon(Identifier icon) {
         this.icon = icon;
         return this;
     }
@@ -60,12 +60,12 @@ public class ResearchCategoryModel {
     /**
      * Sets the title from a translation key.
      */
-    public ResearchCategoryModel withTitle(String titleKey) {
+    public ResearchGroupModel withTitle(String titleKey) {
         this.title = Component.translatable(titleKey);
         return this;
     }
 
-    public ResearchCategoryModel withTitle(Component title) {
+    public ResearchGroupModel withTitle(Component title) {
         this.title = title;
         return this;
     }
@@ -73,12 +73,12 @@ public class ResearchCategoryModel {
     /**
      * Sets the description from a translation key, null leaves it unset.
      */
-    public ResearchCategoryModel withDescription(@Nullable String descriptionKey) {
+    public ResearchGroupModel withDescription(@Nullable String descriptionKey) {
         this.description = descriptionKey != null ? Component.translatable(descriptionKey) : null;
         return this;
     }
 
-    public ResearchCategoryModel withDescription(@Nullable Component description) {
+    public ResearchGroupModel withDescription(@Nullable Component description) {
         this.description = description;
         return this;
     }
@@ -86,15 +86,15 @@ public class ResearchCategoryModel {
     /**
      * Sets the position of the row, rows are ordered ascending by sort order, then by id.
      */
-    public ResearchCategoryModel withSortOrder(int sortOrder) {
+    public ResearchGroupModel withSortOrder(int sortOrder) {
         this.sortOrder = sortOrder;
         return this;
     }
 
     /**
-     * Makes this category the default for the hooks of the given trigger types, e.g. item crafts.
+     * Makes this group the default for the hooks of the given trigger types, e.g. item crafts.
      */
-    public ResearchCategoryModel withTriggerTypes(TriggerType<?, ?>... triggerTypes) {
+    public ResearchGroupModel withTriggerTypes(TriggerType<?, ?>... triggerTypes) {
         for (var triggerType : triggerTypes) {
             this.triggerTypes.add(triggerType.id());
         }
@@ -102,9 +102,9 @@ public class ResearchCategoryModel {
     }
 
     /**
-     * Makes this category the default for the hooks of the given trigger type ids.
+     * Makes this group the default for the hooks of the given trigger type ids.
      */
-    public ResearchCategoryModel withTriggerTypeIds(Identifier... triggerTypeIds) {
+    public ResearchGroupModel withTriggerTypeIds(Identifier... triggerTypeIds) {
         this.triggerTypes.addAll(List.of(triggerTypeIds));
         return this;
     }
@@ -114,10 +114,10 @@ public class ResearchCategoryModel {
     }
 
     /**
-     * Converts this model into the runtime category definition.
+     * Converts this model into the runtime group definition.
      */
-    public ResearchCategoryDefinition toDefinition() {
-        return new ResearchCategoryDefinition(
+    public ResearchGroupDefinition toDefinition() {
+        return new ResearchGroupDefinition(
                 this.id,
                 this.icon,
                 this.title,

@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.entry.scholarship;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
-import com.klikli_dev.modonomicon.research.data.ResearchCategoryDefinition;
+import com.klikli_dev.modonomicon.research.data.ResearchGroupDefinition;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * A single requirement as presented in the requirements block of an entry.
  *
- * @param category the requirement category the row is grouped into
+ * @param group the requirement group the row is grouped into
  * @param icons    icons to show, cycled every second if there is more than one
  * @param title    the title, first line of the tooltip
  * @param details  additional tooltip lines, shown below the title
@@ -30,7 +30,7 @@ import java.util.List;
  * @param action   optional action the click on the row asks for, see {@link ScholarshipRowAction}
  */
 public record ScholarshipRow(
-        ResearchCategoryDefinition category,
+        ResearchGroupDefinition group,
         List<ScholarshipIcon> icons,
         Component title,
         List<Component> details,
@@ -50,40 +50,40 @@ public record ScholarshipRow(
         return new ScholarshipRow(null, icons, title, List.of(), false, null, null, null);
     }
 
-    public ScholarshipRow withCategory(ResearchCategoryDefinition category) {
-        return new ScholarshipRow(category, this.icons, this.title, this.details, this.met, this.progress, this.missing, this.action);
+    public ScholarshipRow withGroup(ResearchGroupDefinition group) {
+        return new ScholarshipRow(group, this.icons, this.title, this.details, this.met, this.progress, this.missing, this.action);
     }
 
     public ScholarshipRow withIcons(List<ScholarshipIcon> icons) {
-        return new ScholarshipRow(this.category, icons, this.title, this.details, this.met, this.progress, this.missing, this.action);
+        return new ScholarshipRow(this.group, icons, this.title, this.details, this.met, this.progress, this.missing, this.action);
     }
 
     public ScholarshipRow withTitle(Component title) {
-        return new ScholarshipRow(this.category, this.icons, title, this.details, this.met, this.progress, this.missing, this.action);
+        return new ScholarshipRow(this.group, this.icons, title, this.details, this.met, this.progress, this.missing, this.action);
     }
 
     public ScholarshipRow withDetails(List<Component> details) {
-        return new ScholarshipRow(this.category, this.icons, this.title, details, this.met, this.progress, this.missing, this.action);
+        return new ScholarshipRow(this.group, this.icons, this.title, details, this.met, this.progress, this.missing, this.action);
     }
 
     public ScholarshipRow withMet(boolean met) {
-        return new ScholarshipRow(this.category, this.icons, this.title, this.details, met, this.progress, this.missing, this.action);
+        return new ScholarshipRow(this.group, this.icons, this.title, this.details, met, this.progress, this.missing, this.action);
     }
 
     public ScholarshipRow withProgress(@Nullable Progress progress) {
-        return new ScholarshipRow(this.category, this.icons, this.title, this.details, this.met, progress, this.missing, this.action);
+        return new ScholarshipRow(this.group, this.icons, this.title, this.details, this.met, progress, this.missing, this.action);
     }
 
     public ScholarshipRow withMissing(@Nullable Component missing) {
-        return new ScholarshipRow(this.category, this.icons, this.title, this.details, this.met, this.progress, missing, this.action);
+        return new ScholarshipRow(this.group, this.icons, this.title, this.details, this.met, this.progress, missing, this.action);
     }
 
     public ScholarshipRow withAction(@Nullable ScholarshipRowAction action) {
-        return new ScholarshipRow(this.category, this.icons, this.title, this.details, this.met, this.progress, this.missing, action);
+        return new ScholarshipRow(this.group, this.icons, this.title, this.details, this.met, this.progress, this.missing, action);
     }
 
     /**
-     * The tooltip lines: title, category (with progress, if any), details, the stage the row belongs to and the status line.
+     * The tooltip lines: title, group (with progress, if any), details, the stage the row belongs to and the status line.
      *
      * @param stage the title of the block the row belongs to, may be null or empty
      */
@@ -124,6 +124,6 @@ public record ScholarshipRow(
         if (this.progress != null) {
             return Component.translatable(Gui.SCHOLARSHIP_PROGRESS, this.progress.current(), this.progress.target()).withStyle(ChatFormatting.GRAY);
         }
-        return this.category.title().copy().withStyle(ChatFormatting.GRAY);
+        return this.group.title().copy().withStyle(ChatFormatting.GRAY);
     }
 }

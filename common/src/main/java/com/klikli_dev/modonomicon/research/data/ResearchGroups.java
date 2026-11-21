@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Ids and built-in definitions of the requirement categories shipped with modonomicon.
+ * Ids and built-in definitions of the requirement groups shipped with modonomicon.
  * <p>
- * The built-in categories are defined in code, so they are always present. A category declared in a research bundle
- * ({@code categories.json}, or via {@code ResearchCategoryModel} in datagen) with the same id replaces the built-in one.
+ * The built-in groups are defined in code, so they are always present. A group declared in a research bundle
+ * ({@code groups.json}, or via {@code ResearchGroupModel} in datagen) with the same id replaces the built-in one.
  * Titles and descriptions are translation keys, see {@link #translationKey(Identifier)}.
  */
-public final class ResearchCategories {
+public final class ResearchGroups {
 
     public static final Identifier RESEARCH = Modonomicon.loc("research");
     public static final Identifier ITEMS = Modonomicon.loc("items");
@@ -31,26 +31,26 @@ public final class ResearchCategories {
     public static final Identifier EFFECTS = Modonomicon.loc("effects");
 
     /**
-     * The sprite of the research category, also the fallback icon of custom categories.
+     * The sprite of the research group, also the fallback icon of custom groups.
      */
     public static final Identifier RESEARCH_ICON = icon("research");
 
-    private static final String TRANSLATION_PREFIX = "research_category";
+    private static final String TRANSLATION_PREFIX = "research_group";
 
-    private ResearchCategories() {
+    private ResearchGroups() {
     }
 
     /**
-     * The translation key of a category title, e.g. {@code research_category.modonomicon.items}. The description uses the same key with a {@code .description} suffix.
+     * The translation key of a group title, e.g. {@code research_group.modonomicon.items}. The description uses the same key with a {@code .description} suffix.
      */
-    public static String translationKey(Identifier categoryId) {
-        return Util.makeDescriptionId(TRANSLATION_PREFIX, categoryId);
+    public static String translationKey(Identifier groupId) {
+        return Util.makeDescriptionId(TRANSLATION_PREFIX, groupId);
     }
 
     /**
-     * The built-in categories, in declaration order.
+     * The built-in groups, in declaration order.
      */
-    public static List<ResearchCategoryDefinition> builtins() {
+    public static List<ResearchGroupDefinition> builtins() {
         return List.of(
                 builtin(RESEARCH, "research", 0),
                 builtin(ITEMS, "items", 10, TriggerTypeRegistry.ITEM_CRAFTED.id(), TriggerTypeRegistry.ITEM_ACQUIRED.id()),
@@ -60,8 +60,8 @@ public final class ResearchCategories {
         );
     }
 
-    private static ResearchCategoryDefinition builtin(Identifier id, String iconName, int sortOrder, Identifier... triggerTypes) {
-        return new ResearchCategoryDefinition(
+    private static ResearchGroupDefinition builtin(Identifier id, String iconName, int sortOrder, Identifier... triggerTypes) {
+        return new ResearchGroupDefinition(
                 id,
                 icon(iconName),
                 Component.translatable(translationKey(id)),

@@ -49,8 +49,8 @@ import java.util.stream.Collectors;
  * @param factDefinitions fact definitions indexed by fact id
  * @param valueDefinitions value definitions indexed by value id
  * @param nodeDefinitions node definitions indexed by node id
- * @param categoryDefinitions requirement category definitions indexed by category id, including built-ins
- * @param triggerCategoryIds category id claiming each trigger type by default, indexed by trigger type id
+ * @param groupDefinitions requirement group definitions indexed by group id, including built-ins
+ * @param triggerGroupIds group id claiming each trigger type by default, indexed by trigger type id
  */
 public record ResearchData(
         Set<Identifier> factIds,
@@ -74,16 +74,16 @@ public record ResearchData(
         Map<Identifier, ResearchFactDefinition> factDefinitions,
         Map<Identifier, ResearchValueDefinition> valueDefinitions,
         Map<Identifier, ResearchNodeDefinition> nodeDefinitions,
-        Map<Identifier, ResearchCategoryDefinition> categoryDefinitions,
-        Map<Identifier, Identifier> triggerCategoryIds
+        Map<Identifier, ResearchGroupDefinition> groupDefinitions,
+        Map<Identifier, Identifier> triggerGroupIds
 ) {
 
     /**
-     * Returns the category that claims the given trigger type by default, if any.
+     * Returns the group that claims the given trigger type by default, if any.
      */
-    public Optional<ResearchCategoryDefinition> categoryForTriggerType(Identifier triggerTypeId) {
-        var categoryId = this.triggerCategoryIds.get(triggerTypeId);
-        return categoryId != null ? Optional.ofNullable(this.categoryDefinitions.get(categoryId)) : Optional.empty();
+    public Optional<ResearchGroupDefinition> groupForTriggerType(Identifier triggerTypeId) {
+        var groupId = this.triggerGroupIds.get(triggerTypeId);
+        return groupId != null ? Optional.ofNullable(this.groupDefinitions.get(groupId)) : Optional.empty();
     }
 
     /**
@@ -152,7 +152,7 @@ public record ResearchData(
             Map<Identifier, Set<Identifier>> graphFactIds,
             Map<Identifier, Set<Identifier>> graphNodeIds,
             Map<Identifier, Set<Identifier>> graphValueIds,
-            List<ResearchCategoryDefinition> categories
+            List<ResearchGroupDefinition> groups
     ) {
         var factIds = uniqueIds(facts.stream().map(ResearchFactDefinition::id).toList(), "fact");
         var nodeIds = uniqueIds(nodes.stream().map(ResearchNodeDefinition::id).toList(), "node");
@@ -271,8 +271,8 @@ public record ResearchData(
         for (var rule : nodeStageRules) {
             stageCountsByNode.merge(rule.nodeId(), 1, Integer::sum);
         }
-        var categoryDefinitions = validateCategories(categories);
-        var triggerCategoryIds = triggerCategories(categoryDefinitions);
+        var groupDefinitions = validateGroups(groups);
+        var triggerGroupIds = triggerGroups(groupDefinitions);
 
         // Build toast lookup maps
         var factToasts = facts.stream()
@@ -307,39 +307,39 @@ public record ResearchData(
                 facts.stream().collect(Collectors.toUnmodifiableMap(ResearchFactDefinition::id, Function.identity())),
                 values.stream().collect(Collectors.toUnmodifiableMap(ResearchValueDefinition::id, Function.identity())),
                 nodes.stream().collect(Collectors.toUnmodifiableMap(ResearchNodeDefinition::id, Function.identity())),
-                categoryDefinitions,
-                triggerCategoryIds
+                groupDefinitions,
+                triggerGroupIds
         );
     }
 
     /**
-     * Merges the built-in categories with the given ones. Given categories replace built-ins with the same id.
-     * Returns the categories by id, ordered by sort order then id.
+     * Merges the built-in groups with the given ones. Given groups replace built-ins with the same id.
+     * Returns the groups by id, ordered by sort order then id.
      */
-    private static Map<Identifier, ResearchCategoryDefinition> validateCategories(List<ResearchCategoryDefinition> categories) {
-        var byId = new LinkedHashMap<Identifier, ResearchCategoryDefinition>();
-        for (var category : ResearchCategories.builtins()) {
-            byId.put(category.id(), category);
+    private static Map<Identifier, ResearchGroupDefinition> validateGroups(List<ResearchGroupDefinition> groups) {
+        var byId = new LinkedHashMap<Identifier, ResearchGroupDefinition>();
+        for (var group : ResearchGroups.builtins()) {
+            byId.put(group.id(), group);
         }
-        ensureUniqueIds(categories.stream().map(ResearchCategoryDefinition::id).toList(), "category");
-        for (var category : categories) {
-            byId.put(category.id(), category);
+        ensureUniqueIds(groups.stream().map(ResearchGroupDefinition::id).toList(), "group");
+        for (var group : groups) {
+            byId.put(group.id(), group);
         }
         var sorted = new ArrayList<>(byId.values());
-        sorted.sort(Comparator.comparingInt(ResearchCategoryDefinition::sortOrder).thenComparing(category -> category.id().toString()));
+        sorted.sort(Comparator.comparingInt(ResearchGroupDefinition::sortOrder).thenComparing(group -> group.id().toString()));
 
-        var result = new LinkedHashMap<Identifier, ResearchCategoryDefinition>();
-        sorted.forEach(category -> result.put(category.id(), category));
+        var result = new LinkedHashMap<Identifier, ResearchGroupDefinition>();
+        sorted.forEach(group -> result.put(group.id(), group));
         return Collections.unmodifiableMap(result);
     }
 
-    private static Map<Identifier, Identifier> triggerCategories(Map<Identifier, ResearchCategoryDefinition> categories) {
+    private static Map<Identifier, Identifier> triggerGroups(Map<Identifier, ResearchGroupDefinition> groups) {
         var result = new HashMap<Identifier, Identifier>();
-        for (var category : categories.values()) {
-            for (var triggerType : category.triggerTypes()) {
-                var existing = result.putIfAbsent(triggerType, category.id());
-                if (existing != null && !existing.equals(category.id())) {
-                    Modonomicon.LOG.warn("Trigger type '{}' is claimed by categories '{}' and '{}', using '{}'", triggerType, existing, category.id(), existing);
+        for (var group : groups.values()) {
+            for (var triggerType : group.triggerTypes()) {
+                var existing = result.putIfAbsent(triggerType, group.id());
+                if (existing != null && !existing.equals(group.id())) {
+                    Modonomicon.LOG.warn("Trigger type '{}' is claimed by groups '{}' and '{}', using '{}'", triggerType, existing, group.id(), existing);
                 }
             }
         }

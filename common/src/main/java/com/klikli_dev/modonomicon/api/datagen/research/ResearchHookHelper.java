@@ -39,8 +39,8 @@ public final class ResearchHookHelper {
      *
      * @param entryId the full entry resource location, e.g. {@code modonomicon:features/condition_root}.
      *                This must match the ID passed to {@link BookEntryModel#create(Identifier, String)}.
-     *                Typically constructed as {@code this.modLoc(CategoryId.ID + "/" + EntryId.ID)},
-     *                using the category provider's {@code ID} and entry provider's {@code ID} constants.
+     *                Typically constructed as {@code this.modLoc(GroupId.ID + "/" + EntryId.ID)},
+     *                using the group provider's {@code ID} and entry provider's {@code ID} constants.
      */
     public EntryViewedOnceHookBuilder onEntryViewedOnce(Identifier entryId) {
         return new EntryViewedOnceHookBuilder(this.research, entryId);

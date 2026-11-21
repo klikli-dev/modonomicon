@@ -254,7 +254,7 @@ public final class ResearchStageBuilder {
     }
 
     /**
-     * Grants a effect once when the stage completes.
+     * Grants an effect once when the stage completes.
      */
     public ResearchStageBuilder effect(ResearchEffectModel effect) {
         this.effects.add(effect);

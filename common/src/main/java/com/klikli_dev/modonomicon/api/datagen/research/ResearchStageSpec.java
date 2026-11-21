@@ -85,7 +85,7 @@ public record ResearchStageSpec(
     }
 
     /**
-     * Adds a effect, granted once when the stage completes.
+     * Adds an effect, granted once when the stage completes.
      */
     public ResearchStageSpec withEffect(ResearchEffectModel effect) {
         var effects = new ArrayList<>(this.effects);

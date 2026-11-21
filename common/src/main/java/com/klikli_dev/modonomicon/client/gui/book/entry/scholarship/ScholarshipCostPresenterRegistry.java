@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.entry.scholarship;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
-import com.klikli_dev.modonomicon.research.data.ResearchCategories;
+import com.klikli_dev.modonomicon.research.data.ResearchGroups;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -24,7 +24,7 @@ public final class ScholarshipCostPresenterRegistry {
 
     private static final ScholarshipCostPresenter FALLBACK = (entry, context, forceMet) ->
             ScholarshipRow.of(List.of(ScholarshipIcons.icon(ScholarshipIcons.GENERIC)), Component.translatable(Gui.SCHOLARSHIP_COST_SPECIAL))
-                    .withCategory(ScholarshipRows.category(ResearchCategories.ITEMS, context));
+                    .withGroup(ScholarshipRows.group(ResearchGroups.ITEMS, context));
 
     private ScholarshipCostPresenterRegistry() {
     }

@@ -10,7 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.datagen.LanguageProviderCache;
-import com.klikli_dev.modonomicon.research.data.ResearchCategoryDefinition;
+import com.klikli_dev.modonomicon.research.data.ResearchGroupDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchFactDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
@@ -115,8 +115,8 @@ public class ResearchProvider implements DataProvider {
                 if (!data.nodeDefinitions().isEmpty()) {
                     futures.add(this.save(cache, ResearchNodeDefinition.CODEC, data.nodeDefinitions(), base.resolve("nodes.json")));
                 }
-                if (!data.categoryDefinitions().isEmpty()) {
-                    futures.add(this.save(cache, ResearchCategoryDefinition.CODEC, data.categoryDefinitions(), base.resolve("categories.json")));
+                if (!data.groupDefinitions().isEmpty()) {
+                    futures.add(this.save(cache, ResearchGroupDefinition.CODEC, data.groupDefinitions(), base.resolve("groups.json")));
                 }
 
                 // All hooks (all trigger types) go into a single hooks.json

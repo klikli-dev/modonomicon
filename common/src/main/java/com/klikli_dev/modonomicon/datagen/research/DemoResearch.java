@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.datagen.research;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchActionModel;
-import com.klikli_dev.modonomicon.api.datagen.research.ResearchCategoryModel;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchGroupModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchCostModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchDisplayModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchEffectModel;
@@ -23,7 +23,7 @@ import com.klikli_dev.modonomicon.book.BookIcon;
 import com.klikli_dev.modonomicon.datagen.book.demo.ScholarshipCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.research.PlacedPageResearchEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.values.SourcesEntry;
-import com.klikli_dev.modonomicon.research.data.ResearchCategories;
+import com.klikli_dev.modonomicon.research.data.ResearchGroups;
 import com.klikli_dev.modonomicon.research.data.ResearchStageCompletion;
 import com.klikli_dev.modonomicon.research.data.ResearchToastDefinition;
 import net.minecraft.core.component.DataComponentPatch;
@@ -65,8 +65,8 @@ public class DemoResearch extends SingleResearchSubProvider {
     public static final ResearchFactRef ADVANCEMENT_RIDE_BOAT_WITH_GOAT_COMPLETED = factRef("demo/advancement_ride_boat_with_goat_completed");
     public static final Identifier DEMO_SMITHING = Modonomicon.loc("demo_smithing");
     private static final Identifier DEMO_SMITHING_ICON = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "modonomicon/scholarship/groups/demo_smithing");
-    private static final String DEMO_SMITHING_TITLE = "modonomicon.demo.category.smithing.title";
-    private static final String DEMO_SMITHING_DESCRIPTION = "modonomicon.demo.category.smithing.description";
+    private static final String DEMO_SMITHING_TITLE = "modonomicon.demo.group.smithing.title";
+    private static final String DEMO_SMITHING_DESCRIPTION = "modonomicon.demo.group.smithing.description";
     private static final String PAPER_COLLECTED_TITLE = "modonomicon.demo.scholarship.paper_collected.title";
     private static final String SOURCES_CONSULTED_TITLE = "modonomicon.demo.scholarship.sources_consulted.title";
     private static final String WRITABLE_BOOKS_CRAFTED_TITLE = "modonomicon.demo.scholarship.writable_books_crafted.title";
@@ -147,7 +147,7 @@ public class DemoResearch extends SingleResearchSubProvider {
         this.research().display(SCHOLARSHIP_NOTE_TAKEN, ResearchDisplayModel.create()
                 .withIcon(Items.PAPER)
                 .withTitle(SCHOLARSHIP_NOTE_TAKEN_TITLE)
-                .withCategory(ResearchCategories.KNOWLEDGE)
+                .withGroup(ResearchGroups.KNOWLEDGE)
                 .withAction(ResearchActionModel.create()
                         .cost(ResearchCostModel.create().item(Items.PAPER).durability(Items.SHEARS, 1))
                         .effect(ResearchEffectModel.giveItem(BLANK_RESEARCH_NOTE, false))
@@ -160,7 +160,7 @@ public class DemoResearch extends SingleResearchSubProvider {
         this.research().display(noteCrafted, ResearchDisplayModel.create()
                 .withIcon(RESEARCH_NOTE)
                 .withTitle(SCHOLARSHIP_NOTE_CRAFTED_TITLE)
-                .withCategory(ResearchCategories.KNOWLEDGE)
+                .withGroup(ResearchGroups.KNOWLEDGE)
                 .withDescription(SCHOLARSHIP_NOTE_CRAFTED_DESCRIPTION));
         this.add(SCHOLARSHIP_NOTE_CRAFTED_TITLE, "Make a completed research note");
         this.add(SCHOLARSHIP_NOTE_CRAFTED_DESCRIPTION, "Craft a blank note with an ink sac.");
@@ -171,7 +171,7 @@ public class DemoResearch extends SingleResearchSubProvider {
         this.research().display(noteStudied, ResearchDisplayModel.create()
                 .withIcon(RESEARCH_NOTE)
                 .withTitle(SCHOLARSHIP_NOTE_STUDIED_TITLE)
-                .withCategory(ResearchCategories.KNOWLEDGE));
+                .withGroup(ResearchGroups.KNOWLEDGE));
         this.add(SCHOLARSHIP_NOTE_STUDIED_TITLE, "Study a completed research note");
         this.research().display(SCHOLARSHIP_NOTES_READ, ResearchDisplayModel.create().withIcon(Items.WRITABLE_BOOK).withTitle(SCHOLARSHIP_NOTES_READ_TITLE));
         this.add(SCHOLARSHIP_NOTES_READ_TITLE, "Notes transcribed");
@@ -242,15 +242,15 @@ public class DemoResearch extends SingleResearchSubProvider {
                         new ResearchNodeSpec.ValueRequirement(paperCollected, 5)
                 ), Optional.empty(), Optional.empty(), ResearchStageCompletion.AUTO, List.of()))
                 .build();
-        //custom category: the iron ingot requirement is grouped into its own row instead of the item row
-        this.research().category(ResearchCategoryModel.create(DEMO_SMITHING)
+        //custom group: the iron ingot requirement is grouped into its own row instead of the item row
+        this.research().group(ResearchGroupModel.create(DEMO_SMITHING)
                 .withIcon(DEMO_SMITHING_ICON)
                 .withTitle(DEMO_SMITHING_TITLE)
                 .withDescription(DEMO_SMITHING_DESCRIPTION)
                 .withSortOrder(15));
-        this.research().display(ironIngotAcquired, ResearchDisplayModel.create().withCategory(DEMO_SMITHING));
+        this.research().display(ironIngotAcquired, ResearchDisplayModel.create().withGroup(DEMO_SMITHING));
         this.add(DEMO_SMITHING_TITLE, "Smithing");
-        this.add(DEMO_SMITHING_DESCRIPTION, "Demo category declared in DemoResearch, grouping the iron ingot of the staged requirements.");
+        this.add(DEMO_SMITHING_DESCRIPTION, "Demo group declared in DemoResearch, grouping the iron ingot of the staged requirements.");
         this.researchNodeName(REQUIREMENTS_STAGED, "Staged requirements");
         this.researchStageName(REQUIREMENTS_STAGE_1, "Ink");
         this.researchStageName(REQUIREMENTS_STAGE_2, "Iron and paper");
