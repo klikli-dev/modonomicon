@@ -677,7 +677,7 @@ public class BookEntryModel {
     }
 
     /**
-     * Overrides the book's default requirements display for this entry. Only has an effect together with a research.
+     * Overrides the book's default scholarship display for this entry. Only has an effect together with a research.
      */
     public BookEntryModel withScholarshipDisplay(ScholarshipDisplay scholarshipDisplay) {
         this.scholarshipDisplay = scholarshipDisplay;

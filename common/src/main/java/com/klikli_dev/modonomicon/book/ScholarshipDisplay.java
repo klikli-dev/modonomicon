@@ -28,7 +28,7 @@ public enum ScholarshipDisplay implements StringRepresentable {
      */
     TRAILING_PAGE("trailing_page"),
     /**
-     * Requirements are shown by stage requirement pages placed in the entry.
+     * Scholarship is shown by stage scholarship pages placed in the entry.
      */
     PAGES("pages"),
     /**

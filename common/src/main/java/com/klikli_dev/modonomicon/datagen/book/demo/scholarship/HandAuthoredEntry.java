@@ -17,8 +17,8 @@ import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
 
 /**
- * Hand-authored research: the research is declared in {@link DemoResearch}, the entry has no requirements display and
- * shows its progress with requirement pages placed in the content, and its pages are gated by the stages.
+ * Hand-authored research: the research is declared in {@link DemoResearch}, the entry has no scholarship display and
+ * shows its progress with scholarship pages placed in the content, and its pages are gated by the stages.
  */
 public class HandAuthoredEntry extends EntryProvider {
     public static final String ID = "hand_authored";
@@ -42,7 +42,7 @@ public class HandAuthoredEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Hand-authored requirements");
         this.pageText("""
-                No requirements display: the requirements pages below show each stage instead.
+                No scholarship display: the scholarship pages below show each stage instead.
                 """);
 
         this.page("scholarship_stage_1", () -> BookScholarshipPageModel.create()
@@ -89,7 +89,7 @@ public class HandAuthoredEntry extends EntryProvider {
 
     @Override
     protected String entryDescription() {
-        return "Hand-authored stages with requirement pages, no requirements display.";
+        return "Hand-authored stages with scholarship pages, no scholarship display.";
     }
 
     @Override

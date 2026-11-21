@@ -246,7 +246,7 @@ public class EntryTabController {
         //the overlay is a single page without continuation fragments, so split pages scale their text to fit instead
         this.pageRenderer.setPageSplitAllowed(false);
         this.pageRenderer.onBeginDisplayPage(this.screen, this.getOverlayLeft() + BookEntryScreen.SINGLE_PAGE_X, BookEntryScreen.TOP_PADDING);
-        //the overlay keeps the space the page reserved for its own block, e.g. a stage requirements page reserves its block.
+        //the overlay keeps the space the page reserved for its own block, e.g. a stage scholarship page reserves its block.
         //The entry research block is only shown on the first page, so the overlay never reserves space for it.
     }
 

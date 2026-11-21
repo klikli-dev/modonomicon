@@ -21,7 +21,7 @@ import java.util.Optional;
  * The requirements of the node's next stage are shown in the entry, the entry is complete once the node is complete.
  *
  * @param node                the research node that tracks the research of this entry
- * @param scholarshipDisplay optional override of the book's default requirements display
+ * @param scholarshipDisplay optional override of the book's default scholarship display
  */
 public record BookEntryResearch(
         Identifier node,

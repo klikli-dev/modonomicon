@@ -140,7 +140,7 @@ public class BookContentEntry extends BookEntry {
     }
 
     /**
-     * The requirements display of this entry: the entry's own override, or the book default.
+     * The scholarship display of this entry: the entry's own override, or the book default.
      */
     public ScholarshipDisplay getScholarshipDisplay() {
         if (this.research != null && this.research.scholarshipDisplay().isPresent()) {

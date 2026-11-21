@@ -189,7 +189,7 @@ public final class ScholarshipRows {
     }
 
     /**
-     * The requirement block of one stage, e.g. for a stage requirement page. Completed stages show all rows met.
+     * The requirement block of one stage, e.g. for a stage scholarship page. Completed stages show all rows met.
      */
     public static ScholarshipBlock stageBlock(Identifier stageId, ScholarshipContext context) {
         var data = context.data();

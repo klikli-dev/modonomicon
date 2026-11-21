@@ -14,7 +14,7 @@ import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
 
 /**
- * Placed page research: requirements pages are placed between the content, they keep showing progress after a stage is complete.
+ * Placed page research: scholarship pages are placed between the content, they keep showing progress after a stage is complete.
  */
 public class PlacedPagesEntry extends EntryProvider {
     public static final String ID = "placed_pages";
@@ -30,7 +30,7 @@ public class PlacedPagesEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Placed requirements");
         this.pageText("""
-                Requirements pages are placed in the content. They stay visible and show check marks once a stage is complete.
+                Scholarship pages are placed in the content. They stay visible and show check marks once a stage is complete.
                 The marker of this entry clears once you have crafted a writable book.
                 """);
 
@@ -74,7 +74,7 @@ public class PlacedPagesEntry extends EntryProvider {
 
     @Override
     protected String entryDescription() {
-        return "Placed requirements pages between the content.";
+        return "Placed scholarship pages between the content.";
     }
 
     @Override

@@ -18,7 +18,7 @@ import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Renders a stage requirements page: optional title and text, then the requirement block of the stage at the bottom of the page.
+ * Renders a stage scholarship page: optional title and text, then the requirement block of the stage at the bottom of the page.
  * Without an authored title, the title of the block (e.g. the stage title) is used.
  */
 public class BookScholarshipPageRenderer extends BookPageRenderer<BookScholarshipPage> {

@@ -467,7 +467,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     }
 
     /**
-     * The open pages index to persist. The client-only trailing requirements page is not persisted, the page before it is used instead.
+     * The open pages index to persist. The client-only trailing scholarship page is not persisted, the page before it is used instead.
      */
     private int getPersistableOpenPagesIndex() {
         if (this.isTrailingScholarshipPageOpen()) {

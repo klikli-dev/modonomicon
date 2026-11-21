@@ -285,7 +285,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
      * The page is never gated by stages, so it stays visible and shows the completed requirements with check marks.
      * Its title and text are the built-in translations, see {@link #scholarshipPage(String, String, String)} for custom ones.
      * <p>
-     * Declaring this page switches the requirements display of the entry to {@link ScholarshipDisplay#PAGES}, unless it was set explicitly.
+     * Declaring this page switches the scholarship display of the entry to {@link ScholarshipDisplay#PAGES}, unless it was set explicitly.
      * Requires a stage to be declared in this entry.
      *
      * @param id the page id, e.g. {@code next}
@@ -353,7 +353,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
     private void finishResearch() {
         if (this.researchStages.isEmpty()) {
             if (!this.scholarshipPages.isEmpty()) {
-                throw new IllegalStateException("Entry '" + this.entryId() + "' has a requirements page, but no stage. "
+                throw new IllegalStateException("Entry '" + this.entryId() + "' has a scholarship page, but no stage. "
                         + "Declare a stage with this.stage(...).");
             }
             return;
