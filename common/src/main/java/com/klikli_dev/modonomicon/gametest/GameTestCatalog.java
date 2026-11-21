@@ -59,9 +59,9 @@ public final class GameTestCatalog {
             new Group("research_condition", List.of(
                     new GameTest("multi_stage_node_needs_all_stages", ResearchConditionGameTests::multiStageNodeNeedsAllStages)
             )),
-            new Group("research_scholarship", List.of(
-                    new GameTest("taking_note_meets_row_and_stays_repeatable", ResearchScholarshipGameTests::takingNoteMetsRowAndStaysRepeatable),
-                    new GameTest("transcription_needs_make_and_study", ResearchScholarshipGameTests::transcriptionNeedsMakeAndStudy)
+            new Group("research_demo", List.of(
+                    new GameTest("taking_note_grants_fact_and_stays_repeatable", ResearchDemoGameTests::takingNoteGrantsFactAndStaysRepeatable),
+                    new GameTest("transcription_needs_make_and_study", ResearchDemoGameTests::transcriptionNeedsMakeAndStudy)
             ))
     );
 
