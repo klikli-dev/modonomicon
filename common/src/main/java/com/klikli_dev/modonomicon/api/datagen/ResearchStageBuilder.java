@@ -393,4 +393,11 @@ public final class ResearchStageBuilder {
      */
     record ActionFact(String id, String title, ResearchActionModel action) {
     }
-}
+
+    /**
+     * @deprecated Use {@link #effect(ResearchEffectModel)} instead. Will be removed in Minecraft 26.3.
+     */
+    @Deprecated(forRemoval = true)
+    public ResearchStageBuilder reward(ResearchEffectModel reward) {
+        return this.effect(reward);
+    }}

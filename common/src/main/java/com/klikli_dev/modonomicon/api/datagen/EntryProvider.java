@@ -17,6 +17,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookScholarshipPageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookStageRequirementsPageModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchDisplayModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
 import com.klikli_dev.modonomicon.book.ScholarshipDisplay;
@@ -291,9 +292,19 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
      * @param id the page id, e.g. {@code next}
      */
     protected BookScholarshipPageModel scholarshipPage(String id) {
-        return this.addScholarshipPage(this.page(id, () -> BookScholarshipPageModel.create()
-                .withTitle(Gui.SCHOLARSHIP_TITLE)
-                .withText(Gui.SCHOLARSHIP_PAGE_TEXT)));
+        return this.scholarshipPage(id, BookScholarshipPageModel::create);
+    }
+
+    /**
+     * Like {@link #scholarshipPage(String)}, but creates the page with the given factory, see {@link BookScholarshipPageModel}.
+     */
+    protected <T extends BookScholarshipPageModel> T scholarshipPage(String id, Supplier<T> factory) {
+        return this.addScholarshipPage(this.page(id, () -> {
+            var model = factory.get();
+            model.withTitle(Gui.SCHOLARSHIP_TITLE);
+            model.withText(Gui.SCHOLARSHIP_PAGE_TEXT);
+            return model;
+        }));
     }
 
     /**
@@ -305,15 +316,41 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
      * @param text  the literal English text of the page
      */
     protected BookScholarshipPageModel scholarshipPage(String id, String title, String text) {
-        var page = this.page(id, () -> BookScholarshipPageModel.create()
-                .withTitle(this.context().pageTitle())
-                .withText(this.context().pageText()));
+        return this.scholarshipPage(id, title, text, BookScholarshipPageModel::create);
+    }
+
+    /**
+     * Like {@link #scholarshipPage(String, String, String)}, but creates the page with the given factory.
+     */
+    protected <T extends BookScholarshipPageModel> T scholarshipPage(String id, String title, String text, Supplier<T> factory) {
+        var page = this.page(id, () -> {
+            var model = factory.get();
+            model.withTitle(this.context().pageTitle());
+            model.withText(this.context().pageText());
+            return model;
+        });
         this.pageTitle(title);
         this.pageText(text);
         return this.addScholarshipPage(page);
     }
 
-    private BookScholarshipPageModel addScholarshipPage(BookScholarshipPageModel page) {
+    /**
+     * @deprecated Use {@link #scholarshipPage(String)} instead. Will be removed in Minecraft 26.3.
+     */
+    @Deprecated(forRemoval = true)
+    protected BookStageRequirementsPageModel requirementsPage(String id) {
+        return this.scholarshipPage(id, BookStageRequirementsPageModel::create);
+    }
+
+    /**
+     * @deprecated Use {@link #scholarshipPage(String, String, String)} instead. Will be removed in Minecraft 26.3.
+     */
+    @Deprecated(forRemoval = true)
+    protected BookStageRequirementsPageModel requirementsPage(String id, String title, String text) {
+        return this.scholarshipPage(id, title, text, BookStageRequirementsPageModel::create);
+    }
+
+    private <T extends BookScholarshipPageModel> T addScholarshipPage(T page) {
         this.scholarshipPages.add(new PendingScholarshipPage(page, this.researchStages.size()));
         this.scholarshipPageUsed = true;
         return page;
@@ -325,6 +362,14 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
      */
     protected void scholarshipDisplay(ScholarshipDisplay scholarshipDisplay) {
         this.entry.withScholarshipDisplay(scholarshipDisplay);
+    }
+
+    /**
+     * @deprecated Use {@link #scholarshipDisplay(ScholarshipDisplay)} instead. Will be removed in Minecraft 26.3.
+     */
+    @Deprecated(forRemoval = true)
+    protected void requirementsDisplay(ScholarshipDisplay requirementsDisplay) {
+        this.scholarshipDisplay(requirementsDisplay);
     }
 
     private BookConditionModel<?> stageGate(BookConditionModel<?> condition) {

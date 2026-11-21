@@ -102,6 +102,221 @@ public class ModonomiconConstants {
             public static final String SCHOLARSHIP_TRIGGER_SPECIAL = PREFIX + "scholarship.trigger.special";
             public static final String SCHOLARSHIP_EFFECT_PENDING = PREFIX + "scholarship.effect.pending";
             public static final String SCHOLARSHIP_PAGE_TEXT = PREFIX + "scholarship.page.text";
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_TITLE} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_TITLE = SCHOLARSHIP_TITLE;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_NEXT_STEPS} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_NEXT_STEPS = SCHOLARSHIP_NEXT_STEPS;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_NEXT} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_NEXT = SCHOLARSHIP_NEXT;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_COMPLETE} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_COMPLETE = SCHOLARSHIP_COMPLETE;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_STAGE_LINE} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_STAGE_LINE = SCHOLARSHIP_STAGE_LINE;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_CRAFT_ITEM} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_CRAFT_ITEM = SCHOLARSHIP_CRAFT_ITEM;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_OBTAIN_ITEM} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_OBTAIN_ITEM = SCHOLARSHIP_OBTAIN_ITEM;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_READ_ENTRY} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_READ_ENTRY = SCHOLARSHIP_READ_ENTRY;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_STAGE_TITLE} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_STAGE_TITLE = SCHOLARSHIP_STAGE_TITLE;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_PROGRESS} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_PROGRESS = SCHOLARSHIP_PROGRESS;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_MET} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_MET = SCHOLARSHIP_MET;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_NOT_MET} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_NOT_MET = SCHOLARSHIP_NOT_MET;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_NOT_MET_CRAFT} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_NOT_MET_CRAFT = SCHOLARSHIP_NOT_MET_CRAFT;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_NOT_MET_OBTAIN} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_NOT_MET_OBTAIN = SCHOLARSHIP_NOT_MET_OBTAIN;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_NOT_MET_PROGRESS} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_NOT_MET_PROGRESS = SCHOLARSHIP_NOT_MET_PROGRESS;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_NOT_MET_HINT} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_NOT_MET_HINT = SCHOLARSHIP_NOT_MET_HINT;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_CLICK_TO_OPEN} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_CLICK_TO_OPEN = SCHOLARSHIP_CLICK_TO_OPEN;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_COSTS} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_COSTS = SCHOLARSHIP_COSTS;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_COST_ITEM} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_COST_ITEM = SCHOLARSHIP_COST_ITEM;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_COST_LEVELS} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_COST_LEVELS = SCHOLARSHIP_COST_LEVELS;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_COST_DURABILITY} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_COST_DURABILITY = SCHOLARSHIP_COST_DURABILITY;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_COST_NOT_HELD} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_COST_NOT_HELD = SCHOLARSHIP_COST_NOT_HELD;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_COST_SPECIAL} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_COST_SPECIAL = SCHOLARSHIP_COST_SPECIAL;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_ACTION_PERFORM_TITLED} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_ACTION_RECORD = SCHOLARSHIP_ACTION_PERFORM_TITLED;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_ACTION_TAKE} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_ACTION_RECEIVE = SCHOLARSHIP_ACTION_TAKE;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_ACTION_TAKE_AGAIN} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_ACTION_RECEIVE_AGAIN = SCHOLARSHIP_ACTION_TAKE_AGAIN;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_ACTION_PERFORM} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_ACTION_PERFORM = SCHOLARSHIP_ACTION_PERFORM;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_ACTION_ALREADY_HELD} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_ACTION_ALREADY_HELD = SCHOLARSHIP_ACTION_ALREADY_HELD;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_CONSUMED_ON_COMPLETION} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_CONSUMED_ON_COMPLETION = SCHOLARSHIP_CONSUMED_ON_COMPLETION;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_USE_ITEM} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_USE_ITEM = SCHOLARSHIP_USE_ITEM;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_NOT_USED} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_NOT_USED = SCHOLARSHIP_NOT_USED;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_STAGE_COMPLETE} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_STAGE_COMPLETE = SCHOLARSHIP_STAGE_COMPLETE;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_STAGE_COMPLETING} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_STAGE_COMPLETING = SCHOLARSHIP_STAGE_COMPLETING;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_STAGE_COMPLETE_HINT} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_STAGE_COMPLETE_HINT = SCHOLARSHIP_STAGE_COMPLETE_HINT;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_STAGE_MANUAL} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_STAGE_MANUAL = SCHOLARSHIP_STAGE_MANUAL;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_EFFECT} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_REWARD = SCHOLARSHIP_EFFECT;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_EFFECT_EXPERIENCE} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_REWARD_EXPERIENCE = SCHOLARSHIP_EFFECT_EXPERIENCE;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_EFFECT_LEVELS} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_REWARD_LEVELS = SCHOLARSHIP_EFFECT_LEVELS;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_EFFECT_VALUE} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_REWARD_VALUE = SCHOLARSHIP_EFFECT_VALUE;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_EFFECT_SPECIAL} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_REWARD_SPECIAL = SCHOLARSHIP_EFFECT_SPECIAL;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_TRIGGER_SPECIAL} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_TRIGGER_SPECIAL = SCHOLARSHIP_TRIGGER_SPECIAL;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_EFFECT_PENDING} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_REWARD_PENDING = SCHOLARSHIP_EFFECT_PENDING;
+            /**
+             * @deprecated Use {@link #SCHOLARSHIP_PAGE_TEXT} instead. Will be removed in Minecraft 26.3.
+             */
+            @Deprecated(forRemoval = true)
+            public static final String REQUIREMENTS_PAGE_TEXT = SCHOLARSHIP_PAGE_TEXT;
             public static final String FEEDBACK_MISSING = PREFIX + "feedback.missing";
             public static final String FEEDBACK_UNAVAILABLE = PREFIX + "feedback.unavailable";
             public static final String FEEDBACK_INVALID = PREFIX + "feedback.invalid";

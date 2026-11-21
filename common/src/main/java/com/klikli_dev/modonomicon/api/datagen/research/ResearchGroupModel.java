@@ -34,7 +34,7 @@ public class ResearchGroupModel {
     private int sortOrder;
     private final List<Identifier> triggerTypes = new ArrayList<>();
 
-    private ResearchGroupModel(Identifier id) {
+    protected ResearchGroupModel(Identifier id) {
         this.id = id;
     }
 

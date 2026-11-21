@@ -140,7 +140,7 @@ public final class ResearchHookHelper {
     /**
      * HookBuilder step for {@code item_crafted}.
      */
-    public static final class ItemCraftedHookBuilder extends ResearchHookBuilder<ResearchItemMatcher> {
+    public static class ItemCraftedHookBuilder extends ResearchHookBuilder<ResearchItemMatcher> {
         /**
          * Creates an item-crafted hook step bound to one specific item matcher.
          */
@@ -159,7 +159,7 @@ public final class ResearchHookHelper {
     /**
      * HookBuilder step for {@code item_acquired}.
      */
-    public static final class ItemAcquiredHookBuilder extends ResearchHookBuilder<ResearchItemMatcher> {
+    public static class ItemAcquiredHookBuilder extends ResearchHookBuilder<ResearchItemMatcher> {
         /**
          * Creates an item-acquired hook step bound to one specific item matcher.
          */
@@ -179,7 +179,7 @@ public final class ResearchHookHelper {
      * HookBuilder step for {@code item_used}. Use {@link #consume(int)} to consume items of the used stack when the hook
      * changes research state.
      */
-    public static final class ItemUsedHookBuilder extends ResearchHookBuilder<ResearchItemMatcher> {
+    public static class ItemUsedHookBuilder extends ResearchHookBuilder<ResearchItemMatcher> {
         private final int consume;
 
         /**
@@ -196,7 +196,7 @@ public final class ResearchHookHelper {
             this(research, ResearchItemMatcher.of(targetItem));
         }
 
-        private ItemUsedHookBuilder(ResearchDataBuilder research, ResearchItemMatcher targetItem, int consume) {
+        protected ItemUsedHookBuilder(ResearchDataBuilder research, ResearchItemMatcher targetItem, int consume) {
             super(research, TriggerTypeRegistry.ITEM_USED, targetItem);
             this.consume = consume;
         }
@@ -238,7 +238,7 @@ public final class ResearchHookHelper {
     /**
      * HookBuilder step for {@code entry_viewed_once}.
      */
-    public static final class EntryViewedOnceHookBuilder extends ResearchHookBuilder<Identifier> {
+    public static class EntryViewedOnceHookBuilder extends ResearchHookBuilder<Identifier> {
         /**
          * Creates an entry-viewed hook step bound to one specific book entry id.
          */
@@ -250,7 +250,7 @@ public final class ResearchHookHelper {
     /**
      * HookBuilder step for advancement completion.
      */
-    public static final class AdvancementEarnedHookBuilder extends ResearchHookBuilder<Identifier> {
+    public static class AdvancementEarnedHookBuilder extends ResearchHookBuilder<Identifier> {
         /**
          * Creates an advancement-earned hook step bound to one specific advancement id.
          */
@@ -262,7 +262,7 @@ public final class ResearchHookHelper {
     /**
      * Generic hook step for custom trigger types.
      */
-    public static final class GenericHookBuilder<TTarget> extends ResearchHookBuilder<TTarget> {
+    public static class GenericHookBuilder<TTarget> extends ResearchHookBuilder<TTarget> {
         /**
          * Creates a generic hook step bound to one specific trigger type and target.
          */

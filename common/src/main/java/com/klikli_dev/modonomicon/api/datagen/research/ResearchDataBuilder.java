@@ -559,4 +559,19 @@ public final class ResearchDataBuilder {
     public List<ResearchHookDefinition<?>> hookDefinitions() {
         return (List<ResearchHookDefinition<?>>) (List<?>) this.hooks.stream().map(ResearchHookSpec::toDefinition).toList();
     }
-}
+
+    /**
+     * @deprecated Use {@link #group(ResearchGroupModel)} instead. Will be removed in Minecraft 26.3.
+     */
+    @Deprecated(forRemoval = true)
+    public Identifier category(ResearchCategoryModel category) {
+        return this.group(category);
+    }
+
+    /**
+     * @deprecated Use {@link #groupDefinitions()} instead. Will be removed in Minecraft 26.3.
+     */
+    @Deprecated(forRemoval = true)
+    public List<ResearchGroupDefinition> categoryDefinitions() {
+        return this.groupDefinitions();
+    }}

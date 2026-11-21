@@ -121,4 +121,11 @@ public record ResearchStageSpec(
                 this.effects.stream().map(ResearchEffectModel::toResearchEffect).toList()
         );
     }
-}
+
+    /**
+     * @deprecated Use {@link #withEffect(ResearchEffectModel)} instead. Will be removed in Minecraft 26.3.
+     */
+    @Deprecated(forRemoval = true)
+    public ResearchStageSpec withReward(ResearchEffectModel reward) {
+        return this.withEffect(reward);
+    }}

@@ -171,6 +171,14 @@ public abstract class ResearchProviderBase {
     }
 
     /**
+     * @deprecated Use {@link #hook()} instead. Will be removed in Minecraft 26.3.
+     */
+    @Deprecated(forRemoval = true)
+    protected ResearchIngressHelper ingress() {
+        return new ResearchIngressHelper(this.research);
+    }
+
+    /**
      * Injects a language provider. Called by {@link ResearchProvider} during generation.
      */
     public void injectLang(ModonomiconLanguageProvider lang) {

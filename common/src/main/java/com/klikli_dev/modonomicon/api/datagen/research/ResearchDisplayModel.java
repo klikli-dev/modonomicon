@@ -167,4 +167,11 @@ public class ResearchDisplayModel {
                 .withGroup(this.group)
                 .withAction(this.action != null ? this.action.toResearchAction() : null);
     }
-}
+
+    /**
+     * @deprecated Use {@link #withGroup(Identifier)} instead. Will be removed in Minecraft 26.3.
+     */
+    @Deprecated(forRemoval = true)
+    public ResearchDisplayModel withCategory(@Nullable Identifier category) {
+        return this.withGroup(category);
+    }}
