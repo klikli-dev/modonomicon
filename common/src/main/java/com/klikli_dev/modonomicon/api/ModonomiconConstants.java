@@ -82,9 +82,9 @@ public class ModonomiconConstants {
             public static final String SCHOLARSHIP_COST_DURABILITY = PREFIX + "scholarship.cost.durability";
             public static final String SCHOLARSHIP_COST_NOT_HELD = PREFIX + "scholarship.cost.not_held";
             public static final String SCHOLARSHIP_COST_SPECIAL = PREFIX + "scholarship.cost.special";
-            public static final String SCHOLARSHIP_ACTION_RECORD = PREFIX + "scholarship.action.record";
-            public static final String SCHOLARSHIP_ACTION_RECEIVE = PREFIX + "scholarship.action.receive";
-            public static final String SCHOLARSHIP_ACTION_RECEIVE_AGAIN = PREFIX + "scholarship.action.receive_again";
+            public static final String SCHOLARSHIP_ACTION_PERFORM_TITLED = PREFIX + "scholarship.action.perform_titled";
+            public static final String SCHOLARSHIP_ACTION_TAKE = PREFIX + "scholarship.action.take";
+            public static final String SCHOLARSHIP_ACTION_TAKE_AGAIN = PREFIX + "scholarship.action.take_again";
             public static final String SCHOLARSHIP_ACTION_PERFORM = PREFIX + "scholarship.action.perform";
             public static final String SCHOLARSHIP_ACTION_ALREADY_HELD = PREFIX + "scholarship.action.already_held";
             public static final String SCHOLARSHIP_CONSUMED_ON_COMPLETION = PREFIX + "scholarship.consumed_on_completion";

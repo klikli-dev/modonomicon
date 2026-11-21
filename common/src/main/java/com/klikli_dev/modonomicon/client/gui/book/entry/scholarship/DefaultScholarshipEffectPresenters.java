@@ -37,7 +37,7 @@ final class DefaultScholarshipEffectPresenters {
             @Override
             public Component line(ResearchEffect effect, ScholarshipActionContext context) {
                 var stack = ((GiveItemEffect) effect).stack().create();
-                var key = context.action().repeatable() && context.performed() ? Gui.SCHOLARSHIP_ACTION_RECEIVE_AGAIN : Gui.SCHOLARSHIP_ACTION_RECEIVE;
+                var key = context.action().repeatable() && context.performed() ? Gui.SCHOLARSHIP_ACTION_TAKE_AGAIN : Gui.SCHOLARSHIP_ACTION_TAKE;
                 return Component.translatable(key, stack.getHoverName());
             }
 

@@ -92,7 +92,7 @@ public final class ScholarshipInteractions {
         var action = info.action();
         //once the fact is recorded there is nothing left to record, a repeatable action only offers what it does again
         if (action.grantsFact() && !row.met()) {
-            lines.add(Component.translatable(Gui.SCHOLARSHIP_ACTION_RECORD, row.title()).copy().withStyle(ChatFormatting.DARK_AQUA));
+            lines.add(Component.translatable(Gui.SCHOLARSHIP_ACTION_PERFORM_TITLED, row.title()).copy().withStyle(ChatFormatting.DARK_AQUA));
         }
         var actionContext = new ScholarshipActionContext(action, row.title(), row.met());
         for (var effect : action.effects()) {

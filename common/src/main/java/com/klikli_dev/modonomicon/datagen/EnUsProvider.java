@@ -176,9 +176,9 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.SCHOLARSHIP_COST_ITEM, "%s\u00d7 %s");
         this.add(Gui.SCHOLARSHIP_COST_LEVELS, "%s levels");
         this.add(Gui.SCHOLARSHIP_COST_DURABILITY, "%s durability: %s");
-        this.add(Gui.SCHOLARSHIP_ACTION_RECORD, "Click to record: %s");
-        this.add(Gui.SCHOLARSHIP_ACTION_RECEIVE, "Click to receive %s");
-        this.add(Gui.SCHOLARSHIP_ACTION_RECEIVE_AGAIN, "Click to receive another %s");
+        this.add(Gui.SCHOLARSHIP_ACTION_PERFORM_TITLED, "Click to perform: %s");
+        this.add(Gui.SCHOLARSHIP_ACTION_TAKE, "Click to take %s");
+        this.add(Gui.SCHOLARSHIP_ACTION_TAKE_AGAIN, "Click to take another %s");
         this.add(Gui.SCHOLARSHIP_ACTION_PERFORM, "Click to perform this action");
         this.add(Gui.SCHOLARSHIP_ACTION_ALREADY_HELD, "You already have this.");
         this.add(Gui.SCHOLARSHIP_CONSUMED_ON_COMPLETION, "Consumed on completion");
