@@ -69,8 +69,8 @@
     "trigger_type": "modonomicon:item_acquired"
   },
   {
-    "fact_id": "modonomicon:demo/scholarship_iron_ingot_acquired",
-    "id": "modonomicon:demo/scholarship_iron_ingot_acquired_hook",
+    "fact_id": "modonomicon:demo/research/iron_ingot_acquired",
+    "id": "modonomicon:demo/research/iron_ingot_acquired_hook",
     "trigger_target": {
       "id": "minecraft:iron_ingot"
     },

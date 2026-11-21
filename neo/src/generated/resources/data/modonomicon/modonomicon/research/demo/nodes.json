@@ -75,7 +75,7 @@
       {
         "id": "modonomicon:demo/hand_authored_stage_2",
         "required_facts": [
-          "modonomicon:demo/scholarship_iron_ingot_acquired"
+          "modonomicon:demo/research/iron_ingot_acquired"
         ],
         "required_values": [
           {
