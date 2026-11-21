@@ -30,8 +30,7 @@ public class TwoParentEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Cross-reference");
         this.pageText("""
-                This entry has two parents, the desk and the index. It shows up as soon as either parent is unlocked, so it is visible before the index is complete.
-                It is only complete once you earn the advancement below. Its marker clears once you have acquired a diamond.
+                Two parents: shown once either the desk or the index is unlocked. The marker clears once you acquire a diamond.
                 """);
 
         this.stage("ride", s -> s
@@ -45,7 +44,7 @@ public class TwoParentEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Cross-referenced");
         this.pageText("""
-                You rode a boat with a goat. The field work entry to the right is unlocked, it is gated by an advancement.
+                Field Work is unlocked. It is gated by an advancement.
                 """);
     }
 

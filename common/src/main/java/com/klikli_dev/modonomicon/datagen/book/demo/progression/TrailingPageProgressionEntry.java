@@ -33,28 +33,27 @@ public class TrailingPageProgressionEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Trailing page requirements");
         this.pageText("""
-                The requirements of this entry are listed on a trailing page after the last page of the entry. Flip past the end of the entry to see them.
-                The first stage counts the paper you pick up, the second counts the sources you consulted on the shelf. The progress of each is shown as a bar.
+                Requirements are on a trailing page after the last page. Flip past the end to see the progress bars.
                 """);
 
         this.stage("paper", s -> s
                 .value(DemoResearch.PAPER_COLLECTED, 5)
                 .icon(Items.PAPER)
-                .title("Gather paper")
-                .description("Pick up 5 paper."));
+                .title("Collect paper")
+                .description("Collect 5 paper."));
 
         this.stage("sources", s -> s
                 .value(DemoResearch.SOURCES_CONSULTED, 1)
                 .icon(Items.BOOK)
                 .title("Consult a source")
-                .description("Read the sources shelf of this category."));
+                .description("View the Sources Shelf."));
 
         this.page("catalogued", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
         this.pageTitle("Catalogued");
         this.pageText("""
-                Both stages are complete, so the index is unlocked. Once the last stage is done, the trailing page only lists completed requirements.
+                Stage-gated page: visible once both stages are complete.
                 """);
     }
 

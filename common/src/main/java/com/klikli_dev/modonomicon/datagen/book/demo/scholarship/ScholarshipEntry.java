@@ -42,25 +42,22 @@ public class ScholarshipEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Scholarship");
         this.pageText("""
-                Welcome to the scholar's notebook. This entry starts the storyline: it teaches you to take, make and study research notes, and rewards you with insight.
-                Finish the synthesis to unlock the next entry, Setting up the desk. Each entry lists what is missing for the next one at the bottom of its page.
-                The requirements of the current stage are listed at the bottom of this page.
+                Complete each stage to unlock the next entry. The requirements of the current stage are listed at the bottom of each page.
                 """);
 
         this.stage("observation", s -> s
                 .action("observation", "Record your observations",
                         ResearchActionModel.learn(ResearchCostModel.create().item(Items.PAPER)))
                 .title("Observation")
-                .description("Pay one paper to record your observations.")
+                .description("Pay 1 paper with the action button.")
                 .reward(ResearchEffectModel.experience(10)));
 
         this.page("observation_done", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
-        this.pageTitle("Click to act");
+        this.pageTitle("Actions");
         this.pageText("""
-                Some requirements have an action. Click the icon to perform it, the tooltip lists its costs.
-                Observations cost one paper and grant experience, which is shown as a reward row once the stage is done.
+                Click an action icon to perform it. Hover it to see its costs.
                 """);
 
         this.page("transcription_take", () -> BookTextPageModel.create()
@@ -68,10 +65,7 @@ public class ScholarshipEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Take a blank note");
         this.pageText("""
-                The first row of Transcription has an action that hands out a blank research note.
-                It costs one paper and wears down your shears. You can take a note even while you carry one.
-                The row is ticked once you have taken a note, but the action stays clickable, so you can take more notes later.
-                All three rows of Transcription are grouped under the Knowledge category of the requirements, so they are listed together.
+                Repeatable action: costs 1 paper and 1 shears durability per note.
                 """);
 
         this.page("transcription_process", () -> BookTextPageModel.create()
@@ -79,9 +73,7 @@ public class ScholarshipEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Make a completed note");
         this.pageText("""
-                The second row of Transcription is done once you craft a completed research note. Craft the blank note together with an ink sac, as the recipe on the next page shows.
-                Vanilla recipes cannot check the marker of an item, so the recipe also accepts plain paper in place of the blank note.
-                A real mod would use its own item or a machine for this step.
+                Craft the blank note with an ink sac. The recipe is on the next page.
                 """);
 
         this.page("transcription_recipe", () -> BookCraftingRecipePageModel.create()
@@ -92,8 +84,7 @@ public class ScholarshipEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Study");
         this.pageText("""
-                The third row of Transcription is done once you use a completed note in the air to study it. The note is consumed, and the rewards are granted once the stage completes.
-                Using a blank note does nothing, so the note must be completed first.
+                Use the completed note in the air to study it. The note is consumed.
                 """);
 
         this.stage("transcription", s -> s
@@ -101,7 +92,7 @@ public class ScholarshipEntry extends EntryProvider {
                 .fact(DemoResearch.SCHOLARSHIP_NOTE_CRAFTED)
                 .fact(DemoResearch.SCHOLARSHIP_NOTE_STUDIED)
                 .title("Transcription")
-                .description("Take a blank note, make a completed note from it with an ink sac, then study the completed note in the air.")
+                .description("Take a blank note, craft it with an ink sac, then use the completed note in the air.")
                 .reward(ResearchEffectModel.addValue(DemoResearch.SCHOLARSHIP_INSIGHT, 1))
                 .reward(ResearchEffectModel.grantFact(DemoResearch.SCHOLARSHIP_NOTES_READ)));
 
@@ -109,7 +100,7 @@ public class ScholarshipEntry extends EntryProvider {
         this.stage("synthesis", s -> s
                 .consume(Items.IRON_INGOT, 2)
                 .title("Synthesis")
-                .description("Hold two iron ingots and complete it by hand. The Iron Ingot row counts what you hold, the stage consumes it on completion.")
+                .description("Hold 2 iron ingots, then press Complete.")
                 .reward(ResearchEffectModel.giveItem(Items.EMERALD))
                 .reward(ResearchEffectModel.function(SYNTHESIS_FUNCTION)));
 
@@ -118,10 +109,7 @@ public class ScholarshipEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Manual completion");
         this.pageText("""
-                The last stage is completed by hand with the Complete button of the stage line.
-                Its cost, two iron ingots, is listed as an Iron Ingot row that counts the iron you hold, and it is consumed on completion.
-                The button is enabled once you hold enough, before that its tooltip says what is missing.
-                Completing it grants an emerald and runs a function.
+                Press the Complete button of the stage line once you hold 2 iron ingots. The ingots are consumed, and you get an emerald.
                 """);
     }
 

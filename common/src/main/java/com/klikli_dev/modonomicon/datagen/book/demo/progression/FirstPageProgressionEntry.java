@@ -30,9 +30,7 @@ public class FirstPageProgressionEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Setting up the desk");
         this.pageText("""
-                This entry unlocked when the synthesis of the scholarship entry was completed.
-                The requirements of the next stage are listed at the bottom of this first page, that is the default display.
-                Each requirement gets a check mark once you have it. Complete them to unlock the catalogue.
+                Requirements at the bottom of the page: craft a crafting table and collect any log. Check marks show progress.
                 The marker on this entry clears once you have read the sources shelf.
                 """);
 
@@ -40,14 +38,14 @@ public class FirstPageProgressionEntry extends EntryProvider {
                 .craft(Items.CRAFTING_TABLE)
                 .obtain(ItemTags.LOGS)
                 .title("Set up the desk")
-                .description("Craft a crafting table and collect any log."));
+                .description("Craft a crafting table and collect a log."));
 
         this.page("finished", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
         this.pageTitle("Desk ready");
         this.pageText("""
-                The desk is set up, so the catalogue is unlocked. Pages after a stage stay hidden until the stage is complete.
+                Stage-gated page: only visible once the desk is set up.
                 """);
     }
 

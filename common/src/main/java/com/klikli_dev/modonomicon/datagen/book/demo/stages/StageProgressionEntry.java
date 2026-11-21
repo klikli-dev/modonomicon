@@ -32,8 +32,7 @@ public class StageProgressionEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Bookbinding");
         this.pageText("""
-                This entry demonstrates research stages. Each page unlocks as you complete a stage by binding writable books, which needs ink.
-                The requirements page below shows the stage that is next, with its progress.
+                Bind writable books to unlock pages. Craft writable books to progress.
                 """);
 
         this.page("progress", () -> BookStageRequirementsPageModel.create()
@@ -49,8 +48,7 @@ public class StageProgressionEntry extends EntryProvider {
                         .withStage(DemoResearch.WRITABLE_BOOK_STAGE_1.id())));
         this.pageTitle("Stage 1 Complete");
         this.pageText("""
-                You bound your first writable book and completed stage 1.
-                Bind 2 more (3 total) to unlock the next stage.
+                Stage-gated page: visible once 1 book is crafted.
                 """);
 
         this.page("stage_2", () -> BookTextPageModel.create()
@@ -61,8 +59,7 @@ public class StageProgressionEntry extends EntryProvider {
                         .withStage(DemoResearch.WRITABLE_BOOK_STAGE_2.id())));
         this.pageTitle("Stage 2 Complete");
         this.pageText("""
-                Stage 2 is done. You have bound 3 writable books.
-                Bind 2 more (5 total) to reach the final stage.
+                Stage-gated page: visible once 3 books are crafted.
                 """);
 
         //stage complete condition: the last page is only shown once the final stage is complete
@@ -74,7 +71,7 @@ public class StageProgressionEntry extends EntryProvider {
                         .withStage(DemoResearch.WRITABLE_BOOK_STAGE_3.id())));
         this.pageTitle("Bound volume");
         this.pageText("""
-                All research stages have been completed. The bound volume is finished, and this last page only shows once the final stage is complete.
+                Stage-gated page: visible once 5 books are crafted.
                 """);
     }
 

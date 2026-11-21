@@ -156,7 +156,7 @@ public class DemoResearch extends SingleResearchSubProvider {
                 .withCategory(ResearchCategories.KNOWLEDGE)
                 .withDescription(SCHOLARSHIP_NOTE_CRAFTED_DESCRIPTION));
         this.add(SCHOLARSHIP_NOTE_CRAFTED_TITLE, "Make a completed research note");
-        this.add(SCHOLARSHIP_NOTE_CRAFTED_DESCRIPTION, "Craft a blank research note together with an ink sac.");
+        this.add(SCHOLARSHIP_NOTE_CRAFTED_DESCRIPTION, "Craft a blank note with an ink sac.");
         var noteStudied = this.ingress()
                 .onItemUsed(RESEARCH_NOTE)
                 .consume(1)

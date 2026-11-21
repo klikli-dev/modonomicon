@@ -29,8 +29,7 @@ public class SourcesEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Sources shelf");
         this.pageText("""
-                This shelf is always open. Viewing it once counts as one source consulted, the value collector of the research.
-                The catalogue asks for one consulted source before it can be completed.
+                Ungated value: viewing this entry once adds 1 to sources consulted.
                 """);
     }
 

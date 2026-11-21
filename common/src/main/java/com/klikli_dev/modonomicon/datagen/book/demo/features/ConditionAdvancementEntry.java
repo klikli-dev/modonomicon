@@ -37,8 +37,7 @@ public class ConditionAdvancementEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Field work");
         this.pageText("""
-                This entry is gated by an advancement, the entry itself is only shown once you earned Ride a Boat with a Goat.
-                Advancement conditions unlock, as the name implies, if a player has an advancement.
+                Gated by the advancement Ride a Boat with a Goat (entry condition).
                 """);
 
         //not condition: the hint is shown until the mine stone research node is unlocked
@@ -49,8 +48,7 @@ public class ConditionAdvancementEntry extends EntryProvider {
                         this.condition().researchNodeUnlocked(DemoResearch.ADVANCEMENT_MINE_STONE))));
         this.pageTitle("Hint");
         this.pageText("""
-                Mine a stone block to earn the advancement Mine Stone, the next stage on this entry asks for it.
-                This hint disappears once the research node of that advancement is unlocked.
+                Not condition: mine a stone block to earn Mine Stone. This hint hides once it is unlocked.
                 """);
 
         //node unlocked condition: the page is only shown once the mine stone research node is unlocked
@@ -60,7 +58,7 @@ public class ConditionAdvancementEntry extends EntryProvider {
                 .withCondition(this.condition().researchNodeUnlocked(DemoResearch.ADVANCEMENT_MINE_STONE)));
         this.pageTitle("Quarried");
         this.pageText("""
-                You mined a stone block. Conditional pages unlock if a player has satisfied their condition.
+                Node unlocked condition: visible once Mine Stone is unlocked.
                 """);
 
         this.stage("mine", s -> s

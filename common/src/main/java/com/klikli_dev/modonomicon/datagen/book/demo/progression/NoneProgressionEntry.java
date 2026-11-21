@@ -42,9 +42,7 @@ public class NoneProgressionEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Hand-authored requirements");
         this.pageText("""
-                This entry has no requirements display, so nothing is listed at the bottom of its pages.
-                Its research is hand-authored: the first stage needs an ink sac, the second needs an iron ingot and 5 paper.
-                The requirements pages below show the progress of each stage instead, and the pages after a stage stay hidden until it is complete.
+                No requirements display: the requirements pages below show each stage instead.
                 """);
 
         this.page("stage_1_requirements", () -> BookStageRequirementsPageModel.create()
@@ -58,7 +56,7 @@ public class NoneProgressionEntry extends EntryProvider {
                 .withCondition(this.condition().researchStageCompleted(DemoResearch.REQUIREMENTS_STAGED, DemoResearch.REQUIREMENTS_STAGE_1)));
         this.pageTitle("Ink gathered");
         this.pageText("""
-                You gathered an ink sac, so this page is visible. This is the hand-authored stage 1 of the requirements research.
+                Stage-gated page: visible once stage 1 is complete.
                 """);
 
         this.page("stage_2_requirements", () -> BookStageRequirementsPageModel.create()
@@ -72,8 +70,7 @@ public class NoneProgressionEntry extends EntryProvider {
                 .withCondition(this.condition().researchStageCompleted(DemoResearch.REQUIREMENTS_STAGED, DemoResearch.REQUIREMENTS_STAGE_2)));
         this.pageTitle("Iron and paper collected");
         this.pageText("""
-                The last stage is complete. Its requirements were the iron ingot and 5 paper of the requirements research.
-                The next entry, Bookbinding, is unlocked by this one.
+                Stage-gated page: visible once stage 2 is complete. The next entry, Bookbinding, is unlocked by this one.
                 """);
     }
 
