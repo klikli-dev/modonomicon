@@ -17,7 +17,7 @@ import java.util.List;
  * Shared base for research-side datagen authoring helpers.
  *
  * This base intentionally stays narrower than the book datagen base. It provides only registry
- * access, namespace/id helpers, primitive research declarations, and research-ingress helpers.
+ * access, namespace/id helpers, primitive research declarations, and research-hook helpers.
  */
 public abstract class ResearchProviderBase {
     protected final String modId;
@@ -81,7 +81,7 @@ public abstract class ResearchProviderBase {
     /**
      * Declares a research fact in the active research bundle and returns a typed ref to it.
      *
-     * Facts are primitive durable research inputs. They are granted by explicit research ingress
+     * Facts are primitive durable research inputs. They are granted by explicit research hook
      * such as hooks, then referenced by research nodes as unlock requirements.
      */
     protected ResearchFactRef fact(String path) {
@@ -163,11 +163,11 @@ public abstract class ResearchProviderBase {
     }
 
     /**
-     * Returns a fluent helper for authoring research ingress from external events into primitive
+     * Returns a fluent helper for authoring research hook from external events into primitive
      * research fact grants.
      */
-    protected ResearchIngressHelper ingress() {
-        return new ResearchIngressHelper(this.research);
+    protected ResearchHookHelper hook() {
+        return new ResearchHookHelper(this.research);
     }
 
     /**

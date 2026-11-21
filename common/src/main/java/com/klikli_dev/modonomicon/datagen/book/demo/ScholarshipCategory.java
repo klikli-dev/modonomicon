@@ -10,20 +10,20 @@ import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookTrueConditionModel;
-import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionAdvancementEntry;
-import com.klikli_dev.modonomicon.datagen.book.demo.features.TwoParentEntry;
-import com.klikli_dev.modonomicon.datagen.book.demo.progression.FirstPageProgressionEntry;
-import com.klikli_dev.modonomicon.datagen.book.demo.progression.NoneProgressionEntry;
-import com.klikli_dev.modonomicon.datagen.book.demo.progression.PlacedPageProgressionEntry;
-import com.klikli_dev.modonomicon.datagen.book.demo.progression.TrailingPageProgressionEntry;
-import com.klikli_dev.modonomicon.datagen.book.demo.scholarship.ScholarshipEntry;
-import com.klikli_dev.modonomicon.datagen.book.demo.stages.StageProgressionEntry;
-import com.klikli_dev.modonomicon.datagen.book.demo.values.SourcesEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.scholarship.ConditionAdvancementEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.scholarship.TwoParentsEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.scholarship.FirstPageDisplayEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.scholarship.HandAuthoredEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.scholarship.PlacedPagesEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.scholarship.TrailingPageEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.scholarship.NotesEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.scholarship.StagesEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.scholarship.SourcesEntry;
 import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
 
 /**
- * The demo storyline. Every entry unlocks the next one once its progression is complete, and its stage rows show what
+ * The demo storyline. Every entry unlocks the next one once its research is complete, and its stage rows show what
  * is still missing. The Sources shelf is the only ungated entry besides the root, it is read to count sources.
  */
 public class ScholarshipCategory extends CategoryProvider {
@@ -35,7 +35,7 @@ public class ScholarshipCategory extends CategoryProvider {
 
     @Override
     protected void generateEntries() {
-        var scholarship = this.add(new ScholarshipEntry(this).generate());
+        var scholarship = this.add(new NotesEntry(this).generate());
         this.layout().entry(scholarship).at(0, 0);
 
         //ungated shelf: viewing it counts one source consulted, the catalogue requires one
@@ -43,31 +43,31 @@ public class ScholarshipCategory extends CategoryProvider {
                 .withCondition(BookTrueConditionModel.create()));
         this.layout().entry(sources).at(6, 3);
 
-        //first page progression with the requirements on the first page, child of the root
-        var desk = this.add(new FirstPageProgressionEntry(this).generate()
+        //first page research with the requirements on the first page, child of the root
+        var desk = this.add(new FirstPageDisplayEntry(this).generate()
                 .withParent(scholarship)
                 .markerUntilEntryViewed(sources));
         this.layout().entry(desk).rightOf(scholarship, 3);
 
-        //trailing page progression: value requirements (paper, sources) listed on a trailing page
-        var catalogue = this.add(new TrailingPageProgressionEntry(this).generate()
+        //trailing page research: value requirements (paper, sources) listed on a trailing page
+        var catalogue = this.add(new TrailingPageEntry(this).generate()
                 .withParent(desk));
         this.layout().entry(catalogue).rightOf(desk, 3);
 
         //placed requirement pages, plus an entry viewed once condition as entry condition.
         //the condition replaces the parent gate, so the catalogue's final stage is required explicitly.
-        var index = this.add(new PlacedPageProgressionEntry(this).generate()
+        var index = this.add(new PlacedPagesEntry(this).generate()
                 .withParent(catalogue)
                 .withCondition(this.condition().and(
-                        this.condition().entryViewedOnce(catalogue),
+                        this.research().entryViewedOnce(catalogue),
                         this.condition().researchStageCompleted(
-                                this.condition().entryProgressionNode(catalogue),
-                                this.condition().entryProgressionStage(catalogue, "sources"))))
+                                this.research().entryResearchNode(catalogue),
+                                this.research().entryResearchStage(catalogue, "sources"))))
                 .markerUntilCrafted(Items.WRITABLE_BOOK));
         this.layout().entry(index).rightOf(catalogue, 3);
 
         //two parents: shown as soon as either the first page entry or the index is unlocked
-        var twoParents = this.add(new TwoParentEntry(this).generate()
+        var twoParents = this.add(new TwoParentsEntry(this).generate()
                 .showWhenAnyParentUnlocked(true)
                 .withParent(desk)
                 .withParent(index)
@@ -80,13 +80,13 @@ public class ScholarshipCategory extends CategoryProvider {
         this.layout().entry(advancement).rightOf(twoParents, 3);
 
         //hand-authored stages with pages gated by the stages, explicit marker cleared by viewing the index
-        var none = this.add(new NoneProgressionEntry(this).generate()
+        var none = this.add(new HandAuthoredEntry(this).generate()
                 .withParent(advancement)
                 .withMarker(DemoResearch.MARKER_EXPLICIT));
         this.layout().entry(none).rightOf(advancement, 3);
 
-        //stage progression with pages gated by stages, the last page is gated by the stage complete condition
-        var stages = this.add(new StageProgressionEntry(this).generate()
+        //stage research with pages gated by stages, the last page is gated by the stage complete condition
+        var stages = this.add(new StagesEntry(this).generate()
                 .withParent(none));
         this.layout().entry(stages).rightOf(none, 3);
     }

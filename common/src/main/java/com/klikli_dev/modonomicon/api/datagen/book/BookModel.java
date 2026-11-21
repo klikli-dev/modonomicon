@@ -11,7 +11,7 @@ import com.google.gson.JsonParseException;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.Data.Book;
 import com.klikli_dev.modonomicon.book.BookDisplayMode;
 import com.klikli_dev.modonomicon.book.BookLockedCategoryDisplay;
-import com.klikli_dev.modonomicon.book.RequirementsDisplay;
+import com.klikli_dev.modonomicon.book.ScholarshipDisplay;
 import com.klikli_dev.modonomicon.book.PageDisplayMode;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
@@ -59,7 +59,7 @@ public class BookModel {
      */
     @Nullable
     protected BookLockedCategoryDisplay lockedCategoryDisplay = null;
-    protected RequirementsDisplay defaultRequirementsDisplay = null;
+    protected ScholarshipDisplay defaultScholarshipDisplay = null;
 
     /**
      * The creative tab to add the book to.
@@ -283,8 +283,8 @@ public class BookModel {
             json.addProperty("locked_category_display", this.lockedCategoryDisplay.getSerializedName());
         }
 
-        if (this.defaultRequirementsDisplay != null) {
-            json.addProperty("default_requirements_display", this.defaultRequirementsDisplay.getSerializedName());
+        if (this.defaultScholarshipDisplay != null) {
+            json.addProperty("default_scholarship_display", this.defaultScholarshipDisplay.getSerializedName());
         }
 
         return json;
@@ -356,11 +356,11 @@ public class BookModel {
     }
 
     /**
-     * Sets where the requirements of entries with a research progression are shown, unless the entry overrides it.
+     * Sets where the requirements of entries with a research are shown, unless the entry overrides it.
      * If never set, requirements are shown at the bottom of the first page.
      */
-    public BookModel withDefaultRequirementsDisplay(@Nullable RequirementsDisplay defaultRequirementsDisplay) {
-        this.defaultRequirementsDisplay = defaultRequirementsDisplay;
+    public BookModel withDefaultScholarshipDisplay(@Nullable ScholarshipDisplay defaultScholarshipDisplay) {
+        this.defaultScholarshipDisplay = defaultScholarshipDisplay;
         return this;
     }
 

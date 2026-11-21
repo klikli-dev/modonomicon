@@ -50,8 +50,8 @@ public class SyncResearchStateMessage implements Message {
             BookGuiManager.get().openBookEntryScreen.onSyncResearchStateMessage(this);
         }
 
-        //Refresh the open parent screen, if any: category visibility is evaluated
-        //when the buttons are built, so hidden categories would otherwise only
+        //Refresh the open parent screen, if any: group visibility is evaluated
+        //when the buttons are built, so hidden groups would otherwise only
         //appear after closing and reopening the book.
         if (BookGuiManager.get().openBookParentScreen != null) {
             BookGuiManager.get().openBookParentScreen.onSyncResearchStateMessage(this);

@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.mixin;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
-import com.klikli_dev.modonomicon.research.ResearchFeedback;
+import com.klikli_dev.modonomicon.scholarship.ScholarshipFeedback;
 import com.klikli_dev.modonomicon.research.ResearchServices;
 import com.klikli_dev.modonomicon.research.state.ResearchStateManager;
 import net.minecraft.server.level.ServerPlayer;
@@ -56,7 +56,7 @@ public abstract class MixinServerPlayerGameMode {
         if (consume > 0) {
             stack.consume(consume, player);
         }
-        ResearchFeedback.learned(player);
+        ScholarshipFeedback.learned(player);
         cir.setReturnValue(InteractionResult.SUCCESS);
     }
 }

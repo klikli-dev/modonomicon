@@ -2,8 +2,8 @@
   "type": "modonomicon:text",
   "condition": {
     "type": "modonomicon:research_stage_completed",
-    "node_id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_two_parents",
-    "stage_id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_two_parents/stages/ride"
+    "node_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_two_parents",
+    "stage_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_two_parents/stages/ride"
   },
   "id": "cross_referenced",
   "show_title_separator": true,

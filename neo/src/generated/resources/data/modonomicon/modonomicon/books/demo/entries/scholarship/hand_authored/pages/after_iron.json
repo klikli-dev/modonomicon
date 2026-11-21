@@ -1,0 +1,13 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:research_stage_completed",
+    "node_id": "modonomicon:demo/hand_authored",
+    "stage_id": "modonomicon:demo/hand_authored_stage_2"
+  },
+  "id": "after_iron",
+  "show_title_separator": true,
+  "sort_number": 4,
+  "text": "book.modonomicon.demo.scholarship.hand_authored.after_iron.text",
+  "title": "book.modonomicon.demo.scholarship.hand_authored.after_iron.title"
+}

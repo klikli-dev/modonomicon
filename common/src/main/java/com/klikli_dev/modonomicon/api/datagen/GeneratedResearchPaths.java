@@ -19,8 +19,8 @@ import net.minecraft.resources.Identifier;
  *     <li>{@code generated/<book>/nodes/<trigger>/<key>}: item-trigger requirement nodes.</li>
  *     <li>{@code generated/<book>/facts/item_used/<key>[_consume<n>]}: item-used facts, one per item and consume count.</li>
  *     <li>{@code generated/<book>/nodes/item_used/<key>[_consume<n>]}: item-used requirement nodes.</li>
- *     <li>{@code generated/<book>/nodes/entry_progression/<entry>}: progression nodes, one per entry with stages.</li>
- *     <li>{@code generated/<book>/nodes/entry_progression/<entry>/stages/<stage>}: stages of a progression node.</li>
+ *     <li>{@code generated/<book>/nodes/entry_research/<entry>}: research nodes, one per entry with stages.</li>
+ *     <li>{@code generated/<book>/nodes/entry_research/<entry>/stages/<stage>}: stages of a research node.</li>
  * </ul>
  * Node unlock state is persisted in player save data as well, so node paths are kept stable too.
  * {@code <entry>} is the entry path with {@code /} replaced by {@code _}; {@code <key>} is the item key from
@@ -31,7 +31,7 @@ public final class GeneratedResearchPaths {
     public static final String ITEM_CRAFTED = "item_crafted";
     public static final String ITEM_ACQUIRED = "item_acquired";
     public static final String ITEM_USED = "item_used";
-    public static final String ENTRY_PROGRESSION = "entry_progression";
+    public static final String ENTRY_RESEARCH = "entry_research";
 
     private static final String ROOT = "generated/";
 
@@ -95,17 +95,17 @@ public final class GeneratedResearchPaths {
     }
 
     /**
-     * Returns the node path of the progression of an entry with stages.
+     * Returns the node path of the research of an entry with stages.
      */
-    public static String entryProgressionNode(String bookPath, Identifier entryId) {
-        return bundle(bookPath) + "/nodes/" + ENTRY_PROGRESSION + "/" + entryKey(entryId);
+    public static String entryResearchNode(String bookPath, Identifier entryId) {
+        return bundle(bookPath) + "/nodes/" + ENTRY_RESEARCH + "/" + entryKey(entryId);
     }
 
     /**
-     * Returns the path of a stage of the progression node of an entry, relative to the research namespace.
+     * Returns the path of a stage of the research node of an entry, relative to the research namespace.
      */
-    public static String entryProgressionStage(String bookPath, Identifier entryId, String stageName) {
-        return entryProgressionNode(bookPath, entryId) + "/stages/" + stageName;
+    public static String entryResearchStage(String bookPath, Identifier entryId, String stageName) {
+        return entryResearchNode(bookPath, entryId) + "/stages/" + stageName;
     }
 
     private static String consumeSuffix(int consume) {

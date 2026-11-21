@@ -5,7 +5,7 @@
         "id": "minecraft:stone"
       },
       "title": {
-        "translate": "modonomicon.demo.scholarship.advancement_mine_stone.title"
+        "translate": "modonomicon.demo.research.advancement_mine_stone.title"
       }
     },
     "id": "modonomicon:demo/advancement_mine_stone_completed"
@@ -16,7 +16,7 @@
         "id": "minecraft:oak_boat"
       },
       "title": {
-        "translate": "modonomicon.demo.scholarship.advancement_ride_boat_with_goat.title"
+        "translate": "modonomicon.demo.research.advancement_ride_boat_with_goat.title"
       }
     },
     "id": "modonomicon:demo/advancement_ride_boat_with_goat_completed"
@@ -30,10 +30,10 @@
         "id": "minecraft:writable_book"
       },
       "title": {
-        "translate": "modonomicon.demo.scholarship.notes_read.title"
+        "translate": "modonomicon.demo.research.notes_read.title"
       }
     },
-    "id": "modonomicon:demo/scholarship/notes_read"
+    "id": "modonomicon:demo/research/notes_read"
   },
   {
     "display": {
@@ -70,22 +70,22 @@
         "grants_fact": true,
         "repeatable": true
       },
-      "category": "modonomicon:knowledge",
+      "group": "modonomicon:knowledge",
       "icon": {
         "id": "minecraft:paper"
       },
       "title": {
-        "translate": "modonomicon.demo.scholarship.note_taken.title"
+        "translate": "modonomicon.demo.research.note_taken.title"
       }
     },
-    "id": "modonomicon:demo/scholarship/note_taken"
+    "id": "modonomicon:demo/research/note_taken"
   },
   {
     "display": {
-      "category": "modonomicon:knowledge",
       "description": {
-        "translate": "modonomicon.demo.scholarship.note_crafted.description"
+        "translate": "modonomicon.demo.research.note_crafted.description"
       },
+      "group": "modonomicon:knowledge",
       "icon": {
         "components": {
           "minecraft:custom_data": {
@@ -96,14 +96,14 @@
         "id": "minecraft:paper"
       },
       "title": {
-        "translate": "modonomicon.demo.scholarship.note_crafted.title"
+        "translate": "modonomicon.demo.research.note_crafted.title"
       }
     },
-    "id": "modonomicon:demo/scholarship/note_crafted"
+    "id": "modonomicon:demo/research/note_crafted"
   },
   {
     "display": {
-      "category": "modonomicon:knowledge",
+      "group": "modonomicon:knowledge",
       "icon": {
         "components": {
           "minecraft:custom_data": {
@@ -114,10 +114,10 @@
         "id": "minecraft:paper"
       },
       "title": {
-        "translate": "modonomicon.demo.scholarship.note_studied.title"
+        "translate": "modonomicon.demo.research.note_studied.title"
       }
     },
-    "id": "modonomicon:demo/scholarship/note_studied"
+    "id": "modonomicon:demo/research/note_studied"
   },
   {
     "display": {
@@ -125,15 +125,15 @@
         "id": "minecraft:ink_sac"
       },
       "title": {
-        "translate": "modonomicon.demo.scholarship.ink_sac_acquired.title"
+        "translate": "modonomicon.demo.research.ink_sac_acquired.title"
       }
     },
-    "id": "modonomicon:demo/scholarship/ink_sac_acquired"
+    "id": "modonomicon:demo/research/ink_sac_acquired"
   },
   {
     "display": {
-      "category": "modonomicon:demo_smithing"
+      "group": "modonomicon:demo_smithing"
     },
-    "id": "modonomicon:demo/requirements_iron_ingot_acquired"
+    "id": "modonomicon:demo/scholarship_iron_ingot_acquired"
   }
 ]

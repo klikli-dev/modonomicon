@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 /**
  * An effect applied to a player's research state or inventory, e.g. granting a fact or giving an item.
- * Effects are the building blocks of stage rewards ({@code ResearchStageDefinition#rewards}) and of actions ({@code ResearchAction#effects}).
+ * Effects are the building blocks of stage effects ({@code ResearchStageDefinition#effects}) and of actions ({@code ResearchAction#effects}).
  * Mods add effect types via {@link ResearchEffectTypeRegistry#register}.
  * <p>
  * Effects only run on the server.

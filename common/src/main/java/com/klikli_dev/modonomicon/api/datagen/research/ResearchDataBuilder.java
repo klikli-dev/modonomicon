@@ -8,8 +8,8 @@ package com.klikli_dev.modonomicon.api.datagen.research;
 
 import com.klikli_dev.modonomicon.data.TriggerType;
 import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
-import com.klikli_dev.modonomicon.research.data.ResearchCategories;
-import com.klikli_dev.modonomicon.research.data.ResearchCategoryDefinition;
+import com.klikli_dev.modonomicon.research.data.ResearchGroups;
+import com.klikli_dev.modonomicon.research.data.ResearchGroupDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchFactDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
@@ -29,7 +29,7 @@ import java.util.function.UnaryOperator;
  * Low-level research authoring collector that compiles typed authoring input into canonical research
  * definition records.
  *
- * This class is intentionally close to the output model. Higher-level fluent syntax such as ingress
+ * This class is intentionally close to the output model. Higher-level fluent syntax such as hook
  * helpers should delegate into this builder rather than bypassing it.
  */
 public final class ResearchDataBuilder {
@@ -38,7 +38,7 @@ public final class ResearchDataBuilder {
     private final List<ResearchValueSpec> values = new ArrayList<>();
     private final List<ResearchNodeSpec> nodes = new ArrayList<>();
     private final List<ResearchHookSpec<?>> hooks = new ArrayList<>();
-    private final List<ResearchCategoryModel> categories = new ArrayList<>();
+    private final List<ResearchGroupModel> groups = new ArrayList<>();
 
     /**
      * Creates a builder that will namespace authored relative paths under the given namespace.
@@ -306,17 +306,17 @@ public final class ResearchDataBuilder {
     }
 
     /**
-     * Declares a requirement category of this bundle and returns its id. Assign it via {@link ResearchDisplayModel#withCategory(Identifier)}.
-     * Declaring a category with the id of a built-in category (see {@link ResearchCategories}) overrides the built-in one.
+     * Declares a requirement group of this bundle and returns its id. Assign it via {@link ResearchDisplayModel#withGroup(Identifier)}.
+     * Declaring a group with the id of a built-in group (see {@link ResearchGroups}) overrides the built-in one.
      *
-     * @throws IllegalArgumentException if a category with the same id was already declared
+     * @throws IllegalArgumentException if a group with the same id was already declared
      */
-    public Identifier category(ResearchCategoryModel category) {
-        if (this.categories.stream().anyMatch(existing -> existing.id().equals(category.id()))) {
-            throw new IllegalArgumentException("Research category '" + category.id() + "' is already declared");
+    public Identifier group(ResearchGroupModel group) {
+        if (this.groups.stream().anyMatch(existing -> existing.id().equals(group.id()))) {
+            throw new IllegalArgumentException("Research group '" + group.id() + "' is already declared");
         }
-        this.categories.add(category);
-        return category.id();
+        this.groups.add(group);
+        return group.id();
     }
 
     private int indexOfFact(ResearchFactRef ref) {
@@ -346,7 +346,7 @@ public final class ResearchDataBuilder {
         throw new IllegalArgumentException("Research node '" + ref.id() + "' was never declared in this builder");
     }
 
-    // --- Generic hook ingress ---
+    // --- Generic hook ---
 
     /**
      * Returns the namespace that relative paths authored through this builder are placed in.
@@ -443,9 +443,9 @@ public final class ResearchDataBuilder {
     // --- Convenience sugar (deprecated, delegates to generic) ---
 
     /**
-     * Declares an explicit {@code entry_viewed_once} research ingress hook that grants a fact.
+     * Declares an explicit {@code entry_viewed_once} research hook that grants a fact.
      *
-     * @deprecated use {@link ResearchIngressHelper#onEntryViewedOnce(Identifier)} or {@link #grantFact(String, TriggerType, Object, ResearchFactRef)}.
+     * @deprecated use {@link ResearchHookHelper#onEntryViewedOnce(Identifier)} or {@link #grantFact(String, TriggerType, Object, ResearchFactRef)}.
      */
     @Deprecated(forRemoval = true)
     public void grantFactOnEntryViewedOnce(String path, Identifier entryId, ResearchFactRef factRef) {
@@ -453,9 +453,9 @@ public final class ResearchDataBuilder {
     }
 
     /**
-     * Declares an explicit {@code entry_viewed_once} research ingress hook that increments a value.
+     * Declares an explicit {@code entry_viewed_once} research hook that increments a value.
      *
-     * @deprecated use {@link ResearchIngressHelper#onEntryViewedOnce(Identifier)} or {@link #incrementValue(String, TriggerType, Object, ResearchValueRef, int)}.
+     * @deprecated use {@link ResearchHookHelper#onEntryViewedOnce(Identifier)} or {@link #incrementValue(String, TriggerType, Object, ResearchValueRef, int)}.
      */
     @Deprecated(forRemoval = true)
     public void incrementValueOnEntryViewedOnce(String path, Identifier entryId, ResearchValueRef valueRef, int increment) {
@@ -463,9 +463,9 @@ public final class ResearchDataBuilder {
     }
 
     /**
-     * Declares an explicit advancement-earned research ingress hook that grants a fact.
+     * Declares an explicit advancement-earned research hook that grants a fact.
      *
-     * @deprecated use {@link ResearchIngressHelper#onAdvancementEarned(Identifier)} or {@link #grantFact(String, TriggerType, Object, ResearchFactRef)}.
+     * @deprecated use {@link ResearchHookHelper#onAdvancementEarned(Identifier)} or {@link #grantFact(String, TriggerType, Object, ResearchFactRef)}.
      */
     @Deprecated(forRemoval = true)
     public void grantFactOnAdvancementEarned(String path, Identifier advancementId, ResearchFactRef factRef) {
@@ -473,9 +473,9 @@ public final class ResearchDataBuilder {
     }
 
     /**
-     * Declares an explicit advancement-earned research ingress hook that increments a value.
+     * Declares an explicit advancement-earned research hook that increments a value.
      *
-     * @deprecated use {@link ResearchIngressHelper#onAdvancementEarned(Identifier)} or {@link #incrementValue(String, TriggerType, Object, ResearchValueRef, int)}.
+     * @deprecated use {@link ResearchHookHelper#onAdvancementEarned(Identifier)} or {@link #incrementValue(String, TriggerType, Object, ResearchValueRef, int)}.
      */
     @Deprecated(forRemoval = true)
     public void incrementValueOnAdvancementEarned(String path, Identifier advancementId, ResearchValueRef valueRef, int increment) {
@@ -483,9 +483,9 @@ public final class ResearchDataBuilder {
     }
 
     /**
-     * Declares an explicit {@code item_crafted} research ingress hook that grants a fact.
+     * Declares an explicit {@code item_crafted} research hook that grants a fact.
      *
-     * @deprecated use {@link ResearchIngressHelper#onItemCrafted(ItemStackTemplate)} or {@link #grantFact(String, TriggerType, Object, ResearchFactRef)}.
+     * @deprecated use {@link ResearchHookHelper#onItemCrafted(ItemStackTemplate)} or {@link #grantFact(String, TriggerType, Object, ResearchFactRef)}.
      */
     @Deprecated(forRemoval = true)
     public void grantFactOnItemCrafted(String path, ItemStackTemplate targetItem, ResearchFactRef factRef) {
@@ -493,9 +493,9 @@ public final class ResearchDataBuilder {
     }
 
     /**
-     * Declares an explicit {@code item_crafted} research ingress hook that increments a value.
+     * Declares an explicit {@code item_crafted} research hook that increments a value.
      *
-     * @deprecated use {@link ResearchIngressHelper#onItemCrafted(ItemStackTemplate)} or {@link #incrementValue(String, TriggerType, Object, ResearchValueRef, int)}.
+     * @deprecated use {@link ResearchHookHelper#onItemCrafted(ItemStackTemplate)} or {@link #incrementValue(String, TriggerType, Object, ResearchValueRef, int)}.
      */
     @Deprecated(forRemoval = true)
     public void incrementValueOnItemCrafted(String path, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment) {
@@ -503,9 +503,9 @@ public final class ResearchDataBuilder {
     }
 
     /**
-     * Declares an explicit {@code item_acquired} research ingress hook that grants a fact.
+     * Declares an explicit {@code item_acquired} research hook that grants a fact.
      *
-     * @deprecated use {@link ResearchIngressHelper#onItemAcquired(ItemStackTemplate)} or {@link #grantFact(String, TriggerType, Object, ResearchFactRef)}.
+     * @deprecated use {@link ResearchHookHelper#onItemAcquired(ItemStackTemplate)} or {@link #grantFact(String, TriggerType, Object, ResearchFactRef)}.
      */
     @Deprecated(forRemoval = true)
     public void grantFactOnItemAcquired(String path, ItemStackTemplate targetItem, ResearchFactRef factRef) {
@@ -513,9 +513,9 @@ public final class ResearchDataBuilder {
     }
 
     /**
-     * Declares an explicit {@code item_acquired} research ingress hook that increments a value.
+     * Declares an explicit {@code item_acquired} research hook that increments a value.
      *
-     * @deprecated use {@link ResearchIngressHelper#onItemAcquired(ItemStackTemplate)} or {@link #incrementValue(String, TriggerType, Object, ResearchValueRef, int)}.
+     * @deprecated use {@link ResearchHookHelper#onItemAcquired(ItemStackTemplate)} or {@link #incrementValue(String, TriggerType, Object, ResearchValueRef, int)}.
      */
     @Deprecated(forRemoval = true)
     public void incrementValueOnItemAcquired(String path, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment) {
@@ -546,10 +546,10 @@ public final class ResearchDataBuilder {
     }
 
     /**
-     * Returns the compiled canonical category definitions declared in this bundle.
+     * Returns the compiled canonical group definitions declared in this bundle.
      */
-    public List<ResearchCategoryDefinition> categoryDefinitions() {
-        return this.categories.stream().map(ResearchCategoryModel::toDefinition).toList();
+    public List<ResearchGroupDefinition> groupDefinitions() {
+        return this.groups.stream().map(ResearchGroupModel::toDefinition).toList();
     }
 
     /**

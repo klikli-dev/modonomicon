@@ -1,0 +1,53 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "modonomicon:scholarship",
+  "condition": {
+    "type": "modonomicon:and",
+    "children": [
+      {
+        "type": "modonomicon:research_node_unlocked",
+        "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/required/scholarship_trailing_page",
+        "tooltip": {
+          "translate": "tooltip.modonomicon.condition.entry_unlocked",
+          "with": [
+            {
+              "translate": "book.modonomicon.demo.scholarship.trailing_page.name"
+            }
+          ]
+        }
+      },
+      {
+        "type": "modonomicon:research_stage_completed",
+        "node_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_trailing_page",
+        "stage_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_trailing_page/stages/sources"
+      }
+    ]
+  },
+  "description": "book.modonomicon.demo.scholarship.placed_pages.description",
+  "icon": {
+    "id": "minecraft:torch"
+  },
+  "id": "modonomicon:scholarship/placed_pages",
+  "marker_condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:generated/demo/nodes/item_crafted/minecraft/writable_book"
+  },
+  "name": "book.modonomicon.demo.scholarship.placed_pages.name",
+  "parents": [
+    {
+      "entry": "modonomicon:scholarship/trailing_page"
+    }
+  ],
+  "research": {
+    "node": "modonomicon:generated/demo/nodes/entry_research/scholarship_placed_pages",
+    "scholarship_display": "pages"
+  },
+  "sort_number": 4,
+  "x": 9,
+  "y": 0
+}

@@ -18,6 +18,7 @@ public abstract class CategoryProviderBase extends ModonomiconProviderBase {
     protected CategoryProviderBase(ModonomiconProviderBase parent, String modId, BiConsumer<String, String> lang, Map<String, BiConsumer<String, String>> translations, BookContextHelper context, ConditionHelper conditionHelper) {
         super(modId, lang, translations, context, conditionHelper);
         this.parent = parent;
+        this.researchHelper = parent.research();
         this.layout = CategoryLayout.relativeEntryLayout();
     }
 

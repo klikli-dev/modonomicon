@@ -5,10 +5,10 @@
         "id": "minecraft:bookshelf"
       },
       "title": {
-        "translate": "modonomicon.demo.scholarship.sources_consulted.title"
+        "translate": "modonomicon.demo.research.sources_consulted.title"
       }
     },
-    "id": "modonomicon:demo/scholarship/sources_consulted"
+    "id": "modonomicon:demo/research/sources_consulted"
   },
   {
     "display": {
@@ -16,7 +16,7 @@
         "id": "minecraft:enchanted_book"
       },
       "title": {
-        "translate": "modonomicon.demo.scholarship.insight.title"
+        "translate": "modonomicon.demo.research.insight.title"
       }
     },
     "id": "modonomicon:demo/insight"
@@ -27,7 +27,7 @@
         "id": "minecraft:writable_book"
       },
       "title": {
-        "translate": "modonomicon.demo.scholarship.writable_books_crafted.title"
+        "translate": "modonomicon.demo.research.writable_books_crafted.title"
       }
     },
     "id": "modonomicon:demo/writable_books_crafted"
@@ -38,9 +38,9 @@
         "id": "minecraft:paper"
       },
       "title": {
-        "translate": "modonomicon.demo.scholarship.paper_collected.title"
+        "translate": "modonomicon.demo.research.paper_collected.title"
       }
     },
-    "id": "modonomicon:demo/scholarship/paper_collected"
+    "id": "modonomicon:demo/research/paper_collected"
   }
 ]

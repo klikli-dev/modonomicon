@@ -27,14 +27,14 @@ import java.util.Optional;
  * @param icon optional icon representing the element
  * @param title optional title, shown as the first line of a requirement
  * @param description optional description, shown below the title
- * @param category optional requirement category the element is grouped into
+ * @param group optional requirement group the element is grouped into
  * @param action optional action a player can perform to satisfy a fact, only used on facts
  */
 public record ResearchDisplay(
         Optional<BookIcon> icon,
         Optional<Component> title,
         Optional<Component> description,
-        Optional<Identifier> category,
+        Optional<Identifier> group,
         Optional<ResearchAction> action
 ) {
     public static final ResearchDisplay EMPTY = new ResearchDisplay(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
@@ -47,24 +47,24 @@ public record ResearchDisplay(
     }
 
     /**
-     * Returns a copy of this display that is grouped into the given category.
+     * Returns a copy of this display that is grouped into the given group.
      */
-    public ResearchDisplay withCategory(@Nullable Identifier category) {
-        return new ResearchDisplay(this.icon, this.title, this.description, Optional.ofNullable(category), this.action);
+    public ResearchDisplay withGroup(@Nullable Identifier group) {
+        return new ResearchDisplay(this.icon, this.title, this.description, Optional.ofNullable(group), this.action);
     }
 
     /**
      * Returns a copy of this display that offers the given action on a fact.
      */
     public ResearchDisplay withAction(@Nullable ResearchAction action) {
-        return new ResearchDisplay(this.icon, this.title, this.description, this.category, Optional.ofNullable(action));
+        return new ResearchDisplay(this.icon, this.title, this.description, this.group, Optional.ofNullable(action));
     }
 
     public static final Codec<ResearchDisplay> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BookIcon.CODEC.optionalFieldOf("icon").forGetter(ResearchDisplay::icon),
             ComponentSerialization.CODEC.optionalFieldOf("title").forGetter(ResearchDisplay::title),
             ComponentSerialization.CODEC.optionalFieldOf("description").forGetter(ResearchDisplay::description),
-            Identifier.CODEC.optionalFieldOf("category").forGetter(ResearchDisplay::category),
+            Identifier.CODEC.optionalFieldOf("group").forGetter(ResearchDisplay::group),
             ResearchAction.CODEC.optionalFieldOf("action").forGetter(ResearchDisplay::action)
     ).apply(instance, ResearchDisplay::new));
 
@@ -77,7 +77,7 @@ public record ResearchDisplay(
                     ByteBufCodecs.optional(ComponentSerialization.TRUSTED_STREAM_CODEC),
                     ResearchDisplay::description,
                     ByteBufCodecs.optional(Identifier.STREAM_CODEC),
-                    ResearchDisplay::category,
+                    ResearchDisplay::group,
                     ByteBufCodecs.optional(ResearchAction.STREAM_CODEC),
                     ResearchDisplay::action,
                     ResearchDisplay::new

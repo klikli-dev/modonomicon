@@ -12,7 +12,7 @@ import net.minecraft.resources.Identifier;
 /**
  * Where an effect is applied from.
  *
- * @param factId the fact an action is performed for, null for stage rewards
+ * @param factId the fact an action is performed for, null for stage effects
  */
 public record ResearchEffectContext(@Nullable Identifier factId) {
 

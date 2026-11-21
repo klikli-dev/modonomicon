@@ -98,7 +98,7 @@ public record DurabilityCostEntry(ResearchItemMatcher item, int amount) implemen
 
     @Override
     public Component describe() {
-        return Component.translatable(Gui.REQUIREMENTS_COST_DURABILITY, this.amount, this.item.displayName());
+        return Component.translatable(Gui.SCHOLARSHIP_COST_DURABILITY, this.amount, this.item.displayName());
     }
 
     private boolean isUsable(ItemStack stack) {
