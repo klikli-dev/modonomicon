@@ -75,7 +75,7 @@ public class ConditionHelper {
      * <p>
      * This only sets up the tooltip. The actual "entry viewed once" research fact and node must be
      * configured separately in your research subprovider (e.g. via
-     * {@link com.klikli_dev.modonomicon.api.datagen.research.ResearchIngressHelper#onEntryViewedOnce(Identifier)}).
+     * {@link com.klikli_dev.modonomicon.api.datagen.research.ResearchHookHelper#onEntryViewedOnce(Identifier)}).
      */
     public BookResearchNodeUnlockedConditionModel researchNodeEntryViewedOnce(Identifier nodeId, BookEntryModel entry) {
         return BookResearchNodeUnlockedConditionModel.create().withNode(nodeId).withEntryName(entry);
@@ -87,7 +87,7 @@ public class ConditionHelper {
      * <p>
      * This only sets up the tooltip. The actual "entry viewed once" research fact and node must be
      * configured separately in your research subprovider (e.g. via
-     * {@link com.klikli_dev.modonomicon.api.datagen.research.ResearchIngressHelper#onEntryViewedOnce(Identifier)}).
+     * {@link com.klikli_dev.modonomicon.api.datagen.research.ResearchHookHelper#onEntryViewedOnce(Identifier)}).
      */
     public BookResearchNodeUnlockedConditionModel researchNodeEntryViewedOnce(ResearchNodeRef nodeRef, BookEntryModel entry) {
         return this.researchNodeEntryViewedOnce(nodeRef.id(), entry);

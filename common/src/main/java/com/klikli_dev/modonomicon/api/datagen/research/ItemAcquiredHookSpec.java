@@ -12,13 +12,13 @@ import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
 import net.minecraft.resources.Identifier;
 
 /**
- * Authoring-time research ingress declaration for the {@code item_acquired} trigger family.
+ * Authoring-time research hook declaration for the {@code item_acquired} trigger family.
  * A hook either grants a fact OR increments a value, never both.
  *
  * @param id the canonical hook id
- * @param targetItem the item matcher that triggers research
- * @param factRef the fact granted when that ingress event occurs (null if incrementing a value)
- * @param valueRef the value incremented when that ingress event occurs (null if granting a fact)
+ * @param targetItem the item matcher whose item_acquired trigger fires this hook
+ * @param factRef the fact granted when that hook event occurs (null if incrementing a value)
+ * @param valueRef the value incremented when that hook event occurs (null if granting a fact)
  * @param increment the amount to add to the target value (default 1, ignored for fact hooks)
  */
 public record ItemAcquiredHookSpec(
@@ -43,7 +43,7 @@ public record ItemAcquiredHookSpec(
     }
 
     /**
-     * Compiles this ingress declaration into the canonical research hook record.
+     * Compiles this hook declaration into the canonical research hook record.
      */
     public ResearchHookDefinition<ResearchItemMatcher> toDefinition() {
         return new ResearchHookDefinition<>(

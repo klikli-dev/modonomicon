@@ -9,7 +9,7 @@ package com.klikli_dev.modonomicon.api.datagen.research;
 import com.klikli_dev.modonomicon.data.TriggerType;
 
 /**
- * Trigger-bound research ingress authoring step.
+ * Trigger-bound research hook authoring step.
  *
  * Binds one trigger type and one authored target (e.g. an entry id, advancement id or item) and
  * authors hooks that either grant facts or increment values when that trigger fires for that target.
@@ -21,15 +21,15 @@ import com.klikli_dev.modonomicon.data.TriggerType;
  *
  * @param <TTarget> the authored target type of the bound trigger type
  */
-public class ResearchIngress<TTarget> {
+public class ResearchHookBuilder<TTarget> {
     protected final ResearchDataBuilder research;
     protected final TriggerType<TTarget, ?> triggerType;
     protected final TTarget target;
 
     /**
-     * Creates an ingress step bound to one specific trigger type and target.
+     * Creates a hook step bound to one specific trigger type and target.
      */
-    public ResearchIngress(ResearchDataBuilder research, TriggerType<TTarget, ?> triggerType, TTarget target) {
+    public ResearchHookBuilder(ResearchDataBuilder research, TriggerType<TTarget, ?> triggerType, TTarget target) {
         this.research = research;
         this.triggerType = triggerType;
         this.target = target;
@@ -68,7 +68,7 @@ public class ResearchIngress<TTarget> {
     }
 
     /**
-     * Authors an explicit ingress hook with the given path that grants the given already-declared fact.
+     * Authors an explicit hook with the given path that grants the given already-declared fact.
      *
      * @throws IllegalArgumentException if a hook with the same id was already declared
      */
@@ -77,8 +77,8 @@ public class ResearchIngress<TTarget> {
     }
 
     /**
-     * Number of items of the used stack that the hooks of this ingress consume when they change research state.
-     * Only item_used ingress consumes items, all other ingress consume nothing.
+     * Number of items of the used stack that the hooks of this hook consume when they change research state.
+     * Only item_used hook consumes items, all other hook consume nothing.
      */
     protected int consumeCount() {
         return 0;
@@ -117,7 +117,7 @@ public class ResearchIngress<TTarget> {
     }
 
     /**
-     * Authors an explicit ingress hook with the given path that increments the given already-declared value.
+     * Authors an explicit hook with the given path that increments the given already-declared value.
      *
      * @throws IllegalArgumentException if a hook with the same id was already declared
      */

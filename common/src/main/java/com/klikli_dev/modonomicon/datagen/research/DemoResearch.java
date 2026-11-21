@@ -107,14 +107,14 @@ public class DemoResearch extends SingleResearchSubProvider {
     }
 
     /**
-     * Authors the current demo research facts, nodes, and ingress mappings.
+     * Authors the current demo research facts, nodes, and hook mappings.
      */
     @Override
     protected void generateResearch() {
-        var mineStoneCompleted = this.ingress()
+        var mineStoneCompleted = this.hook()
                 .onAdvancementEarned(this.mcLoc("story/mine_stone"))
                 .declareFact(ADVANCEMENT_MINE_STONE_COMPLETED.id().getPath());
-        var rideBoatCompleted = this.ingress()
+        var rideBoatCompleted = this.hook()
                 .onAdvancementEarned(this.mcLoc("husbandry/ride_a_boat_with_a_goat"))
                 .declareFact(ADVANCEMENT_RIDE_BOAT_WITH_GOAT_COMPLETED.id().getPath());
 
@@ -128,14 +128,14 @@ public class DemoResearch extends SingleResearchSubProvider {
 
         // Collector: every view of the sources shelf counts one source consulted
         var sourcesConsulted = this.value(SOURCES_CONSULTED.id().getPath());
-        this.ingress()
+        this.hook()
                 .onEntryViewedOnce(this.modLoc(ScholarshipCategory.ID + "/" + SourcesEntry.ID))
                 .incrementValue("demo/scholarship/source_hook", sourcesConsulted, 1);
         this.research().display(sourcesConsulted, ResearchDisplayModel.create().withIcon(Items.BOOKSHELF).withTitle(SOURCES_CONSULTED_TITLE));
         this.add(SOURCES_CONSULTED_TITLE, "Sources consulted");
 
         // Explicit marker: a manually authored node, cleared once the index entry has been viewed
-        var indexViewed = this.ingress()
+        var indexViewed = this.hook()
                 .onEntryViewedOnce(this.modLoc(ScholarshipCategory.ID + "/" + PlacedPageResearchEntry.ID))
                 .declareFact("demo/marker_index_viewed");
         this.node(MARKER_EXPLICIT, indexViewed);
@@ -154,7 +154,7 @@ public class DemoResearch extends SingleResearchSubProvider {
                         .grantsFact()
                         .repeatable()));
         this.add(SCHOLARSHIP_NOTE_TAKEN_TITLE, "Take a blank research note");
-        var noteCrafted = this.ingress()
+        var noteCrafted = this.hook()
                 .onItemCrafted(RESEARCH_NOTE)
                 .declareFact(SCHOLARSHIP_NOTE_CRAFTED.id().getPath());
         this.research().display(noteCrafted, ResearchDisplayModel.create()
@@ -164,7 +164,7 @@ public class DemoResearch extends SingleResearchSubProvider {
                 .withDescription(SCHOLARSHIP_NOTE_CRAFTED_DESCRIPTION));
         this.add(SCHOLARSHIP_NOTE_CRAFTED_TITLE, "Make a completed research note");
         this.add(SCHOLARSHIP_NOTE_CRAFTED_DESCRIPTION, "Craft a blank note with an ink sac.");
-        var noteStudied = this.ingress()
+        var noteStudied = this.hook()
                 .onItemUsed(RESEARCH_NOTE)
                 .consume(1)
                 .declareFact(SCHOLARSHIP_NOTE_STUDIED.id().getPath());
@@ -181,7 +181,7 @@ public class DemoResearch extends SingleResearchSubProvider {
 
         // Value stages: the bookbinding stage research counts writable books crafted
         var writableBooksCrafted = this.value(WRITABLE_BOOKS_CRAFTED.id().getPath());
-        this.ingress()
+        this.hook()
                 .onItemCrafted(new ItemStackTemplate(Items.WRITABLE_BOOK))
                 .incrementValue("demo/writable_books_hook", writableBooksCrafted, 1);
         this.research().display(writableBooksCrafted, ResearchDisplayModel.create().withIcon(Items.WRITABLE_BOOK).withTitle(WRITABLE_BOOKS_CRAFTED_TITLE));
@@ -219,17 +219,17 @@ public class DemoResearch extends SingleResearchSubProvider {
         this.researchStageName(WRITABLE_BOOK_STAGE_3, "Five books");
 
         // Requirement facts and values used by the research entries
-        var inkSacAcquired = this.ingress()
+        var inkSacAcquired = this.hook()
                 .onItemAcquired(new ItemStackTemplate(Items.INK_SAC))
                 .declareFact(INK_SAC_ACQUIRED.id().getPath());
         this.research().display(inkSacAcquired, ResearchDisplayModel.create().withIcon(Items.INK_SAC).withTitle(INK_SAC_ACQUIRED_TITLE));
         this.add(INK_SAC_ACQUIRED_TITLE, "Gather ink");
 
-        var ironIngotAcquired = this.ingress()
+        var ironIngotAcquired = this.hook()
                 .onItemAcquired(new ItemStackTemplate(Items.IRON_INGOT))
                 .declareFact(IRON_INGOT_ACQUIRED.id().getPath());
         var paperCollected = this.value(PAPER_COLLECTED.id().getPath());
-        this.ingress()
+        this.hook()
                 .onItemAcquired(new ItemStackTemplate(Items.PAPER))
                 .incrementValue("demo/scholarship/paper_hook", paperCollected, 1);
         this.research().display(paperCollected, ResearchDisplayModel.create().withIcon(Items.PAPER).withTitle(PAPER_COLLECTED_TITLE));
