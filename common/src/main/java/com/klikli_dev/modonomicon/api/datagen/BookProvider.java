@@ -250,7 +250,7 @@ public class BookProvider implements DataProvider {
             futures.add(this.save(cache, ResearchHookDefinition.CODEC, data.hookDefinitions(), base.resolve("hooks.json")));
         }
         if (!data.groupDefinitions().isEmpty()) {
-            futures.add(this.save(cache, ResearchGroupDefinition.CODEC, data.groupDefinitions(), base.resolve("categories.json")));
+            futures.add(this.save(cache, ResearchGroupDefinition.CODEC, data.groupDefinitions(), base.resolve("groups.json")));
         }
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
