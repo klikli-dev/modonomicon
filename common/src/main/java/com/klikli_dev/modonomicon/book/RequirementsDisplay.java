@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.IntFunction;
 
 /**
- * Governs where the research requirements of an entry progression are shown.
+ * Governs where the research requirements of an entry research are shown.
  */
 public enum RequirementsDisplay implements StringRepresentable {
     /**

@@ -159,7 +159,7 @@ public class ModonomiconForge {
             }
         });
 
-        //Item crafted event handling for research progression
+        //Item crafted event handling for research
         PlayerEvent.ItemCraftedEvent.BUS.addListener((PlayerEvent.ItemCraftedEvent e) -> {
             if (!(e.getEntity() instanceof ServerPlayer player))
                 return;

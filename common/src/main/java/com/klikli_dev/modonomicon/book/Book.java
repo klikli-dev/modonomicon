@@ -82,7 +82,7 @@ public class Book {
     protected BookLockedCategoryDisplay lockedCategoryDisplay;
 
     /**
-     * Where the requirements of entries with a research progression are shown, unless the entry overrides it.
+     * Where the requirements of entries with a research are shown, unless the entry overrides it.
      */
     protected RequirementsDisplay defaultRequirementsDisplay = RequirementsDisplay.FIRST_PAGE;
 

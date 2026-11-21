@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 /**
- * Collects the requirements, completion, rewards and display of one stage of an entry progression.
+ * Collects the requirements, completion, rewards and display of one stage of an entry research.
  * Use it in {@link EntryProvider#stage(String, Consumer)}.
  * <p>
  * Requirements are generated research facts: {@link #craft}, {@link #obtain} and {@link #use} take an item, an item stack
@@ -43,7 +43,7 @@ import java.util.function.UnaryOperator;
  * Texts are literal English: {@link #title}, {@link #description} and the title of {@link #action} are written to the
  * language file under generated keys, e.g. {@code <entry>.stage.<stage>.title}.
  */
-public final class ProgressionStageBuilder {
+public final class ResearchStageBuilder {
     private final List<ResearchItemMatcher> crafted = new ArrayList<>();
     private final List<ResearchItemMatcher> acquired = new ArrayList<>();
     private final List<UsedItem> used = new ArrayList<>();
@@ -61,34 +61,34 @@ public final class ProgressionStageBuilder {
     @Nullable
     private ItemStackTemplate icon;
 
-    ProgressionStageBuilder() {
+    ResearchStageBuilder() {
     }
 
     /**
      * Requires the item to be crafted. Shown as a craft row.
      */
-    public ProgressionStageBuilder craft(ItemLike item) {
+    public ResearchStageBuilder craft(ItemLike item) {
         return this.craft(new ItemStackTemplate(item.asItem()));
     }
 
     /**
      * Requires the item to be crafted. Shown as a craft row. Components of the stack must match.
      */
-    public ProgressionStageBuilder craft(ItemStackTemplate item) {
+    public ResearchStageBuilder craft(ItemStackTemplate item) {
         return this.craft(ResearchItemMatcher.of(item));
     }
 
     /**
      * Requires any item of the tag to be crafted. Shown as a craft row with the first item of the tag as icon.
      */
-    public ProgressionStageBuilder craft(TagKey<Item> tag) {
+    public ResearchStageBuilder craft(TagKey<Item> tag) {
         return this.craft(ResearchItemMatcher.tag(tag));
     }
 
     /**
      * Requires an item matching the matcher to be crafted. Shown as a craft row.
      */
-    public ProgressionStageBuilder craft(ResearchItemMatcher matcher) {
+    public ResearchStageBuilder craft(ResearchItemMatcher matcher) {
         this.crafted.add(matcher);
         return this;
     }
@@ -96,28 +96,28 @@ public final class ProgressionStageBuilder {
     /**
      * Requires the item to be obtained. Shown as an obtain row.
      */
-    public ProgressionStageBuilder obtain(ItemLike item) {
+    public ResearchStageBuilder obtain(ItemLike item) {
         return this.obtain(new ItemStackTemplate(item.asItem()));
     }
 
     /**
      * Requires the item to be obtained. Shown as an obtain row. Components of the stack must match, e.g. a marked research note.
      */
-    public ProgressionStageBuilder obtain(ItemStackTemplate item) {
+    public ResearchStageBuilder obtain(ItemStackTemplate item) {
         return this.obtain(ResearchItemMatcher.of(item));
     }
 
     /**
      * Requires any item of the tag to be obtained. Shown as an obtain row with the first item of the tag as icon.
      */
-    public ProgressionStageBuilder obtain(TagKey<Item> tag) {
+    public ResearchStageBuilder obtain(TagKey<Item> tag) {
         return this.obtain(ResearchItemMatcher.tag(tag));
     }
 
     /**
      * Requires an item matching the matcher to be obtained. Shown as an obtain row.
      */
-    public ProgressionStageBuilder obtain(ResearchItemMatcher matcher) {
+    public ResearchStageBuilder obtain(ResearchItemMatcher matcher) {
         this.acquired.add(matcher);
         return this;
     }
@@ -125,35 +125,35 @@ public final class ProgressionStageBuilder {
     /**
      * Requires the item to be used in the air. Shown as a use row. Consumes nothing.
      */
-    public ProgressionStageBuilder use(ItemLike item) {
+    public ResearchStageBuilder use(ItemLike item) {
         return this.use(new ItemStackTemplate(item.asItem()));
     }
 
     /**
      * Requires the item to be used in the air. Shown as a use row. Components of the stack must match. Consumes nothing.
      */
-    public ProgressionStageBuilder use(ItemStackTemplate item) {
+    public ResearchStageBuilder use(ItemStackTemplate item) {
         return this.use(item, 0);
     }
 
     /**
      * Requires any item of the tag to be used in the air. Shown as a use row. Consumes nothing.
      */
-    public ProgressionStageBuilder use(TagKey<Item> tag) {
+    public ResearchStageBuilder use(TagKey<Item> tag) {
         return this.use(ResearchItemMatcher.tag(tag), 0);
     }
 
     /**
      * Requires an item matching the matcher to be used in the air. Shown as a use row. Consumes nothing.
      */
-    public ProgressionStageBuilder use(ResearchItemMatcher matcher) {
+    public ResearchStageBuilder use(ResearchItemMatcher matcher) {
         return this.use(matcher, 0);
     }
 
     /**
      * Requires the item to be used in the air. The used stack loses {@code consume} items when the use changes research state.
      */
-    public ProgressionStageBuilder use(ItemStackTemplate item, int consume) {
+    public ResearchStageBuilder use(ItemStackTemplate item, int consume) {
         return this.use(ResearchItemMatcher.of(item), consume);
     }
 
@@ -161,7 +161,7 @@ public final class ProgressionStageBuilder {
      * Requires an item matching the matcher to be used in the air. The used stack loses {@code consume} items when the use
      * changes research state.
      */
-    public ProgressionStageBuilder use(ResearchItemMatcher matcher, int consume) {
+    public ResearchStageBuilder use(ResearchItemMatcher matcher, int consume) {
         this.used.add(new UsedItem(matcher, consume));
         return this;
     }
@@ -169,7 +169,7 @@ public final class ProgressionStageBuilder {
     /**
      * Requires the entry with the given id to be viewed. Shown as a read row.
      */
-    public ProgressionStageBuilder read(Identifier entryId) {
+    public ResearchStageBuilder read(Identifier entryId) {
         this.viewed.add(entryId);
         return this;
     }
@@ -177,14 +177,14 @@ public final class ProgressionStageBuilder {
     /**
      * Requires the given entry to be viewed. Shown as a read row.
      */
-    public ProgressionStageBuilder read(BookEntryModel entry) {
+    public ResearchStageBuilder read(BookEntryModel entry) {
         return this.read(entry.getId());
     }
 
     /**
      * Requires a hand-authored research fact to be granted.
      */
-    public ProgressionStageBuilder fact(ResearchFactRef fact) {
+    public ResearchStageBuilder fact(ResearchFactRef fact) {
         this.facts.add(fact);
         return this;
     }
@@ -197,7 +197,7 @@ public final class ProgressionStageBuilder {
      * s.action("observation", "Observe the sky", ResearchActionModel.learn(ResearchCostModel.create().item(Items.PAPER)))
      * }</pre>
      */
-    public ProgressionStageBuilder action(String id, String title, ResearchActionModel action) {
+    public ResearchStageBuilder action(String id, String title, ResearchActionModel action) {
         this.actionFacts.add(new ActionFact(id, title, action));
         return this;
     }
@@ -205,7 +205,7 @@ public final class ProgressionStageBuilder {
     /**
      * Requires a hand-authored research value to reach the given threshold.
      */
-    public ProgressionStageBuilder value(ResearchValueRef value, int threshold) {
+    public ResearchStageBuilder value(ResearchValueRef value, int threshold) {
         this.values.add(new ResearchNodeSpec.ValueRequirement(value, threshold));
         return this;
     }
@@ -213,7 +213,7 @@ public final class ProgressionStageBuilder {
     /**
      * The stage is completed by hand once its requirements are met, see {@code ResearchStages.completeManual}.
      */
-    public ProgressionStageBuilder manual() {
+    public ResearchStageBuilder manual() {
         this.manual = true;
         return this;
     }
@@ -221,7 +221,7 @@ public final class ProgressionStageBuilder {
     /**
      * The stage is completed by hand and consumes the cost on completion. The cost is merged into the cost collected so far.
      */
-    public ProgressionStageBuilder manual(ResearchCostModel cost) {
+    public ResearchStageBuilder manual(ResearchCostModel cost) {
         this.manual = true;
         this.cost.merge(cost);
         return this;
@@ -231,7 +231,7 @@ public final class ProgressionStageBuilder {
      * Edits the cost the stage consumes on completion fluently, e.g. {@code cost(c -> c.item(Items.PAPER).levels(2))}.
      * The operator edits the collected cost in place. Implies {@link #manual()}.
      */
-    public ProgressionStageBuilder cost(UnaryOperator<ResearchCostModel> update) {
+    public ResearchStageBuilder cost(UnaryOperator<ResearchCostModel> update) {
         this.manual = true;
         update.apply(this.cost);
         return this;
@@ -240,14 +240,14 @@ public final class ProgressionStageBuilder {
     /**
      * Consumes {@code count} of the item on completion. Implies {@link #manual()}.
      */
-    public ProgressionStageBuilder consume(ItemLike item, int count) {
+    public ResearchStageBuilder consume(ItemLike item, int count) {
         return this.consume(new ItemStackTemplate(item.asItem(), count));
     }
 
     /**
      * Consumes the stack on completion, in its count, matching its components. Implies {@link #manual()}.
      */
-    public ProgressionStageBuilder consume(ItemStackTemplate stack) {
+    public ResearchStageBuilder consume(ItemStackTemplate stack) {
         this.manual = true;
         this.cost.item(stack);
         return this;
@@ -256,7 +256,7 @@ public final class ProgressionStageBuilder {
     /**
      * Grants a reward once when the stage completes.
      */
-    public ProgressionStageBuilder reward(ResearchEffectModel reward) {
+    public ResearchStageBuilder reward(ResearchEffectModel reward) {
         this.rewards.add(reward);
         return this;
     }
@@ -264,7 +264,7 @@ public final class ProgressionStageBuilder {
     /**
      * The title of the stage, literal English, shown as "Next: title" in requirement blocks. Defaults to the stage id, capitalized.
      */
-    public ProgressionStageBuilder title(String title) {
+    public ResearchStageBuilder title(String title) {
         this.title = title;
         return this;
     }
@@ -272,7 +272,7 @@ public final class ProgressionStageBuilder {
     /**
      * The description of the stage, literal English, shown in requirement blocks. Optional.
      */
-    public ProgressionStageBuilder description(String description) {
+    public ResearchStageBuilder description(String description) {
         this.description = description;
         return this;
     }
@@ -280,14 +280,14 @@ public final class ProgressionStageBuilder {
     /**
      * The icon of the stage. Defaults to the first crafted, obtained or used item of the stage.
      */
-    public ProgressionStageBuilder icon(ItemLike icon) {
+    public ResearchStageBuilder icon(ItemLike icon) {
         return this.icon(new ItemStackTemplate(icon.asItem()));
     }
 
     /**
      * The icon of the stage. Defaults to the first crafted, obtained or used item of the stage.
      */
-    public ProgressionStageBuilder icon(ItemStackTemplate icon) {
+    public ResearchStageBuilder icon(ItemStackTemplate icon) {
         this.icon = icon;
         return this;
     }
@@ -389,7 +389,7 @@ public final class ProgressionStageBuilder {
     }
 
     /**
-     * A hand-authored fact created by the stage, see {@link ProgressionStageBuilder#action(String, String, ResearchActionModel)}.
+     * A hand-authored fact created by the stage, see {@link ResearchStageBuilder#action(String, String, ResearchActionModel)}.
      */
     record ActionFact(String id, String title, ResearchActionModel action) {
     }

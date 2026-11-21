@@ -140,7 +140,7 @@ public final class ResearchRequirementRows {
     }
 
     /**
-     * The requirement block of an entry progression: the stage dependencies of the node, then the requirements of its
+     * The requirement block of an entry research: the stage dependencies of the node, then the requirements of its
      * next stage, titled by that stage. A completed node is marked complete and shows the requirements of its last stage, all met.
      * <p>
      * The state stage index is 1-based while a stage is active (index N = list index N-1) and exceeds the stage count once the node is complete.
@@ -148,7 +148,7 @@ public final class ResearchRequirementRows {
      *
      * @param browsed the 0-based stage index to show instead of the next stage, or null to show the next stage
      */
-    public static RequirementBlock progression(Identifier nodeId, @Nullable Integer browsed, RequirementContext context) {
+    public static RequirementBlock research(Identifier nodeId, @Nullable Integer browsed, RequirementContext context) {
         var node = context.data().nodeDefinitions().get(nodeId);
         if (node == null) {
             return new RequirementBlock(Component.translatable(Gui.REQUIREMENTS_NEXT_STEPS), List.of(unknown(nodeId, context)), false);
@@ -180,7 +180,7 @@ public final class ResearchRequirementRows {
         boolean done = complete || shown < current;
         //only the current stage offers non-repeatable actions, a browsed or completed stage is read-only apart from repeatable actions
         boolean active = !done && !browsing;
-        //a completed progression keeps showing the steps of its last stage, all met, so the player sees what was done
+        //a completed research keeps showing the steps of its last stage, all met, so the player sees what was done
         boolean finished = complete && !browsing;
         var slot = new StageSlot(nodeId, node, shown, current, done, active, nodeId, true, finished);
         var title = finished ? Component.translatable(Gui.REQUIREMENTS_COMPLETE)
@@ -218,7 +218,7 @@ public final class ResearchRequirementRows {
      * @param active the stage is the one being worked on, it offers its manual completion and non-repeatable actions
      * @param actionNode the node that actions of the stage act on, null if the stage offers no actions
      * @param navigable true if the stage line offers browsing between stages
-     * @param complete the whole progression is complete
+     * @param complete the whole research is complete
      */
     private record StageSlot(Identifier nodeId, ResearchNodeDefinition node, int index, int lastBrowsable, boolean done, boolean active,
                              @Nullable Identifier actionNode, boolean navigable, boolean complete) {

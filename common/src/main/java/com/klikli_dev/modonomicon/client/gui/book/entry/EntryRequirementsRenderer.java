@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 import java.util.function.IntPredicate;
 
 /**
- * Renders a requirement block, e.g. the requirements of the next stage of an entry progression.
+ * Renders a requirement block, e.g. the requirements of the next stage of an entry research.
  * <p>
  * Below the separator, every requirement category is one row (ordered by category sort order): a faint category icon
  * at the left edge, a faint line fading out to the right edge of the page, and the requirement icons on top of the line.
@@ -360,7 +360,7 @@ public final class EntryRequirementsRenderer {
     }
 
     /**
-     * A complete block without rows (e.g. a progression without stages) only shows a check mark.
+     * A complete block without rows (e.g. a research without stages) only shows a check mark.
      * Complete blocks with rows show them, all met.
      */
     private static boolean isCheckOnly(RequirementBlock block) {
@@ -368,7 +368,7 @@ public final class EntryRequirementsRenderer {
     }
 
     /**
-     * "Stage k/n", followed by a check mark once the whole progression is complete.
+     * "Stage k/n", followed by a check mark once the whole research is complete.
      */
     private static Component stageLabel(RequirementBlock block) {
         var stage = block.stage();

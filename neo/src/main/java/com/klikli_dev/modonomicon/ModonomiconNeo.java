@@ -189,7 +189,7 @@ public class ModonomiconNeo {
             }
         });
 
-        //Item crafted event handling for research progression
+        //Item crafted event handling for research
         NeoForge.EVENT_BUS.addListener((PlayerEvent.ItemCraftedEvent e) -> {
             if(!(e.getEntity() instanceof ServerPlayer player))
                 return;

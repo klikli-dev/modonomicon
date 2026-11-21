@@ -9,7 +9,7 @@ package com.klikli_dev.modonomicon.api.datagen;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.*;
-import com.klikli_dev.modonomicon.api.datagen.GeneratedBookResearchStore.StagedProgressionRequest;
+import com.klikli_dev.modonomicon.api.datagen.GeneratedBookResearchStore.EntryResearchRequest;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
 import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
@@ -335,29 +335,29 @@ public class ConditionHelper {
     }
 
     /**
-     * Returns the generated research node of the staged progression of the given entry.
+     * Returns the generated research node of the staged research of the given entry.
      * Requires a book-bound ConditionHelper.
      */
-    public ResearchNodeRef entryProgressionNode(BookEntryModel entry) {
-        this.requireStore("entryProgressionNode()");
-        return ResearchNodeRef.of(this.store.progressionNodeId(entry.getId()));
+    public ResearchNodeRef entryResearchNode(BookEntryModel entry) {
+        this.requireStore("entryResearchNode()");
+        return ResearchNodeRef.of(this.store.researchNodeId(entry.getId()));
     }
 
     /**
-     * Returns the generated stage with the given name of the staged progression of the given entry.
+     * Returns the generated stage with the given name of the staged research of the given entry.
      * Requires a book-bound ConditionHelper.
      */
-    public ResearchStageRef entryProgressionStage(BookEntryModel entry, String stageName) {
-        this.requireStore("entryProgressionStage()");
-        return this.store.progressionStageRef(entry.getId(), stageName);
+    public ResearchStageRef entryResearchStage(BookEntryModel entry, String stageName) {
+        this.requireStore("entryResearchStage()");
+        return this.store.researchStageRef(entry.getId(), stageName);
     }
 
     /**
-     * Registers the staged progression of an entry, so its research is generated with the book.
+     * Registers the staged research of an entry, so its research is generated with the book.
      * Requires a book-bound ConditionHelper.
      */
-    public void addEntryProgression(StagedProgressionRequest request) {
-        this.requireStore("addEntryProgression()");
-        this.store.addStagedProgression(request);
+    public void addEntryResearch(EntryResearchRequest request) {
+        this.requireStore("addEntryResearch()");
+        this.store.addEntryResearch(request);
     }
 }

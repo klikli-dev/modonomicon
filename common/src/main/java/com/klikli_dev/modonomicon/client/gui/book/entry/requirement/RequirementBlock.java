@@ -14,13 +14,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
- * A block of requirement rows, e.g. the requirements of the next stage of an entry progression.
+ * A block of requirement rows, e.g. the requirements of the next stage of an entry research.
  *
  * @param title       the title of the block, e.g. the next stage, shown in the tooltips and as page title
  * @param rows        the requirement rows, empty if the block only states a condition
  * @param complete    true if everything the block describes is done, shown as a check mark
  * @param description optional description of the block, shown in the tooltip of the separator
- * @param stage       optional stage line below the rows, null if the block is not part of a staged progression
+ * @param stage       optional stage line below the rows, null if the block is not part of a staged research
  */
 public record RequirementBlock(Component title, List<RequirementRow> rows, boolean complete, @Nullable Component description, @Nullable StageLine stage) {
 
@@ -51,7 +51,7 @@ public record RequirementBlock(Component title, List<RequirementRow> rows, boole
      * The stage line of a staged block.
      *
      * @param index         0-based index of the stage the block shows
-     * @param total         number of stages of the progression
+     * @param total         number of stages of the research
      * @param lastBrowsable the index shown by default, browsing is limited to the stages up to it
      * @param navigable     whether the stage line offers browsing, false for pages that show one fixed stage
      * @param title         title of the shown stage, shown in the tooltip of the stage line

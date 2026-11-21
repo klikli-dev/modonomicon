@@ -356,7 +356,7 @@ public class BookModel {
     }
 
     /**
-     * Sets where the requirements of entries with a research progression are shown, unless the entry overrides it.
+     * Sets where the requirements of entries with a research are shown, unless the entry overrides it.
      * If never set, requirements are shown at the bottom of the first page.
      */
     public BookModel withDefaultRequirementsDisplay(@Nullable RequirementsDisplay defaultRequirementsDisplay) {

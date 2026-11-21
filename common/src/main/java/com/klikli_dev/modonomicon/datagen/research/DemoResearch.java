@@ -21,7 +21,7 @@ import com.klikli_dev.modonomicon.api.datagen.research.ResearchValueRef;
 import com.klikli_dev.modonomicon.api.datagen.research.SingleResearchSubProvider;
 import com.klikli_dev.modonomicon.book.BookIcon;
 import com.klikli_dev.modonomicon.datagen.book.demo.ScholarshipCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.progression.PlacedPageProgressionEntry;
+import com.klikli_dev.modonomicon.datagen.book.demo.research.PlacedPageResearchEntry;
 import com.klikli_dev.modonomicon.datagen.book.demo.values.SourcesEntry;
 import com.klikli_dev.modonomicon.research.data.ResearchCategories;
 import com.klikli_dev.modonomicon.research.data.ResearchStageCompletion;
@@ -136,7 +136,7 @@ public class DemoResearch extends SingleResearchSubProvider {
 
         // Explicit marker: a manually authored node, cleared once the index entry has been viewed
         var indexViewed = this.ingress()
-                .onEntryViewedOnce(this.modLoc(ScholarshipCategory.ID + "/" + PlacedPageProgressionEntry.ID))
+                .onEntryViewedOnce(this.modLoc(ScholarshipCategory.ID + "/" + PlacedPageResearchEntry.ID))
                 .declareFact("demo/marker_index_viewed");
         this.node(MARKER_EXPLICIT, indexViewed);
 
@@ -179,7 +179,7 @@ public class DemoResearch extends SingleResearchSubProvider {
         this.research().display(insight, ResearchDisplayModel.create().withIcon(Items.ENCHANTED_BOOK).withTitle(SCHOLARSHIP_INSIGHT_TITLE));
         this.add(SCHOLARSHIP_INSIGHT_TITLE, "Insight");
 
-        // Value stages: the bookbinding stage progression counts writable books crafted
+        // Value stages: the bookbinding stage research counts writable books crafted
         var writableBooksCrafted = this.value(WRITABLE_BOOKS_CRAFTED.id().getPath());
         this.ingress()
                 .onItemCrafted(new ItemStackTemplate(Items.WRITABLE_BOOK))
@@ -218,7 +218,7 @@ public class DemoResearch extends SingleResearchSubProvider {
         this.researchStageName(WRITABLE_BOOK_STAGE_2, "Three books");
         this.researchStageName(WRITABLE_BOOK_STAGE_3, "Five books");
 
-        // Requirement facts and values used by the progression entries
+        // Requirement facts and values used by the research entries
         var inkSacAcquired = this.ingress()
                 .onItemAcquired(new ItemStackTemplate(Items.INK_SAC))
                 .declareFact(INK_SAC_ACQUIRED.id().getPath());

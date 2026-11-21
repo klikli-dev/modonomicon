@@ -16,7 +16,7 @@ import net.minecraft.resources.Identifier;
  * A hook either grants a fact OR increments a value, never both.
  *
  * @param id the canonical hook id
- * @param targetItem the item matcher that triggers research progression
+ * @param targetItem the item matcher that triggers research
  * @param factRef the fact granted when that ingress event occurs (null if incrementing a value)
  * @param valueRef the value incremented when that ingress event occurs (null if granting a fact)
  * @param increment the amount to add to the target value (default 1, ignored for fact hooks)

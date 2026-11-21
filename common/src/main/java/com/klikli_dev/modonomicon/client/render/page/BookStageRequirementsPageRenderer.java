@@ -56,7 +56,7 @@ public class BookStageRequirementsPageRenderer extends BookPageRenderer<BookStag
     }
 
     /**
-     * The block is fetched every time, since browsing the stages of the progression changes it.
+     * The block is fetched every time, since browsing the stages of the research changes it.
      */
     private void refreshBlock() {
         this.block = this.requirements().getBlock(this.page.getStage());

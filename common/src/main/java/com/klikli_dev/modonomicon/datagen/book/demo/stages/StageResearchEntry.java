@@ -20,10 +20,10 @@ import net.minecraft.world.item.Items;
 /**
  * Research stages: pages are gated by the stages of a value based node, and the last page is gated by the stage complete condition.
  */
-public class StageProgressionEntry extends EntryProvider {
-    public static final String ID = "stage_progression";
+public class StageResearchEntry extends EntryProvider {
+    public static final String ID = "stage_research";
 
-    public StageProgressionEntry(CategoryProvider parent) {
+    public StageResearchEntry(CategoryProvider parent) {
         super(parent);
     }
 

@@ -19,7 +19,7 @@ import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import com.klikli_dev.modonomicon.book.RequirementsDisplay;
-import com.klikli_dev.modonomicon.book.entries.BookEntryProgression;
+import com.klikli_dev.modonomicon.book.entries.BookEntryResearch;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
@@ -81,11 +81,11 @@ public class BookEntryModel {
     protected Identifier categoryToOpen;
     protected Identifier commandToRunOnFirstRead;
     @Nullable
-    protected Identifier progressionNode;
+    protected Identifier researchNode;
     @Nullable
     protected RequirementsDisplay requirementsDisplay;
     @Nullable
-    protected ResearchStageRef progressionCompletionStage;
+    protected ResearchStageRef researchCompletionStage;
     protected Identifier entryToOpen;
     protected List<Either<ItemStackTemplate, Ingredient>> associatedItems = new ArrayList<>();
 
@@ -157,7 +157,7 @@ public class BookEntryModel {
             List<BookEntryTab> tabsToEncode = this.generateTabsAsFiles
                     ? List.of()
                     : this.tabs.stream().map(tab -> tab.toBookEntryTab(provider)).collect(Collectors.toList());
-            entry = new BookContentEntry(this.id, data, this.commandToRunOnFirstRead, pagesToEncode, tabsToEncode, this.progressionToEncode());
+            entry = new BookContentEntry(this.id, data, this.commandToRunOnFirstRead, pagesToEncode, tabsToEncode, this.researchToEncode());
         }
 
         var json = BookEntry.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), entry)
@@ -636,48 +636,48 @@ public class BookEntryModel {
     }
 
     /**
-     * Links this entry to the research node that tracks its progression. The entry is complete once the node is complete,
+     * Links this entry to the research node that tracks its research. The entry is complete once the node is complete,
      * and the requirements of the node's next stage are shown in the entry.
      * <p>
-     * This is a low-level escape hatch for hand-authored nodes. To declare a progression from requirements, use
+     * This is a low-level escape hatch for hand-authored nodes. To declare a research from requirements, use
      * {@code EntryProvider#stage(String, Consumer)} instead, which generates the node, its stages and their facts.
      * Do not combine it with stages in the same entry.
      */
-    public BookEntryModel withProgression(ResearchNodeRef node) {
-        this.progressionNode = node.id();
+    public BookEntryModel withResearch(ResearchNodeRef node) {
+        this.researchNode = node.id();
         return this;
     }
 
     /**
-     * Links this entry to a hand-authored research node like {@link #withProgression(ResearchNodeRef)}, and names the node's
+     * Links this entry to a hand-authored research node like {@link #withResearch(ResearchNodeRef)}, and names the node's
      * last stage. Child entries of this entry require the completion of that stage, i.e. the completion of the node.
      * <p>
-     * This is a low-level escape hatch for hand-authored nodes. To declare a progression from requirements, use
+     * This is a low-level escape hatch for hand-authored nodes. To declare a research from requirements, use
      * {@code EntryProvider#stage(String, Consumer)} instead, which generates the node, its stages and their facts.
      * Do not combine it with stages in the same entry.
      */
-    public BookEntryModel withProgression(ResearchNodeRef node, ResearchStageRef completionStage) {
-        this.withProgression(node);
-        this.progressionCompletionStage = completionStage;
+    public BookEntryModel withResearch(ResearchNodeRef node, ResearchStageRef completionStage) {
+        this.withResearch(node);
+        this.researchCompletionStage = completionStage;
         return this;
     }
 
-    public boolean hasProgression() {
-        return this.progressionNode != null;
+    public boolean hasResearch() {
+        return this.researchNode != null;
     }
 
     @Nullable
-    public Identifier getProgressionNode() {
-        return this.progressionNode;
+    public Identifier getResearchNode() {
+        return this.researchNode;
     }
 
     @Nullable
-    public ResearchStageRef getProgressionCompletionStage() {
-        return this.progressionCompletionStage;
+    public ResearchStageRef getResearchCompletionStage() {
+        return this.researchCompletionStage;
     }
 
     /**
-     * Overrides the book's default requirements display for this entry. Only has an effect together with a progression.
+     * Overrides the book's default requirements display for this entry. Only has an effect together with a research.
      */
     public BookEntryModel withRequirementsDisplay(RequirementsDisplay requirementsDisplay) {
         this.requirementsDisplay = requirementsDisplay;
@@ -690,11 +690,11 @@ public class BookEntryModel {
     }
 
     @Nullable
-    private BookEntryProgression progressionToEncode() {
-        if (this.progressionNode == null) {
+    private BookEntryResearch researchToEncode() {
+        if (this.researchNode == null) {
             return null;
         }
-        return new BookEntryProgression(this.progressionNode, Optional.ofNullable(this.requirementsDisplay));
+        return new BookEntryResearch(this.researchNode, Optional.ofNullable(this.requirementsDisplay));
     }
 
     /**

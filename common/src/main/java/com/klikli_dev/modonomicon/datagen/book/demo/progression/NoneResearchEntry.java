@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-package com.klikli_dev.modonomicon.datagen.book.demo.progression;
+package com.klikli_dev.modonomicon.datagen.book.demo.research;
 
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
@@ -17,19 +17,19 @@ import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
 
 /**
- * Hand-authored progression: the research is declared in {@link DemoResearch}, the entry has no requirements display and
+ * Hand-authored research: the research is declared in {@link DemoResearch}, the entry has no requirements display and
  * shows its progress with requirement pages placed in the content, and its pages are gated by the stages.
  */
-public class NoneProgressionEntry extends EntryProvider {
-    public static final String ID = "none_progression";
+public class NoneResearchEntry extends EntryProvider {
+    public static final String ID = "none_research";
 
-    public NoneProgressionEntry(CategoryProvider parent) {
+    public NoneResearchEntry(CategoryProvider parent) {
         super(parent);
     }
 
     @Override
     protected BookEntryModel additionalSetup(BookEntryModel entry) {
-        entry.withProgression(DemoResearch.REQUIREMENTS_STAGED, DemoResearch.REQUIREMENTS_STAGE_2);
+        entry.withResearch(DemoResearch.REQUIREMENTS_STAGED, DemoResearch.REQUIREMENTS_STAGE_2);
         return super.additionalSetup(entry);
     }
 

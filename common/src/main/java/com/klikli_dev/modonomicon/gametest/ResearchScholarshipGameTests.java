@@ -19,13 +19,13 @@ import net.minecraft.world.item.Items;
 import static com.klikli_dev.modonomicon.gametest.ResearchGameTestData.freshPlayer;
 
 /**
- * Runs the scholarship demo progression of {@code DemoResearch} and {@code ScholarshipEntry} with its generated research data.
+ * Runs the scholarship demo research of {@code DemoResearch} and {@code ScholarshipEntry} with its generated research data.
  */
 public class ResearchScholarshipGameTests {
 
-    private static final Identifier SCHOLARSHIP_NODE = Modonomicon.loc("generated/demo/nodes/entry_progression/scholarship_notes");
+    private static final Identifier SCHOLARSHIP_NODE = Modonomicon.loc("generated/demo/nodes/entry_research/scholarship_notes");
     private static final Identifier ENTRY_VIEWED_FACT = Modonomicon.loc("generated/demo/facts/entry_viewed_once/scholarship_notes");
-    private static final Identifier OBSERVATION_FACT = Modonomicon.loc("generated/demo/nodes/entry_progression/scholarship_notes/stages/observation/observation");
+    private static final Identifier OBSERVATION_FACT = Modonomicon.loc("generated/demo/nodes/entry_research/scholarship_notes/stages/observation/observation");
     /**
      * The 0-based index of the next stage in progress, see {@code PlayerResearchState#currentStageIndex}: 0 observation,
      * 1 transcription, 2 synthesis.

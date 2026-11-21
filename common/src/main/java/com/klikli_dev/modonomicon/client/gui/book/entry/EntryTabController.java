@@ -247,7 +247,7 @@ public class EntryTabController {
         this.pageRenderer.setPageSplitAllowed(false);
         this.pageRenderer.onBeginDisplayPage(this.screen, this.getOverlayLeft() + BookEntryScreen.SINGLE_PAGE_X, BookEntryScreen.TOP_PADDING);
         //the overlay keeps the space the page reserved for its own block, e.g. a stage requirements page reserves its block.
-        //The entry progression block is only shown on the first page, so the overlay never reserves space for it.
+        //The entry research block is only shown on the first page, so the overlay never reserves space for it.
     }
 
     private void endPage() {

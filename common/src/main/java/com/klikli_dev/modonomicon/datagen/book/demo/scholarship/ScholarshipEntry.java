@@ -22,7 +22,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 
 /**
- * The entry point of the book: a staged progression demonstrating research actions, the take, process and submit loop of an item_used fact, rewards and manual completion.
+ * The entry point of the book: a staged research demonstrating research actions, the take, process and submit loop of an item_used fact, rewards and manual completion.
  */
 public class ScholarshipEntry extends EntryProvider {
     public static final String ID = "notes";

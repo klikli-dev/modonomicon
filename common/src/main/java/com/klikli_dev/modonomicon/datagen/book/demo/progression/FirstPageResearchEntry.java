@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-package com.klikli_dev.modonomicon.datagen.book.demo.progression;
+package com.klikli_dev.modonomicon.datagen.book.demo.research;
 
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
@@ -16,12 +16,12 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
 /**
- * First page progression: its requirements are listed at the bottom of the first page (the default display). It is the child of the scholarship entry.
+ * First page research: its requirements are listed at the bottom of the first page (the default display). It is the child of the scholarship entry.
  */
-public class FirstPageProgressionEntry extends EntryProvider {
-    public static final String ID = "first_page_progression";
+public class FirstPageResearchEntry extends EntryProvider {
+    public static final String ID = "first_page_research";
 
-    public FirstPageProgressionEntry(CategoryProvider parent) {
+    public FirstPageResearchEntry(CategoryProvider parent) {
         super(parent);
     }
 
@@ -63,7 +63,7 @@ public class FirstPageProgressionEntry extends EntryProvider {
 
     @Override
     protected String entryDescription() {
-        return "First page progression, unlocked by the scholarship entry.";
+        return "First page research, unlocked by the scholarship entry.";
     }
 
     @Override

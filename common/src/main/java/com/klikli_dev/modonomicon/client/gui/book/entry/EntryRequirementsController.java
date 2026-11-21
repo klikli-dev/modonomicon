@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Owns the research requirements of a {@link BookEntryScreen}: the requirement blocks of the entry progression and its stages,
+ * Owns the research requirements of a {@link BookEntryScreen}: the requirement blocks of the entry research and its stages,
  * the browsed stage, the space reserved for the first page block and the trailing requirements page.
  * The screen delegates requirement state, layout, clicks and rendering to this controller.
  * <p>
@@ -47,7 +47,7 @@ public class EntryRequirementsController {
     private static final int ENTRY_START_PAGE = 0;
 
     /**
-     * The key of a block in the per-frame memo. A null stage is the entry progression, showing the given browsed stage index or the next stage if null.
+     * The key of a block in the per-frame memo. A null stage is the entry research, showing the given browsed stage index or the next stage if null.
      */
     private record BlockKey(@Nullable String stage, @Nullable Integer browsed) {
     }
@@ -66,7 +66,7 @@ public class EntryRequirementsController {
     private final Map<BlockKey, RequirementBlock> frameBlocks = new HashMap<>();
 
     /**
-     * The 0-based stage index of the progression the player browses with the stage line, null while the next stage is shown.
+     * The 0-based stage index of the research the player browses with the stage line, null while the next stage is shown.
      * Reset when the research state changes and whenever the entry is opened.
      */
     @Nullable
@@ -95,23 +95,23 @@ public class EntryRequirementsController {
     }
 
     /**
-     * True if the requirements of the entry progression are shown at the bottom of the first page.
+     * True if the requirements of the entry research are shown at the bottom of the first page.
      */
     public boolean isRequirementsOnFirstPage() {
-        return this.screen.getEntry().getProgression() != null
+        return this.screen.getEntry().getResearch() != null
                 && this.screen.getEntry().getRequirementsDisplay() == RequirementsDisplay.FIRST_PAGE;
     }
 
     /**
-     * True if the requirements of the entry progression get a virtual page after the last unlocked page.
+     * True if the requirements of the entry research get a virtual page after the last unlocked page.
      */
     public boolean showsTrailingPage() {
-        return this.screen.getEntry().getProgression() != null
+        return this.screen.getEntry().getResearch() != null
                 && this.screen.getEntry().getRequirementsDisplay() == RequirementsDisplay.TRAILING_PAGE;
     }
 
     /**
-     * The client-only page that shows the requirements of the entry progression. Its page number is after all authored pages and tabs,
+     * The client-only page that shows the requirements of the entry research. Its page number is after all authored pages and tabs,
      * so it never collides with them.
      */
     public BookStageRequirementsPage getTrailingPage() {
@@ -143,10 +143,10 @@ public class EntryRequirementsController {
     }
 
     /**
-     * The tallest height the requirement block of a stage can have. For the entry progression, this is the tallest block over all stages,
+     * The tallest height the requirement block of a stage can have. For the entry research, this is the tallest block over all stages,
      * so browsing the stages does not move the text.
      *
-     * @param stage the research stage id, or null for the entry progression
+     * @param stage the research stage id, or null for the entry research
      */
     public int getBlockMaxHeight(@Nullable String stage) {
         if (stage != null) {
@@ -164,10 +164,10 @@ public class EntryRequirementsController {
     }
 
     /**
-     * The requirement block of a research stage, or of the entry progression if stage is null. The progression shows the browsed stage, if any.
+     * The requirement block of a research stage, or of the entry research if stage is null. The research shows the browsed stage, if any.
      * Empty if there is nothing to show.
      *
-     * @param stage the research stage id, or null for the entry progression
+     * @param stage the research stage id, or null for the entry research
      */
     public RequirementBlock getBlock(@Nullable String stage) {
         if (stage != null) {
@@ -183,7 +183,7 @@ public class EntryRequirementsController {
     private RequirementBlock buildBlock(BlockKey key) {
         var entry = this.screen.getEntry();
         var player = this.screen.getMinecraft().player;
-        if (player == null || (key.stage() == null && entry.getProgression() == null)) {
+        if (player == null || (key.stage() == null && entry.getResearch() == null)) {
             return RequirementBlock.empty();
         }
 
@@ -194,14 +194,14 @@ public class EntryRequirementsController {
                 ResearchDataManager.get().data()
         );
         if (key.stage() == null) {
-            return ResearchRequirementRows.progression(entry.getProgression().node(), key.browsed(), context);
+            return ResearchRequirementRows.research(entry.getResearch().node(), key.browsed(), context);
         }
         var stageId = Identifier.tryParse(key.stage());
         return stageId != null ? ResearchRequirementRows.stageBlock(stageId, context) : RequirementBlock.empty();
     }
 
     /**
-     * Moves the browsed stage of the progression by the given delta, limited to the stages that are already reached.
+     * Moves the browsed stage of the research by the given delta, limited to the stages that are already reached.
      * Browsing to the next stage returns to the default view.
      *
      * @return true if the click was consumed by the stage line

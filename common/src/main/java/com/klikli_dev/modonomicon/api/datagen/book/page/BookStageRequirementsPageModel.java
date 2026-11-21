@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
- * A page showing the research requirements of a stage. Without a stage, the next stage of the entry progression is shown.
+ * A page showing the research requirements of a stage. Without a stage, the next stage of the entry research is shown.
  */
 public class BookStageRequirementsPageModel extends BookPageModel<BookStageRequirementsPageModel> {
     @Nullable
@@ -71,7 +71,7 @@ public class BookStageRequirementsPageModel extends BookPageModel<BookStageRequi
 
     /**
      * Shows the requirements of the given research stage id, e.g. "modonomicon:demo/some_stage".
-     * Without a stage, the next stage of the entry progression is shown.
+     * Without a stage, the next stage of the entry research is shown.
      */
     public BookStageRequirementsPageModel withStage(String stage) {
         this.stage = stage;

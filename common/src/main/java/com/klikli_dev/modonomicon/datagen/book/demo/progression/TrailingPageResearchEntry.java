@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-package com.klikli_dev.modonomicon.datagen.book.demo.progression;
+package com.klikli_dev.modonomicon.datagen.book.demo.research;
 
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
@@ -15,12 +15,12 @@ import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
 
 /**
- * Trailing page progression: its requirements are listed on a trailing page after the last page. Value requirements are shown as progress bars.
+ * Trailing page research: its requirements are listed on a trailing page after the last page. Value requirements are shown as progress bars.
  */
-public class TrailingPageProgressionEntry extends EntryProvider {
-    public static final String ID = "trailing_page_progression";
+public class TrailingPageResearchEntry extends EntryProvider {
+    public static final String ID = "trailing_page_research";
 
-    public TrailingPageProgressionEntry(CategoryProvider parent) {
+    public TrailingPageResearchEntry(CategoryProvider parent) {
         super(parent);
     }
 
@@ -64,7 +64,7 @@ public class TrailingPageProgressionEntry extends EntryProvider {
 
     @Override
     protected String entryDescription() {
-        return "Trailing page progression with value requirements.";
+        return "Trailing page research with value requirements.";
     }
 
     @Override

@@ -9,7 +9,7 @@ package com.klikli_dev.modonomicon.api.datagen;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.api.datagen.GeneratedBookResearchStore.ActionFact;
 import com.klikli_dev.modonomicon.api.datagen.GeneratedBookResearchStore.StageRequest;
-import com.klikli_dev.modonomicon.api.datagen.GeneratedBookResearchStore.StagedProgressionRequest;
+import com.klikli_dev.modonomicon.api.datagen.GeneratedBookResearchStore.EntryResearchRequest;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryTabModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
@@ -39,7 +39,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
     protected final CategoryProviderBase parent;
 
     protected BookEntryModel entry;
-    private final List<StageRequest> progressionStages = new ArrayList<>();
+    private final List<StageRequest> researchStages = new ArrayList<>();
     private final List<PendingRequirementsPage> requirementsPages = new ArrayList<>();
     private ResearchStageRef currentStage;
     private boolean requirementsPageUsed;
@@ -211,9 +211,9 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
     }
 
     /**
-     * Declares a stage of the research progression of this entry. Pages and tabs declared after a stage are only
-     * visible once the stage is completed. Requirements are declared with the builder, see {@link ProgressionStageBuilder}.
-     * This is the way to declare a progression: the research node, its stages and the facts of the requirements are generated.
+     * Declares a stage of the research of this entry. Pages and tabs declared after a stage are only
+     * visible once the stage is completed. Requirements are declared with the builder, see {@link ResearchStageBuilder}.
+     * This is the way to declare a research: the research node, its stages and the facts of the requirements are generated.
      * <p>
      * The first stage's requirements unlock the content after it; content declared before the first stage is not gated.
      * A stage needs at least one requirement (or a cost to consume) and a unique id within the entry. Texts given to the builder are literal English;
@@ -238,13 +238,13 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
      * @param configuration configures the requirements, completion, rewards and display of the stage
      * @throws IllegalStateException if the id is already used or the stage has no requirements
      */
-    protected void stage(String id, Consumer<ProgressionStageBuilder> configuration) {
-        var stageRef = this.condition().entryProgressionStage(this.entry, id);
-        if (this.progressionStages.stream().anyMatch(stage -> stage.ref().equals(stageRef))) {
+    protected void stage(String id, Consumer<ResearchStageBuilder> configuration) {
+        var stageRef = this.condition().entryResearchStage(this.entry, id);
+        if (this.researchStages.stream().anyMatch(stage -> stage.ref().equals(stageRef))) {
             throw new IllegalStateException("Duplicate stage id '" + id + "' in entry '" + this.entryId() + "'.");
         }
 
-        var builder = new ProgressionStageBuilder();
+        var builder = new ResearchStageBuilder();
         configuration.accept(builder);
         if (!builder.hasRequirements()) {
             throw new IllegalStateException("Stage '" + id + "' in entry '" + this.entryId() + "' has no requirements. "
@@ -272,7 +272,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
                     ResearchDisplayModel.create().withTitle(actionTitleKey).withAction(action.action())));
         }
 
-        this.progressionStages.add(new StageRequest(stageRef,
+        this.researchStages.add(new StageRequest(stageRef,
                 builder.crafted(), builder.acquired(), builder.used(), builder.viewed(), builder.facts(), builder.values(),
                 actionFacts, display, builder.completion(), builder.rewards()));
         this.currentStage = stageRef;
@@ -313,7 +313,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
     }
 
     private BookStageRequirementsPageModel addRequirementsPage(BookStageRequirementsPageModel page) {
-        this.requirementsPages.add(new PendingRequirementsPage(page, this.progressionStages.size()));
+        this.requirementsPages.add(new PendingRequirementsPage(page, this.researchStages.size()));
         this.requirementsPageUsed = true;
         return page;
     }
@@ -328,7 +328,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
 
     private BookConditionModel<?> stageGate(BookConditionModel<?> condition) {
         var gate = this.condition().researchStageCompleted(
-                this.condition().entryProgressionNode(this.entry), this.currentStage);
+                this.condition().entryResearchNode(this.entry), this.currentStage);
         if (condition == null || condition instanceof BookNoneConditionModel) {
             return gate;
         }
@@ -342,15 +342,15 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
         page.withCondition(this.stageGate(page.getCondition()));
     }
 
-    private void resetProgression() {
-        this.progressionStages.clear();
+    private void resetResearch() {
+        this.researchStages.clear();
         this.requirementsPages.clear();
         this.currentStage = null;
         this.requirementsPageUsed = false;
     }
 
-    private void finishProgression() {
-        if (this.progressionStages.isEmpty()) {
+    private void finishResearch() {
+        if (this.researchStages.isEmpty()) {
             if (!this.requirementsPages.isEmpty()) {
                 throw new IllegalStateException("Entry '" + this.entryId() + "' has a requirements page, but no stage. "
                         + "Declare a stage with this.stage(...).");
@@ -358,17 +358,17 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
             return;
         }
 
-        if (this.entry.hasProgression()) {
-            throw new IllegalStateException("Entry '" + this.entryId() + "' already has a research progression, set with BookEntryModel.withProgression. "
-                    + "Declare progressions with this.stage(...) in EntryProvider, or use BookEntryModel.withProgression for a hand-authored node, not both.");
+        if (this.entry.hasResearch()) {
+            throw new IllegalStateException("Entry '" + this.entryId() + "' already has a research, set with BookEntryModel.withResearch. "
+                    + "Declare researches with this.stage(...) in EntryProvider, or use BookEntryModel.withResearch for a hand-authored node, not both.");
         }
 
-        var lastIndex = this.progressionStages.size() - 1;
-        this.condition().addEntryProgression(new StagedProgressionRequest(this.entry.getId(), List.copyOf(this.progressionStages)));
-        this.entry.withProgression(this.condition().entryProgressionNode(this.entry), this.progressionStages.get(lastIndex).ref());
+        var lastIndex = this.researchStages.size() - 1;
+        this.condition().addEntryResearch(new EntryResearchRequest(this.entry.getId(), List.copyOf(this.researchStages)));
+        this.entry.withResearch(this.condition().entryResearchNode(this.entry), this.researchStages.get(lastIndex).ref());
 
         for (var pending : this.requirementsPages) {
-            var next = this.progressionStages.get(Math.min(pending.nextStageIndex(), lastIndex));
+            var next = this.researchStages.get(Math.min(pending.nextStageIndex(), lastIndex));
             pending.page().withStage(next.ref());
         }
 
@@ -474,9 +474,9 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
 
         this.entry = this.additionalSetup(entry);
 
-        this.resetProgression();
+        this.resetResearch();
         this.generatePages();
-        this.finishProgression();
+        this.finishResearch();
         this.validateTabs();
 
         this.parent.add(this.entry);

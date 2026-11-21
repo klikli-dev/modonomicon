@@ -44,8 +44,8 @@ public class BookContentEntry extends BookEntry {
             Identifier.CODEC.optionalFieldOf("command_to_run_on_first_read").forGetter(entry -> Optional.ofNullable(entry.commandToRunOnFirstReadId)),
             BookPage.CODEC.listOf().optionalFieldOf("pages", List.of()).forGetter(entry -> entry.pages),
             BookEntryTab.CODEC.listOf().optionalFieldOf("tabs", List.of()).forGetter(entry -> entry.tabs),
-            BookEntryProgression.CODEC.optionalFieldOf("progression").forGetter(entry -> Optional.ofNullable(entry.progression))
-    ).apply(instance, (id, data, commandToRunOnFirstReadId, pages, tabs, progression) -> new BookContentEntry(id, data, commandToRunOnFirstReadId.orElse(null), pages, tabs, progression.orElse(null))));
+            BookEntryResearch.CODEC.optionalFieldOf("research").forGetter(entry -> Optional.ofNullable(entry.research))
+    ).apply(instance, (id, data, commandToRunOnFirstReadId, pages, tabs, research) -> new BookContentEntry(id, data, commandToRunOnFirstReadId.orElse(null), pages, tabs, research.orElse(null))));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BookContentEntry> STREAM_CODEC = StreamCodec.composite(
             Identifier.STREAM_CODEC, BookEntry::getId,
@@ -53,14 +53,14 @@ public class BookContentEntry extends BookEntry {
             ByteBufCodecs.optional(Identifier.STREAM_CODEC), entry -> Optional.ofNullable(entry.commandToRunOnFirstReadId),
             BookPage.STREAM_CODEC.apply(ByteBufCodecs.list()), entry -> entry.pages,
             BookEntryTab.STREAM_CODEC.apply(ByteBufCodecs.list()), entry -> entry.tabs,
-            ByteBufCodecs.optional(BookEntryProgression.STREAM_CODEC), entry -> Optional.ofNullable(entry.progression),
-            (id, data, commandToRunOnFirstReadId, pages, tabs, progression) -> new BookContentEntry(id, data, commandToRunOnFirstReadId.orElse(null), pages, tabs, progression.orElse(null))
+            ByteBufCodecs.optional(BookEntryResearch.STREAM_CODEC), entry -> Optional.ofNullable(entry.research),
+            (id, data, commandToRunOnFirstReadId, pages, tabs, research) -> new BookContentEntry(id, data, commandToRunOnFirstReadId.orElse(null), pages, tabs, research.orElse(null))
     );
 
     protected List<BookPage> pages;
     protected List<BookEntryTab> tabs;
     @Nullable
-    protected BookEntryProgression progression;
+    protected BookEntryResearch research;
 
     public BookContentEntry(Identifier id, BookEntryData data, Identifier commandToRunOnFirstReadId, List<BookPage> pages) {
         this(id, data, commandToRunOnFirstReadId, pages, List.of());
@@ -70,11 +70,11 @@ public class BookContentEntry extends BookEntry {
         this(id, data, commandToRunOnFirstReadId, pages, tabs, null);
     }
 
-    public BookContentEntry(Identifier id, BookEntryData data, Identifier commandToRunOnFirstReadId, List<BookPage> pages, List<BookEntryTab> tabs, @Nullable BookEntryProgression progression) {
+    public BookContentEntry(Identifier id, BookEntryData data, Identifier commandToRunOnFirstReadId, List<BookPage> pages, List<BookEntryTab> tabs, @Nullable BookEntryResearch research) {
         super(id, data, commandToRunOnFirstReadId);
         this.pages = new ArrayList<>(pages);
         this.tabs = new ArrayList<>(tabs);
-        this.progression = progression;
+        this.research = research;
     }
 
     @Override
@@ -132,29 +132,29 @@ public class BookContentEntry extends BookEntry {
     }
 
     /**
-     * The research progression of this entry, or null if the entry has none.
+     * The research of this entry, or null if the entry has none.
      */
     @Nullable
-    public BookEntryProgression getProgression() {
-        return this.progression;
+    public BookEntryResearch getResearch() {
+        return this.research;
     }
 
     /**
      * The requirements display of this entry: the entry's own override, or the book default.
      */
     public RequirementsDisplay getRequirementsDisplay() {
-        if (this.progression != null && this.progression.requirementsDisplay().isPresent()) {
-            return this.progression.requirementsDisplay().get();
+        if (this.research != null && this.research.requirementsDisplay().isPresent()) {
+            return this.research.requirementsDisplay().get();
         }
         return this.getBook() != null ? this.getBook().getDefaultRequirementsDisplay() : RequirementsDisplay.FIRST_PAGE;
     }
 
     /**
-     * True if the player completed this entry. Entries with a progression are complete once their research node is complete, other entries once they are read.
+     * True if the player completed this entry. Entries with a research are complete once their research node is complete, other entries once they are read.
      */
     public boolean isComplete(Player player) {
-        if (this.progression != null) {
-            return ResearchServices.state().isNodeComplete(player, this.progression.node());
+        if (this.research != null) {
+            return ResearchServices.state().isNodeComplete(player, this.research.node());
         }
         return BookServices.stateAccess().isEntryRead(player, this);
     }

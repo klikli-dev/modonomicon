@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-package com.klikli_dev.modonomicon.datagen.book.demo.progression;
+package com.klikli_dev.modonomicon.datagen.book.demo.research;
 
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
@@ -14,12 +14,12 @@ import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
 
 /**
- * Placed page progression: requirements pages are placed between the content, they keep showing progress after a stage is complete.
+ * Placed page research: requirements pages are placed between the content, they keep showing progress after a stage is complete.
  */
-public class PlacedPageProgressionEntry extends EntryProvider {
-    public static final String ID = "placed_page_progression";
+public class PlacedPageResearchEntry extends EntryProvider {
+    public static final String ID = "placed_page_research";
 
-    public PlacedPageProgressionEntry(CategoryProvider parent) {
+    public PlacedPageResearchEntry(CategoryProvider parent) {
         super(parent);
     }
 

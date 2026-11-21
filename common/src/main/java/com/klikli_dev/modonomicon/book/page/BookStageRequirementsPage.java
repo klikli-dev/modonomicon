@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Shows the research requirements of a stage. Without a stage, the next stage of the entry progression is shown.
+ * Shows the research requirements of a stage. Without a stage, the next stage of the entry research is shown.
  * The title and text are optional, the requirement block is titled by the stage if no title is given.
  */
 public class BookStageRequirementsPage extends BookPage {
@@ -91,7 +91,7 @@ public class BookStageRequirementsPage extends BookPage {
     }
 
     /**
-     * The research stage id as written in the page, or null for the next stage of the entry progression.
+     * The research stage id as written in the page, or null for the next stage of the entry research.
      */
     @Nullable
     public String getStage() {
