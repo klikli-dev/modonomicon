@@ -48,7 +48,7 @@ this.stage("synthesis", s -> s
 | `function(id)` | `function` |
 | `of(effect)` | Any effect, e.g. one of a third-party type |
 
-`function` runs `data/<namespace>/function/<path>.mcfunction` as the player, e.g. `modonomicon:demo/scholarship_synthesis`.
+`function` runs `data/<namespace>/function/<path>.mcfunction` as the player, e.g. `modonomicon:demo/synthesis_effect`.
 
 Stage effects are granted once, in the order they are declared. Effects on an action run in the order of the action's `effects`.
 
