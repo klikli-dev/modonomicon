@@ -71,6 +71,8 @@ public class DemoResearch extends SingleResearchSubProvider {
     private static final String SOURCES_CONSULTED_TITLE = "modonomicon.demo.scholarship.sources_consulted.title";
     private static final String WRITABLE_BOOKS_CRAFTED_TITLE = "modonomicon.demo.scholarship.writable_books_crafted.title";
     private static final String INK_SAC_ACQUIRED_TITLE = "modonomicon.demo.scholarship.ink_sac_acquired.title";
+    private static final String RIDE_BOAT_WITH_GOAT_TITLE = "modonomicon.demo.scholarship.advancement_ride_boat_with_goat.title";
+    private static final String MINE_STONE_TITLE = "modonomicon.demo.scholarship.advancement_mine_stone.title";
     /**
      * Granted by the take action of the blank note, so the row ticks once a note was taken while the action stays repeatable.
      */
@@ -115,6 +117,11 @@ public class DemoResearch extends SingleResearchSubProvider {
         var rideBoatCompleted = this.ingress()
                 .onAdvancementEarned(this.mcLoc("husbandry/ride_a_boat_with_a_goat"))
                 .declareFact(ADVANCEMENT_RIDE_BOAT_WITH_GOAT_COMPLETED.id().getPath());
+
+        this.research().display(mineStoneCompleted, ResearchDisplayModel.create().withIcon(Items.STONE).withTitle(MINE_STONE_TITLE));
+        this.add(MINE_STONE_TITLE, "Earn the advancement Mine Stone");
+        this.research().display(rideBoatCompleted, ResearchDisplayModel.create().withIcon(Items.OAK_BOAT).withTitle(RIDE_BOAT_WITH_GOAT_TITLE));
+        this.add(RIDE_BOAT_WITH_GOAT_TITLE, "Earn the advancement Ride a Boat with a Goat");
 
         this.node(ADVANCEMENT_MINE_STONE, mineStoneCompleted);
         this.node(ADVANCEMENT_RIDE_BOAT_WITH_GOAT, rideBoatCompleted);

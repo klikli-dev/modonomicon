@@ -562,6 +562,8 @@
   "modonomicon.configuration.storeLastOpenPageWhenClosingEntry.tooltip": "Enable keeping the last open page stored when closing an entry. Regardless of this setting it will be stored when closing the entire book with Esc.",
   "modonomicon.demo.category.smithing.description": "Demo category declared in DemoResearch, grouping the iron ingot of the staged requirements.",
   "modonomicon.demo.category.smithing.title": "Smithing",
+  "modonomicon.demo.scholarship.advancement_mine_stone.title": "Earn the advancement Mine Stone",
+  "modonomicon.demo.scholarship.advancement_ride_boat_with_goat.title": "Earn the advancement Ride a Boat with a Goat",
   "modonomicon.demo.scholarship.ink_sac_acquired.title": "Gather ink",
   "modonomicon.demo.scholarship.insight.title": "Insight",
   "modonomicon.demo.scholarship.note_crafted.description": "Craft a blank note with an ink sac.",
