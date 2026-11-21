@@ -6,7 +6,7 @@ sidebar_position: 15
 
 The `item_used` trigger fires when a player uses an item in the air, e.g. right-clicking a book or a note without a block target. It lets a research fact or value depend on an item the player uses, not only on crafting or acquiring it.
 
-Use it with `ResearchIngressHelper.onItemUsed` in datagen, or with the `modonomicon:item_used` trigger type in `hooks.json`. The target is an item template, an item tag or a matcher, like `item_crafted` and `item_acquired`. Components listed in a template must match the used stack.
+Use it with `ResearchHookHelper.onItemUsed` in datagen, or with the `modonomicon:item_used` trigger type in `hooks.json`. The target is an item template, an item tag or a matcher, like `item_crafted` and `item_acquired`. Components listed in a template must match the used stack.
 
 ## Hooks that count, handle and consume
 
@@ -18,18 +18,18 @@ A hook of this trigger does one of two things when the item is used:
 A value hook without `consume` does not count, but it still increments its value and the research state is synced. It does not handle the use, so the vanilla use continues. Food is still eaten, potions are still drunk and buckets still fill. Use this for counters of things the player does with an item anyway.
 
 ```java
-this.ingress()
+this.hook()
         .onItemUsed(RESEARCH_NOTE)
         .consume(1)
-        .declareFact("demo/scholarship/note_studied");
+        .declareFact("demo/research/note_studied");
 ```
 
 The same hook in `hooks.json`:
 
 ```json
 {
-  "id": "modonomicon:demo/scholarship/note_studied_hook",
-  "fact_id": "modonomicon:demo/scholarship/note_studied",
+  "id": "modonomicon:demo/research/note_studied_hook",
+  "fact_id": "modonomicon:demo/research/note_studied",
   "trigger_type": "modonomicon:item_used",
   "trigger_target": {
     "id": "minecraft:paper",

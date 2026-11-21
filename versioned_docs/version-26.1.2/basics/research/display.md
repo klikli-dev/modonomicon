@@ -19,7 +19,7 @@ For a fact row, the parts are chosen in this order:
 
 Values work the same way with the `research_value.` prefix, but their rows take their icon from the hooks that increment them and have no description from hooks. Stages and nodes use `research_stage.` and `research_node.` keys for the names shown in condition tooltips, see the [Lang Key Reference](./lang-keys.md).
 
-Where a row still has no icon of its own, the built-in presenters use the default research icon textures instead, in `assets/modonomicon/textures/gui/sprites/modonomicon/research_icons/`. These are used for levels costs (`cost_levels.png`), experience rewards (`effect_experience.png`), value rewards (`effect_add_value.png`), granted-fact rewards (`effect_grant_fact.png`) and similar fallbacks. Each texture can be replaced by a file with the same name in the `modonomicon` assets, e.g. by a resource pack. Dynamic data, such as the item of an item cost, is shown instead of the texture.
+Where a row still has no icon of its own, the built-in presenters use the default research icon textures instead, in `assets/modonomicon/textures/gui/sprites/modonomicon/scholarship/icons/`. These are used for levels costs (`cost_levels.png`), experience rewards (`effect_experience.png`), value rewards (`effect_add_value.png`), granted-fact rewards (`effect_grant_fact.png`) and similar fallbacks. Each texture can be replaced by a file with the same name in the `modonomicon` assets, e.g. by a resource pack. Dynamic data, such as the item of an item cost, is shown instead of the texture.
 
 ## Datagen
 
@@ -51,7 +51,7 @@ Calling `display` on a fact, value or node that was never declared throws an `Il
 
 The specs and builders that declare research (`ResearchFactSpec`, `ResearchValueSpec`, `ResearchNodeSpec`, `ResearchStageSpec` and `ResearchNodeBuilder`) take the display in the same way with `withDisplay(model)` or `withDisplay(operator)`. The bundle builder `this.research()` keeps `display(ref, ...)` for elements that are already declared.
 
-Stage displays are part of the stage. In the entry progression they are set by the builder, `title(...)`, `description(...)` and `icon(...)`, see [Entry Progression](./entry-progression.md#datagen).
+Stage displays are part of the stage. In the entry progression they are set by the builder, `title(...)`, `description(...)` and `icon(...)`, see [Entry Progression](./entry-research.md#datagen).
 
 ## Merge
 
@@ -86,5 +86,5 @@ Facts and values can carry an `action`, see [Actions, Costs and Effects](./actio
 ## Where display data appears
 
 - Requirement rows of stages, grouped into [categories](./categories.md).
-- Tooltips of conditions in [Research Conditions](./conditions.md), through the node and stage names.
+- Tooltips of conditions in [Research Conditions](../unlock-conditions/research-conditions.md), through the node and stage names.
 - Toasts use their own toast definition, see [Research System](./research.md#toast-notifications).

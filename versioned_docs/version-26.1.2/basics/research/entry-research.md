@@ -14,7 +14,7 @@ A progression has one or more stages, completed in order. Each stage has:
 
 - **requirements**: what must be met, e.g. crafting an item, obtaining an item, reading an entry or completing an action.
 - **completion**: automatic (the default, the stage completes as soon as its requirements are met) or manual (the player clicks the Complete button once they hold what the stage consumes, see [Actions, Costs and Effects](./actions.md)).
-- **rewards**: effects granted once when the stage completes, see [Rewards](./rewards.md).
+- **rewards**: effects granted once when the stage completes, see [Rewards](./effects.md).
 - **display**: a title, an optional description and an optional icon, shown in the requirements block.
 
 ## Gating
@@ -54,9 +54,9 @@ The entry references its progression node. The node and its stages are generated
 
 ```json
 {
-  "id": "modonomicon:progression/scholarship",
+  "id": "modonomicon:scholarship/notes",
   "progression": {
-    "node": "modonomicon:generated/demo/nodes/entry_progression/progression_scholarship"
+    "node": "modonomicon:generated/demo/nodes/entry_research/progression_scholarship"
   }
 }
 ```
@@ -65,18 +65,18 @@ The node defines the stages with their requirements, completion and rewards:
 
 ```json
 {
-  "id": "modonomicon:generated/demo/nodes/entry_progression/progression_scholarship",
+  "id": "modonomicon:generated/demo/nodes/entry_research/progression_scholarship",
   "required_facts": [
     "modonomicon:generated/demo/facts/entry_viewed_once/progression_scholarship"
   ],
   "stages": [
     {
-      "id": "modonomicon:generated/demo/nodes/entry_progression/progression_scholarship/stages/observation",
+      "id": "modonomicon:generated/demo/nodes/entry_research/progression_scholarship/stages/observation",
       "display": {
         "title": { "translate": "book.modonomicon.demo.progression.scholarship.stage.observation.title" }
       },
       "required_facts": [
-        "modonomicon:generated/demo/nodes/entry_progression/progression_scholarship/stages/observation/observation"
+        "modonomicon:generated/demo/nodes/entry_research/progression_scholarship/stages/observation/observation"
       ],
       "rewards": [
         { "type": "modonomicon:experience", "amount": 10 }
@@ -96,15 +96,15 @@ this.stage("observation", s -> s
                 ResearchActionModel.learn(ResearchCostModel.create().item(Items.PAPER)))
         .title("Observation")
         .description("Pay one paper to record your observations.")
-        .reward(ResearchEffectModel.experience(10)));
+        .effect(ResearchEffectModel.experience(10)));
 
 this.stage("transcription", s -> s
-        .fact(DemoResearch.SCHOLARSHIP_NOTE_TAKEN)
-        .fact(DemoResearch.SCHOLARSHIP_NOTE_CRAFTED)
-        .fact(DemoResearch.SCHOLARSHIP_NOTE_STUDIED)
+        .fact(DemoResearch.NOTE_TAKEN)
+        .fact(DemoResearch.NOTE_CRAFTED)
+        .fact(DemoResearch.NOTE_STUDIED)
         .title("Transcription")
-        .reward(ResearchEffectModel.addValue(DemoResearch.SCHOLARSHIP_INSIGHT, 1))
-        .reward(ResearchEffectModel.grantFact(DemoResearch.SCHOLARSHIP_NOTES_READ)));
+        .effect(ResearchEffectModel.addValue(DemoResearch.INSIGHT, 1))
+        .effect(ResearchEffectModel.grantFact(DemoResearch.NOTES_READ)));
 ```
 
 A stage needs at least one requirement and a unique id within the entry. Requirements are:
@@ -124,31 +124,31 @@ Texts are literal English. The title defaults to the stage id, capitalized. Call
 
 ### Requirements pages
 
-`requirementsPage(id)` places a page that shows the requirements of the next stage. It is the stage declared after the page, or the last stage if the page comes after all stages. Use the built-in texts, or give your own:
+`scholarshipPage(id)` places a page that shows the requirements of the next stage. It is the stage declared after the page, or the last stage if the page comes after all stages. Use the built-in texts, or give your own:
 
 ```java
 this.page("intro", () -> BookTextPageModel.create()
         .withTitle(this.context().pageTitle())
         .withText(this.context().pageText()));
-this.requirementsPage("next");
+this.scholarshipPage("next");
 this.stage("quickening", s -> s.craft(Items.CLAY).title("Breathing life into clay"));
-this.requirementsPage("after", "Stage requirements", "The requirements of the next stage.");
+this.scholarshipPage("after", "Stage requirements", "The requirements of the next stage.");
 ```
 
-`requirementsDisplay(RequirementsDisplay.TRAILING_PAGE)` overrides the display of the entry.
+`scholarshipDisplay(ScholarshipDisplay.TRAILING_PAGE)` overrides the display of the entry.
 
 ### Low-level alternative
 
-`BookEntryModel.withProgression(node)` attaches a progression node you generated yourself. Use it only if `stage(...)` does not fit, for example for a progression shared by several entries. `withProgression(node, stage)` sets the completion stage that gates the children.
+`BookEntryModel.withResearch(node)` attaches a progression node you generated yourself. Use it only if `stage(...)` does not fit, for example for a progression shared by several entries. `withResearch(node, stage)` sets the completion stage that gates the children.
 
 ## Examples
 
 The demo entries show each display:
 
-- `progression/first_page_progression`: the default display, requirements on the first page.
-- `progression/trailing_page_progression`: requirements on a trailing page, with a value bar.
-- `progression/placed_page_progression`: requirements pages placed between the content.
-- `progression/none_progression`: no requirements display, gating only.
-- `progression/scholarship`: actions, manual completion and rewards, see [Actions, Costs and Effects](./actions.md).
+- `scholarship/first_page_display`: the default display, requirements on the first page.
+- `scholarship/trailing_page`: requirements on a trailing page, with a value bar.
+- `scholarship/placed_pages`: requirements pages placed between the content.
+- `scholarship/hand_authored`: no requirements display, gating only.
+- `scholarship/notes`: actions, manual completion and rewards, see [Actions, Costs and Effects](./actions.md).
 
 See also [Research Datagen](./datagen.md), [Requirement Categories](./categories.md) and the [Glossary](./glossary.md).

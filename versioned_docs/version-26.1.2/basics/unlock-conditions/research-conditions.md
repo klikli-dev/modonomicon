@@ -79,7 +79,7 @@ public static final ResearchNodeRef MARKER_DONE = node("mymod/marker_done");
 
 @Override
 protected void generateResearch() {
-    var fact = this.ingress()
+    var fact = this.hook()
         .onEntryViewedOnce(this.modLoc("mymod_category/mymod_entry"))
         .declareFact("mymod/marker_done_fact");
 

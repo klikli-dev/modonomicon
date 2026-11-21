@@ -11,7 +11,7 @@ Stage rewards are a list of effects:
 ```json
 "rewards": [
   { "type": "modonomicon:add_value", "value": "modonomicon:demo/insight", "amount": 1 },
-  { "type": "modonomicon:grant_fact", "fact": "modonomicon:demo/scholarship/notes_read" }
+  { "type": "modonomicon:grant_fact", "fact": "modonomicon:demo/research/notes_read" }
 ]
 ```
 
@@ -35,8 +35,8 @@ A `give_item` with `require_absent` hands out an item once, e.g. a research note
 this.stage("synthesis", s -> s
         .consume(Items.IRON_INGOT, 2)
         .title("Synthesis")
-        .reward(ResearchEffectModel.giveItem(Items.EMERALD))
-        .reward(ResearchEffectModel.function(SYNTHESIS_FUNCTION)));
+        .effect(ResearchEffectModel.giveItem(Items.EMERALD))
+        .effect(ResearchEffectModel.function(SYNTHESIS_FUNCTION)));
 ```
 
 | Factory | Effect |
@@ -58,7 +58,7 @@ Every effect reports whether it changed something: research state, inventory or 
 
 ## Reward rows
 
-A stage shows its rewards as rows of the rewards category. A reward row is met once its stage is complete, and until then it says it is granted when the stage is completed. Each effect type has a presenter that describes it, see [Custom Presenters](../../advanced/custom-presenters.md). Effect types without a presenter show a generic special reward row.
+A stage shows its rewards as rows of the rewards category. A reward row is met once its stage is complete, and until then it says it is granted when the stage is completed. Each effect type has a presenter that describes it, see [Custom Presenters](../scholarship/custom-presenters.md). Effect types without a presenter show a generic special reward row.
 
 ## Custom effect types
 

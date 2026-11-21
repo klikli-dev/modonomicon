@@ -32,7 +32,7 @@ public static final ResearchNodeRef ADVANCEMENT_GATE = node("mymod/advancement_g
 
 @Override
 protected void generateResearch() {
-    var fact = this.ingress()
+    var fact = this.hook()
         .onAdvancementEarned(this.mcLoc("story/mine_stone"))
         .declareFact("mymod/advancement_gate_fact");
 
@@ -57,7 +57,7 @@ public static final ResearchNodeRef CRAFTED_GATE = node("mymod/crafted_gate");
 
 @Override
 protected void generateResearch() {
-    var fact = this.ingress()
+    var fact = this.hook()
         .onItemCrafted(new ItemStackTemplate(Items.DIAMOND_SWORD))
         .declareFact("mymod/crafted_gate_fact");
 
@@ -73,7 +73,7 @@ entry.withCondition(MyResearch.CRAFTED_GATE);
 With component matching (checks data components on the item):
 
 ```java
-this.ingress()
+this.hook()
     .onItemCrafted(new ItemStackTemplate(Items.DIAMOND_SWORD))
     .grantFact("mymod/crafted_hook", factRef);
 ```
@@ -90,7 +90,7 @@ public static final ResearchNodeRef ACQUIRED_GATE = node("mymod/acquired_gate");
 
 @Override
 protected void generateResearch() {
-    var fact = this.ingress()
+    var fact = this.hook()
         .onItemAcquired(new ItemStackTemplate(Items.NETHER_STAR))
         .declareFact("mymod/acquired_gate_fact");
 
@@ -127,7 +127,7 @@ public static final ResearchNodeRef MARKER_DONE = node("mymod/marker_done");
 
 @Override
 protected void generateResearch() {
-    var fact = this.ingress()
+    var fact = this.hook()
         .onAdvancementEarned(this.mcLoc("story/mine_stone"))
         .declareFact("mymod/marker_done_fact");
 
@@ -155,7 +155,7 @@ protected void generateResearch() {
     var value = this.value("mymod/mined_stone");
 
     // Increment when stone is crafted
-    this.ingress()
+    this.hook()
         .onItemCrafted(new ItemStackTemplate(Items.COBBLESTONE))
         .incrementValue("mymod/stone_hook", value, 1);
 
@@ -187,13 +187,13 @@ protected void generateResearch() {
     var stage2Ref = this.stageRef("mymod/brewing_stage_2");
     var stage3Ref = this.stageRef("mymod/brewing_stage_3");
 
-    var fact1 = this.ingress()
+    var fact1 = this.hook()
         .onEntryViewedOnce(this.modLoc("entries/brewing_basic"))
         .declareFact("mymod/brewing_basic_fact");
-    var fact2 = this.ingress()
+    var fact2 = this.hook()
         .onEntryViewedOnce(this.modLoc("entries/brewing_intermediate"))
         .declareFact("mymod/brewing_intermediate_fact");
-    var fact3 = this.ingress()
+    var fact3 = this.hook()
         .onEntryViewedOnce(this.modLoc("entries/brewing_advanced"))
         .declareFact("mymod/brewing_advanced_fact");
 

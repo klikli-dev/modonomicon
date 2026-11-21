@@ -72,7 +72,7 @@ A node's stages are completed in order. The next stage becomes the current one o
 
 ## Further reading
 
-- [Research Conditions](./conditions) — unlocking entries and categories via research nodes
+- [Research Conditions](../unlock-conditions/research-conditions) — unlocking entries and categories via research nodes
 - [Research Scenarios](./scenarios) — common patterns for advancement gating, item crafting, and more
 - [Research Datagen](./datagen) — authoring research content via datagen
 - [Custom Research Hooks](../../advanced/custom-hooks) — registering new trigger types for third-party mods

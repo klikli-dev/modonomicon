@@ -194,7 +194,7 @@ Once the condition is met the marker disappears without needing to reopen the bo
 
 - The marker only shows on unlocked entries; never on locked or hidden entries.
 - Markers never show tooltips.
-- Any unlock condition type can be used (see **[Research Conditions](../research/conditions.md)**); typically a research-backed condition such as `research_node_unlocked` or `research_stage_completed`.
+- Any unlock condition type can be used (see **[Research Conditions](../unlock-conditions/research-conditions.md)**); typically a research-backed condition such as `research_node_unlocked` or `research_stage_completed`.
 - The marker sprite can be customized per entry with `marker` (see above); otherwise the theme default is used.
 
 ```json

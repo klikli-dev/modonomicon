@@ -30,12 +30,12 @@ Unknown category ids fall back to the research category and log a warning once.
 
 ## Declaring a category
 
-Use `ResearchCategoryModel` in your `ResearchSubProvider`. The category is added to the research bundle, and the display of an element selects it:
+Use `ResearchGroupModel` in your `ResearchSubProvider`. The category is added to the research bundle, and the display of an element selects it:
 
 ```java
 public static final Identifier DEMO_RITUALS = Modonomicon.loc("demo_rituals");
 
-this.research().category(ResearchCategoryModel.create(DEMO_RITUALS)
+this.research().category(ResearchGroupModel.create(DEMO_RITUALS)
         .withIcon(DEMO_RITUALS_ICON)
         .withTitle(DEMO_RITUALS_TITLE)
         .withDescription(DEMO_RITUALS_DESCRIPTION)
@@ -57,7 +57,7 @@ A category is an entry in the `categories.json` of the research bundle. Its icon
 [
   {
     "id": "modonomicon:demo_rituals",
-    "icon": "modonomicon:modonomicon/requirement_categories/demo_rituals",
+    "icon": "modonomicon:modonomicon/scholarship/groups/demo_rituals",
     "sort_order": 15,
     "title": { "translate": "modonomicon.demo.category.rituals.title" },
     "description": { "translate": "modonomicon.demo.category.rituals.description" }
@@ -75,4 +75,4 @@ A category is an entry in the `categories.json` of the research bundle. Its icon
 
 ## Translation keys
 
-The title key of a category is `research_category.<namespace>.<path>`, e.g. `research_category.modonomicon.items`. The description uses the same key with a `.description` suffix. The built-in categories ship these translations. A custom category uses whatever key you pass to `withTitle` and `withDescription`, so add those keys to your language file.
+The title key of a category is `research_group.<namespace>.<path>`, e.g. `research_group.modonomicon.items`. The description uses the same key with a `.description` suffix. The built-in categories ship these translations. A custom category uses whatever key you pass to `withTitle` and `withDescription`, so add those keys to your language file.

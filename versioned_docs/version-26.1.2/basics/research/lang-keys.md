@@ -21,7 +21,7 @@ Book keys start with `book.<book namespace>.` followed by the entry path, with `
 | `book.<ns>.<entry>.stage.<stage>.description` | Stage description, if set |
 | `book.<ns>.<entry>.stage.<stage>.action.<action>.title` | Title of an action of a stage |
 
-Example, from the Scholarship demo entry, where `<ns>` is `modonomicon` and the entry is `demo/progression/scholarship`:
+Example, from the Scholarship demo entry, where `<ns>` is `modonomicon` and the entry is `demo/scholarship/notes`:
 
 ```
 book.modonomicon.demo.progression.scholarship.stage.observation.title
@@ -29,7 +29,7 @@ book.modonomicon.demo.progression.scholarship.stage.observation.action.observati
 book.modonomicon.demo.progression.scholarship.transcription_take.title
 ```
 
-The requirements page uses the built-in texts `modonomicon.gui.requirements.page.text` unless you give your own title and text, which then use the page keys above.
+The requirements page uses the built-in texts `modonomicon.gui.scholarship.page.text` unless you give your own title and text, which then use the page keys above.
 
 Tabs use the keys returned by the entry's `tabTitleKey()` and `tabTextKey()`, see [Entry Tabs](../structure/entry-tabs.md).
 
@@ -43,7 +43,7 @@ Research keys follow the pattern `<prefix>.<namespace>.<path>`, where `/` in the
 | `research_value.` | Title of a value row | `research_value.modonomicon.demo.insight` |
 | `research_node.` | Name of a node in condition tooltips | `research_node.modonomicon.demo.crafting_stick` |
 | `research_stage.` | Name of a stage in condition tooltips | `research_stage.modonomicon.demo.stages_demo_stage_1` |
-| `research_category.` | Title of a requirement category, with `.description` for its description | `research_category.modonomicon.items` |
+| `research_group.` | Title of a requirement category, with `.description` for its description | `research_group.modonomicon.items` |
 | `research_toast.` | Toast titles and descriptions | `research_toast.modonomicon.stick_crafted.title` |
 | `tag.item.` | Name of an item tag in requirement rows | `tag.item.minecraft.logs` |
 
@@ -65,21 +65,21 @@ These keys are the built-in texts of the requirement block. You do not write the
 
 | Key | Text |
 |-----|------|
-| `modonomicon.gui.requirements.craft_item` | Craft %s |
-| `modonomicon.gui.requirements.obtain_item` | Obtain %s |
-| `modonomicon.gui.requirements.read_entry` | Read %s |
-| `modonomicon.gui.requirements.next` | Next: %s |
-| `modonomicon.gui.requirements.reward` | Reward: %s |
-| `modonomicon.gui.requirements.reward.pending` | Granted when the stage is completed. |
-| `modonomicon.gui.requirements.costs` | Costs: |
-| `modonomicon.gui.requirements.cost.item` | %s× %s |
-| `modonomicon.gui.requirements.cost.durability` | %s durability: %s |
-| `modonomicon.gui.requirements.cost.levels` | %s levels |
-| `modonomicon.gui.requirements.consumed_on_completion` | Consumed on completion |
-| `modonomicon.gui.requirements.stage.complete` | Complete |
-| `modonomicon.gui.requirements.action.perform` | Click to perform this action |
+| `modonomicon.gui.scholarship.craft_item` | Craft %s |
+| `modonomicon.gui.scholarship.obtain_item` | Obtain %s |
+| `modonomicon.gui.scholarship.read_entry` | Read %s |
+| `modonomicon.gui.scholarship.next` | Next: %s |
+| `modonomicon.gui.scholarship.reward` | Reward: %s |
+| `modonomicon.gui.scholarship.reward.pending` | Granted when the stage is completed. |
+| `modonomicon.gui.scholarship.costs` | Costs: |
+| `modonomicon.gui.scholarship.cost.item` | %s× %s |
+| `modonomicon.gui.scholarship.cost.durability` | %s durability: %s |
+| `modonomicon.gui.scholarship.cost.levels` | %s levels |
+| `modonomicon.gui.scholarship.consumed_on_completion` | Consumed on completion |
+| `modonomicon.gui.scholarship.stage.complete` | Complete |
+| `modonomicon.gui.scholarship.action.perform` | Click to perform this action |
 
-A custom presenter that describes its own rows can use its own keys, see [Custom Presenters](../../advanced/custom-presenters.md).
+A custom presenter that describes its own rows can use its own keys, see [Custom Presenters](../scholarship/custom-presenters.md).
 
 ## Key authoring summary
 

@@ -8,9 +8,9 @@ Presenters decide how a research element is drawn in a requirements block. There
 
 | Registry | Presents | Interface | Method |
 |----------|----------|-----------|--------|
-| `ResearchTriggerPresenterRegistry` | A hook of a trigger type, as a requirement row | `ResearchTriggerPresenter` | `present(hook, context)` |
-| `ResearchEffectPresenterRegistry` | An effect of a stage reward or action, as a row | `ResearchEffectPresenter` | `present(effect, context)` |
-| `ResearchCostPresenterRegistry` | A cost entry, as a row and as a tooltip line | `ResearchCostPresenter` | `row(entry, context, forceMet)`, `line(entry)` |
+| `ScholarshipTriggerPresenterRegistry` | A hook of a trigger type, as a requirement row | `ScholarshipTriggerPresenter` | `present(hook, context)` |
+| `ScholarshipEffectPresenterRegistry` | An effect of a stage reward or action, as a row | `ScholarshipEffectPresenter` | `present(effect, context)` |
+| `ScholarshipCostPresenterRegistry` | A cost entry, as a row and as a tooltip line | `ScholarshipCostPresenter` | `row(entry, context, forceMet)`, `line(entry)` |
 
 Each registry has the same three methods:
 
@@ -22,14 +22,14 @@ Unknown types never break a block. They show a generic row with a book icon and 
 
 ## Trigger presenters
 
-A trigger presenter turns a hook into a row. Only the icon, title, details and click action matter. The met state comes from the requirement itself. The category of the row is assigned by the caller, see [Requirement Categories](../basics/research/categories.md#where-a-row-goes). The built-in trigger presenters are in `DefaultResearchTriggerPresenters`.
+A trigger presenter turns a hook into a row. Only the icon, title, details and click action matter. The met state comes from the requirement itself. The category of the row is assigned by the caller, see [Requirement Categories](../basics/research/categories.md#where-a-row-goes). The built-in trigger presenters are in `DefaultScholarshipTriggerPresenters`.
 
-Any requirement icon can carry a small badge with `RequirementIcon.withBadge(texture)`. The badge is drawn at 8x8 pixels in the bottom right corner of the 16x16 icon. The built-in presenters do not use badges, because they would cover the item and its count.
+Any requirement icon can carry a small badge with `ScholarshipIcon.withBadge(texture)`. The badge is drawn at 8x8 pixels in the bottom right corner of the 16x16 icon. The built-in presenters do not use badges, because they would cover the item and its count.
 
 ```java
-ResearchTriggerPresenterRegistry.register(MyModTriggers.ENTITY_KILLED.id(), (hook, context) ->
-        RequirementRow.of(
-                List.of(RequirementIcon.of(new ItemStack(Items.IRON_SWORD))),
+ScholarshipTriggerPresenterRegistry.register(MyModTriggers.ENTITY_KILLED.id(), (hook, context) ->
+        ScholarshipRow.of(
+                List.of(ScholarshipIcon.of(new ItemStack(Items.IRON_SWORD))),
                 Component.translatable("mymod.requirement.entity_killed", entityName(hook)))
 );
 ```
@@ -39,29 +39,29 @@ ResearchTriggerPresenterRegistry.register(MyModTriggers.ENTITY_KILLED.id(), (hoo
 An effect presenter describes an effect that is shown as a reward or as part of an action. It returns a row:
 
 ```java
-ResearchEffectPresenterRegistry.register(MyModResearchTypes.GRANT_MANA.id(), new ResearchEffectPresenter() {
+ScholarshipEffectPresenterRegistry.register(MyModResearchTypes.GRANT_MANA.id(), new ScholarshipEffectPresenter() {
     @Override
-    public RequirementRow present(ResearchEffect effect, RequirementContext context) {
+    public ScholarshipRow present(ResearchEffect effect, ScholarshipContext context) {
         var mana = (GrantManaEffect) effect;
-        return RequirementRow.of(
-                List.of(RequirementIcon.of(new ItemStack(MyModItems.MANA_CRYSTAL))),
+        return ScholarshipRow.of(
+                List.of(ScholarshipIcon.of(new ItemStack(MyModItems.MANA_CRYSTAL))),
                 Component.translatable("mymod.reward.mana", mana.amount()));
     }
 });
 ```
 
-The built-in effect presenters are in `DefaultResearchEffectPresenters`.
+The built-in effect presenters are in `DefaultScholarshipEffectPresenters`.
 
 ## Cost presenters
 
 A cost presenter describes one cost entry in two places: the requirement row of a manual stage, and the tooltip line of an action. Both come from the same presenter, so each entry is described in one place.
 
 ```java
-ResearchCostPresenterRegistry.register(MyModResearchTypes.MANA.id(), new ResearchCostPresenter() {
+ScholarshipCostPresenterRegistry.register(MyModResearchTypes.MANA.id(), new ScholarshipCostPresenter() {
     @Override
-    public RequirementRow row(ResearchCostEntry entry, RequirementContext context, boolean forceMet) {
-        return RequirementRow.of(
-                List.of(RequirementIcon.of(new ItemStack(MyModItems.MANA_CRYSTAL))),
+    public ScholarshipRow row(ResearchCostEntry entry, ScholarshipContext context, boolean forceMet) {
+        return ScholarshipRow.of(
+                List.of(ScholarshipIcon.of(new ItemStack(MyModItems.MANA_CRYSTAL))),
                 entry.describe());
     }
 });
@@ -69,7 +69,7 @@ ResearchCostPresenterRegistry.register(MyModResearchTypes.MANA.id(), new Researc
 
 `line(entry)` is the tooltip line. It defaults to the entry's own `describe()`, so a cost type that describes itself well needs no override. The `row` is what the player sees in the stage requirements, and the caller adds the "consumed on completion" detail.
 
-The built-in cost presenters are in `DefaultResearchCostPresenters`: item costs, durability costs and level costs.
+The built-in cost presenters are in `DefaultScholarshipCostPresenters`: item costs, durability costs and level costs.
 
 ## Registration
 

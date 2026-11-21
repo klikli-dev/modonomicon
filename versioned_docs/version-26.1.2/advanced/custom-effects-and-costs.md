@@ -156,4 +156,4 @@ Creative players (infinite materials) pay nothing. The cost skips them before `p
 - Keep the stream codec in step with the map codec. Both sides need the same type.
 - A cost re-plans if the reserved stacks change during an action, so `apply` must only use the reservations of the plan it receives.
 
-See [Actions, Costs and Effects](../basics/research/actions.md#consumption-order) for the consumption order, and [Rewards](../basics/research/rewards.md) for the built-in effect types.
+See [Actions, Costs and Effects](../basics/research/actions.md#consumption-order) for the consumption order, and [Rewards](../basics/research/effects.md) for the built-in effect types.

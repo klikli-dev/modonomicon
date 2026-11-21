@@ -7,7 +7,7 @@ sidebar_position: 13
 An action is something the player does on a requirement to satisfy it: paying to learn a fact, taking an item from the book, or completing a manual stage. An action is one record with four parts:
 
 - **cost**: what the player pays, a list of typed entries, see [Costs](#costs).
-- **effects**: what the action does, a list of effects applied in order, see [Rewards](./rewards.md) for the effect types.
+- **effects**: what the action does, a list of effects applied in order, see [Rewards](./effects.md) for the effect types.
 - **grants_fact**: whether performing the action grants the fact it is attached to ("pay to learn").
 - **repeatable**: whether the action stays available after its fact is granted and after its stage is complete.
 
@@ -23,19 +23,19 @@ ResearchActionModel.learn(ResearchCostModel.create().item(Items.PAPER))
 
 ## Example: the take, process and submit loop
 
-The Scholarship entry in the demo uses one fact for its whole loop. Its stage `transcription` requires the fact `demo/scholarship/note_studied`:
+The Scholarship entry in the demo uses one fact for its whole loop. Its stage `transcription` requires the fact `demo/research/note_studied`:
 
 1. **Take.** The fact's action hands out a blank research note. It costs one paper and wears down the shears. It is repeatable, so the player can take more notes later.
 2. **Process.** A crafting recipe turns the blank note and an ink sac into a completed research note.
 3. **Submit.** Using the completed note in the air grants the fact. The note is consumed, see [item_used](./item-used.md).
 
-In datagen, the action is set on the fact's display, and the fact's hook is an `item_used` ingress:
+In datagen, the action is set on the fact's display, and the fact's hook is an `item_used` hook:
 
 ```java
-var noteStudied = this.ingress()
+var noteStudied = this.hook()
         .onItemUsed(RESEARCH_NOTE)
         .consume(1)
-        .declareFact(SCHOLARSHIP_NOTE_STUDIED.id().getPath());
+        .declareFact(NOTE_STUDIED.id().getPath());
 this.research().display(noteStudied, ResearchDisplayModel.create()
         .withTitle(SCHOLARSHIP_NOTE_TITLE)
         .withAction(ResearchActionModel.create()
@@ -50,8 +50,8 @@ The same fact is also reachable from the JSON side. In `hooks.json` the item tem
 
 ```json
 {
-  "id": "modonomicon:demo/scholarship/note_studied_hook",
-  "fact_id": "modonomicon:demo/scholarship/note_studied",
+  "id": "modonomicon:demo/research/note_studied_hook",
+  "fact_id": "modonomicon:demo/research/note_studied",
   "trigger_type": "modonomicon:item_used",
   "trigger_target": {
     "id": "minecraft:paper",
@@ -72,8 +72,8 @@ The last stage of the same entry is completed by hand, and its cost is two iron 
 this.stage("synthesis", s -> s
         .consume(Items.IRON_INGOT, 2)
         .title("Synthesis")
-        .reward(ResearchEffectModel.giveItem(Items.EMERALD))
-        .reward(ResearchEffectModel.function(SYNTHESIS_FUNCTION)));
+        .effect(ResearchEffectModel.giveItem(Items.EMERALD))
+        .effect(ResearchEffectModel.function(SYNTHESIS_FUNCTION)));
 ```
 
 `consume` makes the stage manual. The Iron Ingot row counts what the player holds. The stage consumes the iron on completion, and the button is enabled once the player holds enough. The stage has no requirement of its own here: the study fact of the previous stage is already granted, so the stage only needs its cost.
@@ -111,7 +111,7 @@ Performing an action (or completing a manual stage) runs these steps. Only the f
 2. **Check the effects.** Every effect must be available, e.g. `give_item` with `require_absent` checks the inventory. Otherwise the action is unavailable.
 3. **Plan the cost.** The cost is planned against the current inventory and levels, without changing anything. If the player cannot afford it, the action is unaffordable and nothing changes.
 4. **Apply the change.** The fact is granted first if the action grants it, then the effects run in order, all in one state change.
-5. **Check the change.** If no fact was granted and no effect changed anything, the action is unavailable and nothing is paid. Each effect reports whether it changed something, see [Rewards](./rewards.md).
+5. **Check the change.** If no fact was granted and no effect changed anything, the action is unavailable and nothing is paid. Each effect reports whether it changed something, see [Rewards](./effects.md).
 6. **Pay the plan.** The planned cost is paid. If the reserved stacks or levels changed during step 4, the cost is planned again against the current state. If that fails too, the change is kept, the player pays nothing, and a warning is logged.
 
 If an effect throws, the exception stops the action before the cost is paid.
