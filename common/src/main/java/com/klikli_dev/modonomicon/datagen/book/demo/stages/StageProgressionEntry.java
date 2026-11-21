@@ -46,6 +46,10 @@ public class StageProgressionEntry extends EntryProvider {
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
                 .withStage(DemoResearch.WRITABLE_BOOK_STAGE_1));
+        this.pageTitle("Stage 1: First book");
+        this.pageText("""
+                Craft 1 writable book.
+                """);
 
         this.page("stage_1", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
@@ -58,6 +62,15 @@ public class StageProgressionEntry extends EntryProvider {
                 Stage-gated page: visible once 1 book is crafted.
                 """);
 
+        this.page("progress_2", () -> BookStageRequirementsPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText())
+                .withStage(DemoResearch.WRITABLE_BOOK_STAGE_2));
+        this.pageTitle("Stage 2: Three books");
+        this.pageText("""
+                Craft 3 writable books in total.
+                """);
+
         this.page("stage_2", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
@@ -67,6 +80,15 @@ public class StageProgressionEntry extends EntryProvider {
         this.pageTitle("Stage 2 Complete");
         this.pageText("""
                 Stage-gated page: visible once 3 books are crafted.
+                """);
+
+        this.page("progress_3", () -> BookStageRequirementsPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText())
+                .withStage(DemoResearch.WRITABLE_BOOK_STAGE_3));
+        this.pageTitle("Stage 3: Five books");
+        this.pageText("""
+                Craft 5 writable books in total.
                 """);
 
         //stage complete condition: the last page is only shown once the final stage is complete

@@ -49,6 +49,10 @@ public class NoneProgressionEntry extends EntryProvider {
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
                 .withStage(DemoResearch.REQUIREMENTS_STAGE_1));
+        this.pageTitle("Stage 1: Ink");
+        this.pageText("""
+                Get an ink sac.
+                """);
 
         this.page("after_ink", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
@@ -63,6 +67,10 @@ public class NoneProgressionEntry extends EntryProvider {
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
                 .withStage(DemoResearch.REQUIREMENTS_STAGE_2));
+        this.pageTitle("Stage 2: Iron and paper");
+        this.pageText("""
+                Get an iron ingot and collect 5 paper.
+                """);
 
         this.page("after_iron", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
