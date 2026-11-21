@@ -4,7 +4,7 @@ sidebar_position: 18
 
 # Lang Key Reference
 
-Modonomicon generates the translation keys of progression, actions and requirement pages from the ids you author. You only write the text. This page lists the keys, so you can find or override them in a language file.
+Modonomicon generates the translation keys of entry research, actions and research elements from the ids you author. You only write the text. This page lists the keys of the book and the research data, so you can find or override them in a language file. The texts of the scholarship block are listed in [Scholarship Lang Keys](../scholarship/lang-keys.md).
 
 Texts you give in datagen as literal English are written to the language file of the book provider under the generated key. Keys you give yourself, such as `withTitle("my.key")`, are used as they are.
 
@@ -17,19 +17,19 @@ Book keys start with `book.<book namespace>.` followed by the entry path, with `
 | `book.<ns>.<entry>.name` | Entry name |
 | `book.<ns>.<entry>.description` | Entry description |
 | `book.<ns>.<entry>.<page>.title` and `.text` | Page title and text, where `<page>` is the page id |
-| `book.<ns>.<entry>.stage.<stage>.title` | Stage title, `Next: title` in the requirements block |
+| `book.<ns>.<entry>.stage.<stage>.title` | Stage title, `Next: title` in the scholarship block |
 | `book.<ns>.<entry>.stage.<stage>.description` | Stage description, if set |
 | `book.<ns>.<entry>.stage.<stage>.action.<action>.title` | Title of an action of a stage |
 
-Example, from the Scholarship demo entry, where `<ns>` is `modonomicon` and the entry is `demo/scholarship/notes`:
+Example, from the notes entry of the demo book, where `<ns>` is `modonomicon` and the entry is `scholarship/notes`:
 
 ```
-book.modonomicon.demo.progression.scholarship.stage.observation.title
-book.modonomicon.demo.progression.scholarship.stage.observation.action.observation.title
-book.modonomicon.demo.progression.scholarship.transcription_take.title
+book.modonomicon.demo.scholarship.notes.stage.observation.title
+book.modonomicon.demo.scholarship.notes.stage.observation.action.observation.title
+book.modonomicon.demo.scholarship.notes.transcription_take.title
 ```
 
-The requirements page uses the built-in texts `modonomicon.gui.scholarship.page.text` unless you give your own title and text, which then use the page keys above.
+The scholarship page uses the built-in texts `modonomicon.gui.scholarship.page.text` unless you give your own title and text, which then use the page keys above.
 
 Tabs use the keys returned by the entry's `tabTitleKey()` and `tabTextKey()`, see [Entry Tabs](../structure/entry-tabs.md).
 
@@ -39,13 +39,13 @@ Research keys follow the pattern `<prefix>.<namespace>.<path>`, where `/` in the
 
 | Prefix | Used for | Example |
 |--------|----------|---------|
-| `research_fact.` | Title of a fact row, when the display has no title | `research_fact.modonomicon.demo.scholarship.note_studied` |
+| `research_fact.` | Title of a fact row, when the display has no title | `research_fact.modonomicon.demo.research.note_studied` |
 | `research_value.` | Title of a value row | `research_value.modonomicon.demo.insight` |
 | `research_node.` | Name of a node in condition tooltips | `research_node.modonomicon.demo.crafting_stick` |
 | `research_stage.` | Name of a stage in condition tooltips | `research_stage.modonomicon.demo.stages_demo_stage_1` |
-| `research_group.` | Title of a requirement category, with `.description` for its description | `research_group.modonomicon.items` |
+| `research_group.` | Title of a research group, with `.description` for its description | `research_group.modonomicon.items` |
 | `research_toast.` | Toast titles and descriptions | `research_toast.modonomicon.stick_crafted.title` |
-| `tag.item.` | Name of an item tag in requirement rows | `tag.item.minecraft.logs` |
+| `tag.item.` | Name of an item tag in scholarship rows | `tag.item.minecraft.logs` |
 
 The code that creates these keys is shared between datagen and runtime. In datagen, `researchNodeName(ref, "Name")` and `researchStageName(ref, "Name")` write the `research_node.` and `research_stage.` keys. `ResearchProviderBase` offers `researchNodeDescriptionId(ref)` and `researchStageDescriptionId(ref)` to get the keys without writing them.
 
@@ -59,28 +59,6 @@ An item tag row is named by `tag.item.<namespace>.<path>`, the translation key u
 "tag.item.minecraft.logs": "Logs"
 ```
 
-## Requirement and cost keys
-
-These keys are the built-in texts of the requirement block. You do not write them, but you can override them in a language file:
-
-| Key | Text |
-|-----|------|
-| `modonomicon.gui.scholarship.craft_item` | Craft %s |
-| `modonomicon.gui.scholarship.obtain_item` | Obtain %s |
-| `modonomicon.gui.scholarship.read_entry` | Read %s |
-| `modonomicon.gui.scholarship.next` | Next: %s |
-| `modonomicon.gui.scholarship.reward` | Reward: %s |
-| `modonomicon.gui.scholarship.reward.pending` | Granted when the stage is completed. |
-| `modonomicon.gui.scholarship.costs` | Costs: |
-| `modonomicon.gui.scholarship.cost.item` | %s× %s |
-| `modonomicon.gui.scholarship.cost.durability` | %s durability: %s |
-| `modonomicon.gui.scholarship.cost.levels` | %s levels |
-| `modonomicon.gui.scholarship.consumed_on_completion` | Consumed on completion |
-| `modonomicon.gui.scholarship.stage.complete` | Complete |
-| `modonomicon.gui.scholarship.action.perform` | Click to perform this action |
-
-A custom presenter that describes its own rows can use its own keys, see [Custom Presenters](../scholarship/custom-presenters.md).
-
 ## Key authoring summary
 
 | You write | Key written |
@@ -89,7 +67,7 @@ A custom presenter that describes its own rows can use its own keys, see [Custom
 | `s.action("id", "T", ...)` | `book.<ns>.<entry>.stage.<stage>.action.id.title` |
 | `researchNodeName(node, "N")` | `research_node.<ns>.<path>` |
 | `researchStageName(stage, "N")` | `research_stage.<ns>.<path>` |
-| `category.withTitle("key")` | Your key, used as given |
+| `group.withTitle("key")` | Your key, used as given |
 | `display.withTitle("key")` | Your key, used as given |
 
-See [Display Data](./display.md) for the display parts and [Requirement Categories](./categories.md) for category keys.
+See [Display Data](./display.md) for the display parts and [Research Groups](./groups.md) for group keys.
