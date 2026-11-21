@@ -9,12 +9,17 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookStageRequirementsPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.book.RequirementsDisplay;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
 
+/**
+ * Hand-authored progression: the research is declared in {@link DemoResearch}, the entry has no requirements display and
+ * shows its progress with requirement pages placed in the content, and its pages are gated by the stages.
+ */
 public class NoneProgressionEntry extends EntryProvider {
     public static final String ID = "none_progression";
 
@@ -24,7 +29,6 @@ public class NoneProgressionEntry extends EntryProvider {
 
     @Override
     protected BookEntryModel additionalSetup(BookEntryModel entry) {
-        //the research is hand-authored in DemoResearch, the entry only shows its content gated by its stages
         entry.withProgression(DemoResearch.REQUIREMENTS_STAGED, DemoResearch.REQUIREMENTS_STAGE_2);
         return super.additionalSetup(entry);
     }
@@ -36,40 +40,56 @@ public class NoneProgressionEntry extends EntryProvider {
         this.page("intro", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
-        this.pageTitle("No requirements display");
+        this.pageTitle("Hand-authored requirements");
         this.pageText("""
-                This entry has no requirements display, so nothing is listed on its pages.
-                Its research is hand-authored: the first page below needs an oak log, the last page needs iron ingots and 5 cobblestone.
-                Pages after a stage are only visible once the stage is complete, the content is gated without a block.
+                No requirements display: the requirements pages below show each stage instead.
                 """);
 
-        this.page("after_oak_log", () -> BookTextPageModel.create()
+        this.page("stage_1_requirements", () -> BookStageRequirementsPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText())
+                .withStage(DemoResearch.REQUIREMENTS_STAGE_1));
+        this.pageTitle("Stage 1: Ink");
+        this.pageText("""
+                Get an ink sac.
+                """);
+
+        this.page("after_ink", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
                 .withCondition(this.condition().researchStageCompleted(DemoResearch.REQUIREMENTS_STAGED, DemoResearch.REQUIREMENTS_STAGE_1)));
-        this.pageTitle("Oak log collected");
+        this.pageTitle("Ink gathered");
         this.pageText("""
-                You collected an oak log, so this page is visible. This is the hand-authored stage 1 of the requirements research.
+                Stage-gated page: visible once stage 1 is complete.
+                """);
+
+        this.page("stage_2_requirements", () -> BookStageRequirementsPageModel.create()
+                .withTitle(this.context().pageTitle())
+                .withText(this.context().pageText())
+                .withStage(DemoResearch.REQUIREMENTS_STAGE_2));
+        this.pageTitle("Stage 2: Iron and paper");
+        this.pageText("""
+                Get an iron ingot and collect 5 paper.
                 """);
 
         this.page("after_iron", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
                 .withCondition(this.condition().researchStageCompleted(DemoResearch.REQUIREMENTS_STAGED, DemoResearch.REQUIREMENTS_STAGE_2)));
-        this.pageTitle("Iron and cobblestone collected");
+        this.pageTitle("Iron and paper collected");
         this.pageText("""
-                The last stage is complete. Its requirement is the iron ingot and 5 cobblestone of the requirements research.
+                Stage-gated page: visible once stage 2 is complete. The next entry, Bookbinding, is unlocked by this one.
                 """);
     }
 
     @Override
     protected String entryName() {
-        return "None Progression";
+        return "Hand-authored Requirements";
     }
 
     @Override
     protected String entryDescription() {
-        return "A hand-authored progression with content gated by stages, but no requirements display.";
+        return "Hand-authored stages with requirement pages, no requirements display.";
     }
 
     @Override

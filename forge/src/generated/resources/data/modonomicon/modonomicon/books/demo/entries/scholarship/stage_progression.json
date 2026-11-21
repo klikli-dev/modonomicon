@@ -1,0 +1,38 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+    "width": 26
+  },
+  "category": "modonomicon:scholarship",
+  "condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/scholarship_stage_progression",
+    "tooltip": {
+      "translate": "tooltip.modonomicon.condition.entry_unlocked",
+      "with": [
+        {
+          "translate": "book.modonomicon.demo.scholarship.stage_progression.name"
+        }
+      ]
+    }
+  },
+  "description": "book.modonomicon.demo.scholarship.stage_progression.description",
+  "icon": {
+    "id": "minecraft:writable_book"
+  },
+  "id": "modonomicon:scholarship/stage_progression",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
+  "name": "book.modonomicon.demo.scholarship.stage_progression.name",
+  "parents": [
+    {
+      "entry": "modonomicon:scholarship/none_progression"
+    }
+  ],
+  "sort_number": 8,
+  "x": 21,
+  "y": 0
+}

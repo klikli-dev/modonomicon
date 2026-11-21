@@ -1,0 +1,13 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:research_stage_completed",
+    "node_id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_notes",
+    "stage_id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_notes/stages/observation"
+  },
+  "id": "transcription_take",
+  "show_title_separator": true,
+  "sort_number": 2,
+  "text": "book.modonomicon.demo.scholarship.notes.transcription_take.text",
+  "title": "book.modonomicon.demo.scholarship.notes.transcription_take.title"
+}

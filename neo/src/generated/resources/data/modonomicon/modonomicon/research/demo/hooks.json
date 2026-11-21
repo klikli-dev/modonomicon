@@ -1,11 +1,5 @@
 [
   {
-    "fact_id": "modonomicon:demo/condition_root_viewed",
-    "id": "modonomicon:demo/condition_root_viewed_hook",
-    "trigger_target": "modonomicon:research/condition_root",
-    "trigger_type": "modonomicon:entry_viewed_once"
-  },
-  {
     "fact_id": "modonomicon:demo/advancement_mine_stone_completed",
     "id": "modonomicon:demo/advancement_mine_stone_completed_hook",
     "trigger_target": "minecraft:story/mine_stone",
@@ -18,84 +12,16 @@
     "trigger_type": "modonomicon:advancement"
   },
   {
-    "id": "modonomicon:demo/collector_a_hook",
-    "trigger_target": "modonomicon:research/collector_a",
+    "id": "modonomicon:demo/scholarship/source_hook",
+    "trigger_target": "modonomicon:scholarship/sources",
     "trigger_type": "modonomicon:entry_viewed_once",
-    "value_id": "modonomicon:demo/collector_count"
+    "value_id": "modonomicon:demo/scholarship/sources_consulted"
   },
   {
-    "id": "modonomicon:demo/collector_b_hook",
-    "trigger_target": "modonomicon:research/collector_b",
-    "trigger_type": "modonomicon:entry_viewed_once",
-    "value_id": "modonomicon:demo/collector_count"
-  },
-  {
-    "id": "modonomicon:demo/collector_c_hook",
-    "trigger_target": "modonomicon:research/collector_c",
-    "trigger_type": "modonomicon:entry_viewed_once",
-    "value_id": "modonomicon:demo/collector_count"
-  },
-  {
-    "fact_id": "modonomicon:demo/stick_crafted",
-    "id": "modonomicon:demo/stick_crafted_hook",
-    "trigger_target": {
-      "id": "minecraft:stick"
-    },
-    "trigger_type": "modonomicon:item_crafted"
-  },
-  {
-    "fact_id": "modonomicon:demo/cobblestone_acquired",
-    "id": "modonomicon:demo/cobblestone_acquired_hook",
-    "trigger_target": {
-      "id": "minecraft:cobblestone"
-    },
-    "trigger_type": "modonomicon:item_acquired"
-  },
-  {
-    "id": "modonomicon:demo/stages_planks_hook",
-    "trigger_target": {
-      "id": "minecraft:oak_planks"
-    },
-    "trigger_type": "modonomicon:item_crafted",
-    "value_id": "modonomicon:demo/stages_planks_crafted"
-  },
-  {
-    "fact_id": "modonomicon:demo/marker_intro_viewed",
-    "id": "modonomicon:demo/marker_intro_viewed_hook",
-    "trigger_target": "modonomicon:research/marker_intro",
+    "fact_id": "modonomicon:demo/marker_index_viewed",
+    "id": "modonomicon:demo/marker_index_viewed_hook",
+    "trigger_target": "modonomicon:scholarship/placed_page_progression",
     "trigger_type": "modonomicon:entry_viewed_once"
-  },
-  {
-    "fact_id": "modonomicon:demo/requirements_oak_log_acquired",
-    "id": "modonomicon:demo/requirements_oak_log_acquired_hook",
-    "trigger_target": {
-      "id": "minecraft:oak_log"
-    },
-    "trigger_type": "modonomicon:item_acquired"
-  },
-  {
-    "fact_id": "modonomicon:demo/requirements_iron_ingot_acquired",
-    "id": "modonomicon:demo/requirements_iron_ingot_acquired_hook",
-    "trigger_target": {
-      "id": "minecraft:iron_ingot"
-    },
-    "trigger_type": "modonomicon:item_acquired"
-  },
-  {
-    "id": "modonomicon:demo/requirements_cobblestone_hook",
-    "trigger_target": {
-      "id": "minecraft:cobblestone"
-    },
-    "trigger_type": "modonomicon:item_acquired",
-    "value_id": "modonomicon:demo/requirements_cobblestone_collected"
-  },
-  {
-    "id": "modonomicon:demo/progression_dirt_hook",
-    "trigger_target": {
-      "id": "minecraft:dirt"
-    },
-    "trigger_type": "modonomicon:item_acquired",
-    "value_id": "modonomicon:demo/progression_dirt_collected"
   },
   {
     "fact_id": "modonomicon:demo/scholarship/note_crafted",
@@ -125,5 +51,37 @@
       "id": "minecraft:paper"
     },
     "trigger_type": "modonomicon:item_used"
+  },
+  {
+    "id": "modonomicon:demo/writable_books_hook",
+    "trigger_target": {
+      "id": "minecraft:writable_book"
+    },
+    "trigger_type": "modonomicon:item_crafted",
+    "value_id": "modonomicon:demo/writable_books_crafted"
+  },
+  {
+    "fact_id": "modonomicon:demo/scholarship/ink_sac_acquired",
+    "id": "modonomicon:demo/scholarship/ink_sac_acquired_hook",
+    "trigger_target": {
+      "id": "minecraft:ink_sac"
+    },
+    "trigger_type": "modonomicon:item_acquired"
+  },
+  {
+    "fact_id": "modonomicon:demo/requirements_iron_ingot_acquired",
+    "id": "modonomicon:demo/requirements_iron_ingot_acquired_hook",
+    "trigger_target": {
+      "id": "minecraft:iron_ingot"
+    },
+    "trigger_type": "modonomicon:item_acquired"
+  },
+  {
+    "id": "modonomicon:demo/scholarship/paper_hook",
+    "trigger_target": {
+      "id": "minecraft:paper"
+    },
+    "trigger_type": "modonomicon:item_acquired",
+    "value_id": "modonomicon:demo/scholarship/paper_collected"
   }
 ]

@@ -1,13 +1,13 @@
 [
   {
     "description": {
-      "translate": "modonomicon.demo.category.rituals.description"
+      "translate": "modonomicon.demo.category.smithing.description"
     },
-    "icon": "modonomicon:modonomicon/requirement_categories/demo_rituals",
-    "id": "modonomicon:demo_rituals",
+    "icon": "modonomicon:modonomicon/requirement_categories/demo_smithing",
+    "id": "modonomicon:demo_smithing",
     "sort_order": 15,
     "title": {
-      "translate": "modonomicon.demo.category.rituals.title"
+      "translate": "modonomicon.demo.category.smithing.title"
     }
   }
 ]

@@ -1,0 +1,13 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:research_stage_completed",
+    "node_id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_first_page_progression",
+    "stage_id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_first_page_progression/stages/desk"
+  },
+  "id": "finished",
+  "show_title_separator": true,
+  "sort_number": 1,
+  "text": "book.modonomicon.demo.scholarship.first_page_progression.finished.text",
+  "title": "book.modonomicon.demo.scholarship.first_page_progression.finished.title"
+}

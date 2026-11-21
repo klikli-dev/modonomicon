@@ -23,9 +23,9 @@ import static com.klikli_dev.modonomicon.gametest.ResearchGameTestData.freshPlay
  */
 public class ResearchScholarshipGameTests {
 
-    private static final Identifier SCHOLARSHIP_NODE = Modonomicon.loc("generated/demo/nodes/entry_progression/progression_scholarship");
-    private static final Identifier ENTRY_VIEWED_FACT = Modonomicon.loc("generated/demo/facts/entry_viewed_once/progression_scholarship");
-    private static final Identifier OBSERVATION_FACT = Modonomicon.loc("generated/demo/nodes/entry_progression/progression_scholarship/stages/observation/observation");
+    private static final Identifier SCHOLARSHIP_NODE = Modonomicon.loc("generated/demo/nodes/entry_progression/scholarship_notes");
+    private static final Identifier ENTRY_VIEWED_FACT = Modonomicon.loc("generated/demo/facts/entry_viewed_once/scholarship_notes");
+    private static final Identifier OBSERVATION_FACT = Modonomicon.loc("generated/demo/nodes/entry_progression/scholarship_notes/stages/observation/observation");
     /**
      * The 0-based index of the next stage in progress, see {@code PlayerResearchState#currentStageIndex}: 0 observation,
      * 1 transcription, 2 synthesis.

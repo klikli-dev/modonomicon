@@ -14,6 +14,11 @@ import net.minecraft.network.chat.Component;
  *
  * @param action the action the effect belongs to, e.g. to tell repeatable actions apart
  * @param factTitle the title of the requirement row the action is attached to
+ * @param performed whether the row the action is attached to is already met, i.e. the action was performed at least once
  */
-public record ResearchActionContext(ResearchAction action, Component factTitle) {
+public record ResearchActionContext(ResearchAction action, Component factTitle, boolean performed) {
+
+    public ResearchActionContext(ResearchAction action, Component factTitle) {
+        this(action, factTitle, false);
+    }
 }

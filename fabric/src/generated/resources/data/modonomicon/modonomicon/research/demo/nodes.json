@@ -1,11 +1,5 @@
 [
   {
-    "id": "modonomicon:demo/condition_level_1",
-    "required_facts": [
-      "modonomicon:demo/condition_root_viewed"
-    ]
-  },
-  {
     "id": "modonomicon:demo/advancement_mine_stone",
     "required_facts": [
       "modonomicon:demo/advancement_mine_stone_completed"
@@ -18,99 +12,55 @@
     ]
   },
   {
-    "id": "modonomicon:demo/collector_complete",
-    "required_values": [
-      {
-        "threshold": 3,
-        "value_id": "modonomicon:demo/collector_count"
-      }
+    "id": "modonomicon:demo/marker_explicit",
+    "required_facts": [
+      "modonomicon:demo/marker_index_viewed"
     ]
   },
   {
-    "id": "modonomicon:demo/crafting_stick",
-    "required_facts": [
-      "modonomicon:demo/stick_crafted"
-    ],
-    "toast": {
-      "description": "research_toast.modonomicon.stick_crafted.title",
-      "icon": {
-        "id": "minecraft:stick"
-      },
-      "title": "research_toast.modonomicon.research_unlocked"
-    }
-  },
-  {
-    "id": "modonomicon:demo/acquire_cobblestone",
-    "required_facts": [
-      "modonomicon:demo/cobblestone_acquired"
-    ],
-    "toast": {
-      "description": "research_toast.modonomicon.cobblestone_acquired.title",
-      "icon": {
-        "id": "minecraft:cobblestone"
-      },
-      "title": "research_toast.modonomicon.research_unlocked"
-    }
-  },
-  {
-    "id": "modonomicon:demo/stages_demo",
+    "id": "modonomicon:demo/writable_books",
     "stages": [
       {
-        "id": "modonomicon:demo/stages_demo_stage_1",
+        "id": "modonomicon:demo/writable_books_stage_1",
         "required_values": [
           {
             "threshold": 1,
-            "value_id": "modonomicon:demo/stages_planks_crafted"
+            "value_id": "modonomicon:demo/writable_books_crafted"
           }
         ],
         "toast": {
-          "description": "research_toast.modonomicon.stages_demo_stage_1.title",
+          "description": "research_toast.modonomicon.writable_books_stage_1.title",
           "icon": {
-            "id": "minecraft:oak_planks"
+            "id": "minecraft:writable_book"
           },
           "title": "research_toast.modonomicon.stage_progress"
         }
       },
       {
-        "id": "modonomicon:demo/stages_demo_stage_2",
+        "id": "modonomicon:demo/writable_books_stage_2",
         "required_values": [
           {
             "threshold": 3,
-            "value_id": "modonomicon:demo/stages_planks_crafted"
+            "value_id": "modonomicon:demo/writable_books_crafted"
           }
         ]
       },
       {
-        "id": "modonomicon:demo/stages_demo_stage_3",
+        "id": "modonomicon:demo/writable_books_stage_3",
         "required_values": [
           {
             "threshold": 5,
-            "value_id": "modonomicon:demo/stages_planks_crafted"
+            "value_id": "modonomicon:demo/writable_books_crafted"
           }
         ],
         "toast": {
-          "description": "research_toast.modonomicon.stages_demo_stage_3.title",
+          "description": "research_toast.modonomicon.writable_books_stage_3.title",
           "icon": {
-            "id": "minecraft:diamond"
+            "id": "minecraft:enchanted_book"
           },
           "title": "research_toast.modonomicon.stage_complete"
         }
       }
-    ]
-  },
-  {
-    "id": "modonomicon:demo/stages_dependent",
-    "required_stages": [
-      {
-        "node_id": "modonomicon:demo/stages_demo",
-        "stage_id": "modonomicon:demo/stages_demo_stage_2"
-      }
-    ]
-  },
-  {
-    "id": "modonomicon:demo/marker_explicit",
-    "required_facts": [
-      "modonomicon:demo/marker_intro_viewed"
     ]
   },
   {
@@ -119,7 +69,7 @@
       {
         "id": "modonomicon:demo/requirements_stage_1",
         "required_facts": [
-          "modonomicon:demo/requirements_oak_log_acquired"
+          "modonomicon:demo/scholarship/ink_sac_acquired"
         ]
       },
       {
@@ -130,7 +80,7 @@
         "required_values": [
           {
             "threshold": 5,
-            "value_id": "modonomicon:demo/requirements_cobblestone_collected"
+            "value_id": "modonomicon:demo/scholarship/paper_collected"
           }
         ]
       }
