@@ -2,10 +2,10 @@
 sidebar_position: 45
 ---
 
-# Custom Research Hooks
+# Custom Research Triggers
 
-Mods can add custom research hook trigger types that fire from arbitrary game events
-and translate them into research progression (fact grants or value increments).
+Mods can add custom research trigger types that fire from arbitrary game events
+and translate them into research progress (fact grants or value increments).
 
 To this end you need to:
 
@@ -397,6 +397,6 @@ Item hooks store their `ResearchItemMatcher` as the target: an item template (`{
   both `ResearchStateManager` and `BookVisualStateManager` when true.
 - **Use item templates or tags for item triggers.** A `ResearchItemMatcher` is either an item template, whose components are checked automatically, or an item tag.
 
-See also [Research Conditions](../unlock-conditions/research-conditions) for how to gate
+See also [Research Conditions](../basics/unlock-conditions/research-conditions) for how to gate
 entries behind research nodes.
 

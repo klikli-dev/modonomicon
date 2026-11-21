@@ -58,7 +58,7 @@ this.nodeBuilder(this.node("mymod/my_node"))
 
 ## Research hook
 
-`this.hook()` returns a `ResearchHookHelper`. Each trigger it starts is a `ResearchHookBuilder<T>`, bound to one trigger type and one target, such as an entry id, an advancement id or an item matcher. All of them share the same methods:
+`this.hook()` returns a `ResearchHookHelper`. Each hook it starts is a `ResearchHookBuilder<T>`, bound to one trigger type and one target, such as an entry id, an advancement id or an item matcher. All of them share the same methods:
 
 | Method | Effect |
 |--------|--------|
@@ -154,13 +154,13 @@ In JSON, a plain item template is written as `{"id": "minecraft:stick"}`, and a 
 
 Tag hooks have no item index key, so they are checked on every event of their trigger type, not only on events for one item.
 
-See [Custom Research Hooks](../../advanced/custom-hooks) for details.
+See [Custom Research Triggers](../../advanced/custom-hooks) for details.
 
 ## Entry markers
 
 Entries can show an attention dot until a condition completes (see `marker_condition` in [Entries](../structure/entries.md#marker_condition-condition-optional)).
 For the common cases the backing hook + fact + node research is generated automatically during book compilation,
-either on the entry model or through the `ConditionHelper`:
+either on the entry model or through the research helper, `this.research()` in a book provider:
 
 ```java
 // In your CategoryProvider — model-based, research generated at compile time:
@@ -177,7 +177,7 @@ this.add(new MyAcquiringEntry(this).generate()
 
 ```java
 // ... or helper-based, combined with an explicit marker condition:
-entry.withMarkerCondition(this.condition().markerUntilAcquired(Items.NETHER_STAR));
+entry.withMarkerCondition(this.research().markerUntilAcquired(Items.NETHER_STAR));
 ```
 
 `markerUntilCrafted` / `markerUntilAcquired` accept `ItemStackTemplate`, `Item` or `ItemLike`.
@@ -196,7 +196,7 @@ All generated paths are built by `GeneratedResearchPaths`. Fact and node ids are
 An explicit marker condition (`withMarkerCondition` / `withMarker`) combined with `markerUntil*` intents on the same entry
 is merged with `and`.
 
-**Demo:** [`MarkersCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/MarkersCategory.java) exercises the explicit, entry-viewed, crafted and acquired variants; [`IndexMarkersCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/IndexMarkersCategory.java) covers markers in the index mode book.
+**Demo:** the markers of the demo book are in [`datagen/book/demo/indexmode`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/indexmode), e.g. `IndexMarkerExplicitEntry.java` and `IndexMarkerCraftedEntry.java`, and their research is declared in [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java).
 
 ## Multi-stage nodes
 

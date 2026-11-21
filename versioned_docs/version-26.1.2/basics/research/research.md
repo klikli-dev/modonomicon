@@ -4,7 +4,9 @@ sidebar_position: 60
 
 # Research System
 
-The research system tracks player progression through facts, values, nodes, and hooks. Research content is authored via datagen and compiled into JSON files under `data/<namespace>/modonomicon/research/<bundle_path>/`.
+Research is the data graph and the server logic behind the book: it tracks what a player has achieved through facts, values, nodes, stages and hooks, and applies effects when things are completed. Research content is authored via datagen and compiled into JSON files under `data/<namespace>/modonomicon/research/<bundle_path>/`.
+
+Research does not decide what the player sees by itself. Book conditions such as `research_node_unlocked` read research to unlock content (see [Research Conditions](../unlock-conditions/research-conditions.md)), and the scholarship layer draws research on book pages (see [Scholarship](../scholarship/scholarship.md)). The [Glossary](./glossary.md#condition-research-and-scholarship) explains the three.
 
 ## Core Concepts
 
@@ -27,10 +29,12 @@ A node represents a milestone in the research tree. Nodes require facts and/or v
 
 ### Hooks
 
-Hooks connect external events to research progress. Each hook triggers on an event and either grants a fact or increments a value. Item hooks match either an item template (the item plus the components of the template) or an item tag.
+A hook is the data definition that connects an external event to research progress. Each hook is one entry of `hooks.json`: it names a trigger type (`trigger_type`), a target, and what it does (grant a fact or increment a value). Item hooks match either an item template (the item plus the components of the template) or an item tag.
 
-| Hook Type | Event | Target Type |
-|-----------|-------|-------------|
+A trigger is the event type a hook listens to, e.g. `item_crafted`. Many hooks can share one trigger type, and a trigger type fires every hook of that type whose target matches the event.
+
+| Trigger Type | Event | Target Type |
+|--------------|-------|-------------|
 | `entry_viewed_once` | A book entry is viewed for the first time | `Identifier` (entry id) |
 | `item_crafted` | A matching item is crafted | `ResearchItemMatcher`: item template (`{"id": ...}`) or tag (`{"tag": ...}`) |
 | `item_acquired` | A matching item appears in inventory | `ResearchItemMatcher`: item template (`{"id": ...}`) or tag (`{"tag": ...}`) |
@@ -38,7 +42,7 @@ Hooks connect external events to research progress. Each hook triggers on an eve
 | `advancement` | A vanilla advancement is earned | `Identifier` (advancement id) |
 
 Third-party mods can register custom trigger types with arbitrary target and context types via `TriggerTypeRegistry.register()`.
-See [Custom Research Hooks](../../advanced/custom-hooks) for details.
+See [Custom Research Triggers](../../advanced/custom-hooks) for details.
 
 ### Toast Notifications
 
@@ -73,6 +77,9 @@ A node's stages are completed in order. The next stage becomes the current one o
 ## Further reading
 
 - [Research Conditions](../unlock-conditions/research-conditions) — unlocking entries and categories via research nodes
+- [Entry Research](./entry-research) — the staged research that belongs to one entry
+- [Actions, Costs and Effects](./actions) and [Effects](./effects) — what research does when a player acts or a stage completes
+- [Research Groups](./groups) — grouping research elements for display
 - [Research Scenarios](./scenarios) — common patterns for advancement gating, item crafting, and more
 - [Research Datagen](./datagen) — authoring research content via datagen
-- [Custom Research Hooks](../../advanced/custom-hooks) — registering new trigger types for third-party mods
+- [Custom Research Triggers](../../advanced/custom-hooks) — registering new trigger types for third-party mods

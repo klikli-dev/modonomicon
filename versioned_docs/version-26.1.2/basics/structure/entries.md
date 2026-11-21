@@ -213,7 +213,7 @@ plus the auto-generated shorthands `#markerUntilEntryViewed(...)`, `#markerUntil
 ### **parents** (Parent[], _optional_)
 
 Entry Parents are JSON Objects that define Entries this Entry should be connected to. See [Parents](#parents) for details.
-A parent connection does not imply an unlock condition or any logical dependency, by default it is just a visual connection. When using datagen, `BookModel.withGenerateEntryHierarchyResearch(true)` automatically generates research nodes and hooks for parent→child entry progression.
+A parent connection does not imply an unlock condition or any logical dependency, by default it is just a visual connection. When using datagen, `BookModel.withGenerateEntryHierarchyResearch(true)` automatically generates research nodes and hooks for parent→child entry research.
 
 ### **pages** (Page[], _optional_)
 

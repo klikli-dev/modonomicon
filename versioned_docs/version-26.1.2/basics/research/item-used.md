@@ -70,7 +70,7 @@ When the player uses an item, the runtime:
 
 ## Requirements
 
-`item_used` is one of the built-in trigger types, see [Research System](./research.md#hooks). Its rows show as "Not used yet" until the fact is granted, and they belong to the knowledge category by default, see [Requirement Categories](./categories.md).
+`item_used` is one of the built-in trigger types, see [Research System](./research.md#hooks). Its rows show as "Not used yet" until the fact is granted, and they belong to the knowledge group by default, see [Research Groups](./groups.md).
 
 To use an item as a requirement of a stage, write `use(...)` in the stage builder. It consumes nothing unless you pass a count:
 

@@ -45,7 +45,7 @@ protected void generateResearch() {
 entry.withCondition(MyResearch.ADVANCEMENT_GATE);
 ```
 
-**Demo:** [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) — `ADVANCEMENT_MINE_STONE` node, and [`ConditionAdvancementEntry.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/features/ConditionAdvancementEntry.java) for the book side.
+**Demo:** see [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) for the research and [`datagen/book/demo`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo) for the book side.
 
 ## Item crafted gating
 
@@ -78,7 +78,7 @@ this.hook()
     .grantFact("mymod/crafted_hook", factRef);
 ```
 
-**Demo:** [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) — `CRAFTING_STICK` node, and [`CraftingCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/CraftingCategory.java).
+**Demo:** see [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) for the research and [`datagen/book/demo`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo) for the book side.
 
 ## Item acquired gating
 
@@ -103,7 +103,7 @@ protected void generateResearch() {
 entry.withCondition(MyResearch.ACQUIRED_GATE);
 ```
 
-**Demo:** [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) — `ACQUIRE_COBBLESTONE` node, and [`AcquiringCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/AcquiringCategory.java).
+**Demo:** see [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) for the research and [`datagen/book/demo`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo) for the book side.
 
 ## Entry markers
 
@@ -140,7 +140,7 @@ protected void generateResearch() {
 entry.withMarker(MyResearch.MARKER_DONE);
 ```
 
-**Demo:** [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) — `MARKER_EXPLICIT` node, [`MarkersCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/MarkersCategory.java), and [`IndexMarkersCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/IndexMarkersCategory.java) for index mode.
+**Demo:** see [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) for the research and [`datagen/book/demo`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo) for the book side.
 
 ## Numeric progression with values
 
@@ -171,7 +171,7 @@ protected void generateResearch() {
 entry.withCondition(MyResearch.MINED_STONE);
 ```
 
-**Demo:** [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) — `COLLECTOR_COMPLETE` node (requires viewing 3 collector entries), and [`ValuesCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/ValuesCategory.java).
+**Demo:** see [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) for the research and [`datagen/book/demo`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo) for the book side.
 
 ## Multi-stage progression
 
@@ -210,7 +210,7 @@ protected void generateResearch() {
 entry.withCondition(MyResearch.BREWING_PROGRESS, stage2Ref);
 ```
 
-**Demo:** [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) — `STAGES_DEMO` node (3 value-based stages) and `STAGES_DEPENDENT` (stage dependency), and [`StagesCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/StagesCategory.java).
+**Demo:** see [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) for the research and [`datagen/book/demo`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo) for the book side.
 
 ## Toast notifications
 
@@ -244,7 +244,7 @@ this.nodeBuilder(this.node("mymod/my_node"))
     .build();
 ```
 
-**Demo:** [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) — `CRAFTING_STICK` node toast and `STAGES_DEMO` stage toasts.
+**Demo:** see [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) for the research and [`datagen/book/demo`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo) for the book side.
 
 ## Combining research conditions
 
@@ -272,7 +272,7 @@ While it is possible to combine multiple research conditions with `and`/`or`, it
 ## Custom trigger types
 
 Need a trigger type not covered above (e.g. entity killed, biome entered)?
-See [Custom Research Hooks](../../advanced/custom-hooks).
+See [Custom Research Triggers](../../advanced/custom-hooks).
 
 ## Swapping page content when conditions are met
 
@@ -297,4 +297,4 @@ this.page("revealed", () -> BookTextPageModel.create()
 
 The same pattern works for whole entries: gate one entry variant on the node and the other on its `not` inversion.
 
-**Demo:** [`ConditionNotEntry.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/features/ConditionNotEntry.java) — swaps a "craft a stick" hint page for the detailed page once the `CRAFTING_STICK` node unlocks. It deliberately uses the repeatable item-crafted trigger from [Item crafted gating](#item-crafted-gating) instead of a one-shot advancement, so the swap can be re-tested after every research reset.
+**Demo:** see [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java) for the research and [`datagen/book/demo`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo) for the book side.
