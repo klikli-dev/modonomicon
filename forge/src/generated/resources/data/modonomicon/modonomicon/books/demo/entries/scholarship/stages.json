@@ -1,0 +1,38 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+    "width": 26
+  },
+  "category": "modonomicon:scholarship",
+  "condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/scholarship_stages",
+    "tooltip": {
+      "translate": "tooltip.modonomicon.condition.entry_unlocked",
+      "with": [
+        {
+          "translate": "book.modonomicon.demo.scholarship.stages.name"
+        }
+      ]
+    }
+  },
+  "description": "book.modonomicon.demo.scholarship.stages.description",
+  "icon": {
+    "id": "minecraft:writable_book"
+  },
+  "id": "modonomicon:scholarship/stages",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
+  "name": "book.modonomicon.demo.scholarship.stages.name",
+  "parents": [
+    {
+      "entry": "modonomicon:scholarship/hand_authored"
+    }
+  ],
+  "sort_number": 8,
+  "x": 21,
+  "y": 0
+}

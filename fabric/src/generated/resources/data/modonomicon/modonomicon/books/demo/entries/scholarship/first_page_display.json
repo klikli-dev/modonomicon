@@ -1,0 +1,42 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "modonomicon:scholarship",
+  "condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/scholarship_first_page_display",
+    "tooltip": {
+      "translate": "tooltip.modonomicon.condition.entry_unlocked",
+      "with": [
+        {
+          "translate": "book.modonomicon.demo.scholarship.first_page_display.name"
+        }
+      ]
+    }
+  },
+  "description": "book.modonomicon.demo.scholarship.first_page_display.description",
+  "icon": {
+    "id": "minecraft:crafting_table"
+  },
+  "id": "modonomicon:scholarship/first_page_display",
+  "marker_condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/required/scholarship_sources"
+  },
+  "name": "book.modonomicon.demo.scholarship.first_page_display.name",
+  "parents": [
+    {
+      "entry": "modonomicon:scholarship/notes"
+    }
+  ],
+  "research": {
+    "node": "modonomicon:generated/demo/nodes/entry_research/scholarship_first_page_display"
+  },
+  "sort_number": 2,
+  "x": 3,
+  "y": 0
+}

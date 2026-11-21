@@ -2,8 +2,8 @@
   "type": "modonomicon:text",
   "condition": {
     "type": "modonomicon:research_stage_completed",
-    "node_id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_notes",
-    "stage_id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_notes/stages/observation"
+    "node_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_notes",
+    "stage_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_notes/stages/observation"
   },
   "id": "transcription_submit",
   "show_title_separator": true,

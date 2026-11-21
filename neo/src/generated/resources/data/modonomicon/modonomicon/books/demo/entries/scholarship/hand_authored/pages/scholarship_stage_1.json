@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:scholarship",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "scholarship_stage_1",
+  "sort_number": 1,
+  "stage": "modonomicon:demo/hand_authored_stage_1",
+  "text": "book.modonomicon.demo.scholarship.hand_authored.scholarship_stage_1.text",
+  "title": "book.modonomicon.demo.scholarship.hand_authored.scholarship_stage_1.title"
+}

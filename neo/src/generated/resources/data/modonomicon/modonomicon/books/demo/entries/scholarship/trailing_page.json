@@ -1,0 +1,42 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gold",
+    "width": 26
+  },
+  "category": "modonomicon:scholarship",
+  "condition": {
+    "type": "modonomicon:research_node_unlocked",
+    "node_id": "modonomicon:generated/demo/nodes/entry_viewed_once/scholarship_trailing_page",
+    "tooltip": {
+      "translate": "tooltip.modonomicon.condition.entry_unlocked",
+      "with": [
+        {
+          "translate": "book.modonomicon.demo.scholarship.trailing_page.name"
+        }
+      ]
+    }
+  },
+  "description": "book.modonomicon.demo.scholarship.trailing_page.description",
+  "icon": {
+    "id": "minecraft:paper"
+  },
+  "id": "modonomicon:scholarship/trailing_page",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
+  "name": "book.modonomicon.demo.scholarship.trailing_page.name",
+  "parents": [
+    {
+      "entry": "modonomicon:scholarship/first_page_display"
+    }
+  ],
+  "research": {
+    "node": "modonomicon:generated/demo/nodes/entry_research/scholarship_trailing_page",
+    "scholarship_display": "trailing_page"
+  },
+  "sort_number": 3,
+  "x": 6,
+  "y": 0
+}
