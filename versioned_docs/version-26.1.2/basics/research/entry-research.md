@@ -2,83 +2,70 @@
 sidebar_position: 12
 ---
 
-# Entry Progression
+# Entry Research
 
-An entry progression is a staged research progression that belongs to one entry. Each stage lists the requirements the player must meet, and the content after a stage stays hidden until that stage is complete. The requirements are shown in a requirements block, on the first page, on a trailing page, or on pages you place yourself.
+Entry research is staged research that belongs to one entry. Each stage lists what the player must research, and the content after a stage stays hidden until that stage is complete. The stages are shown in a scholarship block, on the first page, on a trailing page, or on pages you place yourself. The research itself is described in [Research](./research.md); the block is described in [Scholarship](../scholarship/scholarship.md).
 
-Entry progressions are built on the [research system](./research.md): every stage is a research node stage, and every requirement is a generated fact or value.
+Entry research is built on the [research system](./research.md): every stage is a research node stage, and every requirement of a stage is a generated fact or value.
 
 ## Stages
 
-A progression has one or more stages, completed in order. Each stage has:
+Entry research has one or more stages, completed in order. Each stage has:
 
 - **requirements**: what must be met, e.g. crafting an item, obtaining an item, reading an entry or completing an action.
 - **completion**: automatic (the default, the stage completes as soon as its requirements are met) or manual (the player clicks the Complete button once they hold what the stage consumes, see [Actions, Costs and Effects](./actions.md)).
-- **rewards**: effects granted once when the stage completes, see [Rewards](./effects.md).
-- **display**: a title, an optional description and an optional icon, shown in the requirements block.
+- **effects**: effects granted once when the stage completes, see [Effects](./effects.md).
+- **display**: a title, an optional description and an optional icon, shown in the scholarship block.
 
 ## Gating
 
-Content is gated by the stages of the progression:
+Content is gated by the stages of the entry research:
 
 - **Pages** declared after a stage are only visible once that stage is complete. Content before the first stage is never gated.
 - **Tabs** are gated like pages. A tab is visible when its own page is visible to the player (so a tab declared after a stage is hidden until that stage completes), its condition is met, and, if it is anchored to a page, that anchor page is on the open spread. Entry-wide tabs are not anchored, so they only need the first two.
-- **Requirements pages** are never gated. They keep showing the requirements with check marks after a stage is complete.
+- **Scholarship pages** are never gated. They keep showing the stage with check marks after it is complete.
 
 Entries without any stage are not affected.
 
 ## Display modes
 
-Where the requirements are shown is set by the requirements display of the entry:
+Where the scholarship block appears is set by the `scholarship_display` of the entry. See [Scholarship Display](../scholarship/display.md) for the modes.
 
-| Display | Where the requirements block appears |
-|---------|--------------------------------------|
-| `first_page` | At the bottom of the first page. The default. |
-| `trailing_page` | On a page after the last page of the entry. |
-| `pages` | On the requirements pages you place between the content. |
-| `none` | Nowhere. The stages still gate the content. |
+## Completion of the entry research
 
-Declaring a requirements page in datagen switches the entry to `pages`, unless you set the display explicitly.
-
-## Stage browsing
-
-Below the requirement rows, the stage line shows the stage that is required. Its arrows let the player look at the stages they have already reached, so a completed stage stays readable.
-
-## Completion of the progression
-
-Once the last stage is complete, the progression is complete. The entry then shows its requirements as done. Child entries that depend on the progression unlock at this point: the generated child condition requires the completion stage of the parent, which is the last stage unless you choose another one (see [Datagen](#datagen)).
+Once the last stage is complete, the entry research is complete. The entry then shows its stages as done. Child entries that depend on it unlock at this point: the generated child condition requires the completion stage of the parent, which is the last stage unless you choose another one (see [Datagen](#datagen)).
 
 ## JSON
 
-The entry references its progression node. The node and its stages are generated into the research bundle, so you do not write them by hand:
+The entry references its research node. The node and its stages are generated into the research bundle, so you do not write them by hand:
 
 ```json
 {
   "id": "modonomicon:scholarship/notes",
-  "progression": {
-    "node": "modonomicon:generated/demo/nodes/entry_research/progression_scholarship"
+  "research": {
+    "node": "modonomicon:generated/demo/nodes/entry_research/scholarship_notes"
   }
 }
 ```
 
-The node defines the stages with their requirements, completion and rewards:
+The node defines the stages with their requirements, completion and effects:
 
 ```json
 {
-  "id": "modonomicon:generated/demo/nodes/entry_research/progression_scholarship",
+  "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_notes",
   "required_facts": [
-    "modonomicon:generated/demo/facts/entry_viewed_once/progression_scholarship"
+    "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_notes"
   ],
   "stages": [
     {
-      "id": "modonomicon:generated/demo/nodes/entry_research/progression_scholarship/stages/observation",
+      "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_notes/stages/observation",
       "display": {
-        "title": { "translate": "book.modonomicon.demo.progression.scholarship.stage.observation.title" }
+        "title": { "translate": "book.modonomicon.demo.scholarship.notes.stage.observation.title" }
       },
       "required_facts": [
-        "modonomicon:generated/demo/nodes/entry_research/progression_scholarship/stages/observation/observation"
+        "modonomicon:generated/demo/nodes/entry_research/scholarship_notes/stages/observation/observation"
       ],
-      "rewards": [
+      "effects": [
         { "type": "modonomicon:experience", "amount": 10 }
       ]
     }
@@ -88,7 +75,7 @@ The node defines the stages with their requirements, completion and rewards:
 
 ## Datagen
 
-Declare a progression with `EntryProvider.stage(id, s -> ...)`. Each call creates one stage, in the order it is declared. The builder collects the requirements, completion, rewards and display:
+Declare entry research with `EntryProvider.stage(id, s -> ...)`. Each call creates one stage, in the order it is declared. The builder collects the requirements, completion, effects and display:
 
 ```java
 this.stage("observation", s -> s
@@ -122,9 +109,9 @@ A stage needs at least one requirement and a unique id within the entry. Require
 
 Texts are literal English. The title defaults to the stage id, capitalized. Calling `manual()`, `consume(...)`, `cost(...)` or `manual(cost)` makes the stage manual, see [Costs](./actions.md#costs).
 
-### Requirements pages
+### Scholarship pages
 
-`scholarshipPage(id)` places a page that shows the requirements of the next stage. It is the stage declared after the page, or the last stage if the page comes after all stages. Use the built-in texts, or give your own:
+`scholarshipPage(id)` places a page that shows the stage that is next to be completed. It is the stage declared after the page, or the last stage if the page comes after all stages. Use the built-in texts, or give your own:
 
 ```java
 this.page("intro", () -> BookTextPageModel.create()
@@ -135,20 +122,20 @@ this.stage("quickening", s -> s.craft(Items.CLAY).title("Breathing life into cla
 this.scholarshipPage("after", "Stage requirements", "The requirements of the next stage.");
 ```
 
-`scholarshipDisplay(ScholarshipDisplay.TRAILING_PAGE)` overrides the display of the entry.
+`scholarshipDisplay(ScholarshipDisplay.TRAILING_PAGE)` overrides the display of the entry. See [Scholarship Page](../page-types/scholarship-page.md) for the page type.
 
 ### Low-level alternative
 
-`BookEntryModel.withResearch(node)` attaches a progression node you generated yourself. Use it only if `stage(...)` does not fit, for example for a progression shared by several entries. `withResearch(node, stage)` sets the completion stage that gates the children.
+`BookEntryModel.withResearch(node)` attaches a research node you generated yourself. Use it only if `stage(...)` does not fit, for example for research shared by several entries. `withResearch(node, stage)` sets the completion stage that gates the children.
 
 ## Examples
 
 The demo entries show each display:
 
-- `scholarship/first_page_display`: the default display, requirements on the first page.
-- `scholarship/trailing_page`: requirements on a trailing page, with a value bar.
-- `scholarship/placed_pages`: requirements pages placed between the content.
-- `scholarship/hand_authored`: no requirements display, gating only.
-- `scholarship/notes`: actions, manual completion and rewards, see [Actions, Costs and Effects](./actions.md).
+- `scholarship/first_page_display`: the default display, the block on the first page.
+- `scholarship/trailing_page`: the block on a trailing page, with a value bar.
+- `scholarship/placed_pages`: scholarship pages placed between the content.
+- `scholarship/hand_authored`: hand-authored stages, with the scholarship display set to `none`.
+- `scholarship/notes`: actions, manual completion and effects, see [Actions, Costs and Effects](./actions.md).
 
-See also [Research Datagen](./datagen.md), [Requirement Categories](./categories.md) and the [Glossary](./glossary.md).
+See also [Research Datagen](./datagen.md), [Research Groups](./groups.md) and the [Glossary](./glossary.md).
