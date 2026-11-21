@@ -114,7 +114,7 @@ Markers reuse the condition types above but never show tooltips. For the common 
 // In your BookProvider:
 entry.markerUntilEntryViewed(otherEntry);
 entry.markerUntilCrafted(Items.DIAMOND_SWORD);
-entry.withMarkerCondition(this.condition().markerUntilAcquired(Items.NETHER_STAR));
+entry.withMarkerCondition(this.research().markerUntilAcquired(Items.NETHER_STAR));
 ```
 
 For full control, author the research manually (hook + fact + node, same as the gating scenarios above)
