@@ -54,10 +54,15 @@ public class ScholarshipCategory extends CategoryProvider {
                 .withParent(desk));
         this.layout().entry(catalogue).rightOf(desk, 3);
 
-        //placed requirement pages, plus the entry viewed once condition as entry condition
+        //placed requirement pages, plus an entry viewed once condition as entry condition.
+        //the condition replaces the parent gate, so the catalogue's final stage is required explicitly.
         var index = this.add(new PlacedPageProgressionEntry(this).generate()
                 .withParent(catalogue)
-                .withCondition(this.condition().entryViewedOnce(catalogue))
+                .withCondition(this.condition().and(
+                        this.condition().entryViewedOnce(catalogue),
+                        this.condition().researchStageCompleted(
+                                this.condition().entryProgressionNode(catalogue),
+                                this.condition().entryProgressionStage(catalogue, "sources"))))
                 .markerUntilCrafted(Items.WRITABLE_BOOK));
         this.layout().entry(index).rightOf(catalogue, 3);
 
