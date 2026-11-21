@@ -1,28 +1,14 @@
 [
   {
-    "id": "modonomicon:demo/collector_count"
-  },
-  {
-    "id": "modonomicon:demo/stages_planks_crafted"
-  },
-  {
-    "display": {
-      "title": {
-        "translate": "modonomicon.demo.requirements.cobblestone.title"
-      }
-    },
-    "id": "modonomicon:demo/requirements_cobblestone_collected"
-  },
-  {
     "display": {
       "icon": {
-        "id": "minecraft:dirt"
+        "id": "minecraft:bookshelf"
       },
       "title": {
-        "translate": "modonomicon.demo.progression.dirt.title"
+        "translate": "modonomicon.demo.scholarship.sources_consulted.title"
       }
     },
-    "id": "modonomicon:demo/progression_dirt_collected"
+    "id": "modonomicon:demo/scholarship/sources_consulted"
   },
   {
     "display": {
@@ -34,5 +20,27 @@
       }
     },
     "id": "modonomicon:demo/insight"
+  },
+  {
+    "display": {
+      "icon": {
+        "id": "minecraft:writable_book"
+      },
+      "title": {
+        "translate": "modonomicon.demo.scholarship.writable_books_crafted.title"
+      }
+    },
+    "id": "modonomicon:demo/writable_books_crafted"
+  },
+  {
+    "display": {
+      "icon": {
+        "id": "minecraft:paper"
+      },
+      "title": {
+        "translate": "modonomicon.demo.scholarship.paper_collected.title"
+      }
+    },
+    "id": "modonomicon:demo/scholarship/paper_collected"
   }
 ]

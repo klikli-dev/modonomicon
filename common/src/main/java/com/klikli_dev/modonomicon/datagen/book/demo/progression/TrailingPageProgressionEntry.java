@@ -14,6 +14,9 @@ import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
 
+/**
+ * Trailing page progression: its requirements are listed on a trailing page after the last page. Value requirements are shown as progress bars.
+ */
 public class TrailingPageProgressionEntry extends EntryProvider {
     public static final String ID = "trailing_page_progression";
 
@@ -30,46 +33,38 @@ public class TrailingPageProgressionEntry extends EntryProvider {
                 .withText(this.context().pageText()));
         this.pageTitle("Trailing page requirements");
         this.pageText("""
-                The requirements of this entry are listed on a trailing page after the last page of the entry. Flip past the end of the entry to see them.
-                The first stage counts the dirt you pick up, the progress is shown as a bar. Stages after the first one stay hidden until they are complete.
+                Requirements are on a trailing page after the last page. Flip past the end to see the progress bars.
                 """);
 
-        this.stage("dirt", s -> s
-                .value(DemoResearch.PROGRESSION_DIRT_COLLECTED, 5)
-                .icon(Items.DIRT)
-                .title("Gathering dirt")
-                .description("Pick up 5 dirt."));
+        this.stage("paper", s -> s
+                .value(DemoResearch.PAPER_COLLECTED, 5)
+                .icon(Items.PAPER)
+                .title("Collect paper")
+                .description("Collect 5 paper."));
 
-        this.page("dirt_gathered", () -> BookTextPageModel.create()
+        this.stage("sources", s -> s
+                .value(DemoResearch.SOURCES_CONSULTED, 1)
+                .icon(Items.BOOK)
+                .title("Consult a source")
+                .description("View the Sources Shelf."));
+
+        this.page("catalogued", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
-        this.pageTitle("Dirt gathered");
+        this.pageTitle("Catalogued");
         this.pageText("""
-                You picked up enough dirt. The trailing page showed the progress of this stage while you were collecting it.
-                """);
-
-        this.stage("torch", s -> s
-                .craft(Items.TORCH)
-                .title("Lighting a torch")
-                .description("Craft a torch."));
-
-        this.page("torch_lit", () -> BookTextPageModel.create()
-                .withTitle(this.context().pageTitle())
-                .withText(this.context().pageText()));
-        this.pageTitle("Torch lit");
-        this.pageText("""
-                Both stages are complete. Once the last stage is done, the trailing page only lists completed requirements.
+                Stage-gated page: visible once both stages are complete.
                 """);
     }
 
     @Override
     protected String entryName() {
-        return "Trailing Page Progression";
+        return "Catalogue";
     }
 
     @Override
     protected String entryDescription() {
-        return "Staged progression with a value requirement and the requirements on a trailing page.";
+        return "Trailing page progression with value requirements.";
     }
 
     @Override
@@ -79,7 +74,7 @@ public class TrailingPageProgressionEntry extends EntryProvider {
 
     @Override
     protected BookIconModel entryIcon() {
-        return BookIconModel.create(Items.DIRT);
+        return BookIconModel.create(Items.PAPER);
     }
 
     @Override

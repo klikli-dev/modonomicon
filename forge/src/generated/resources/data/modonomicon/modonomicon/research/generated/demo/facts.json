@@ -1,42 +1,24 @@
 [
   {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/research_condition_level_1"
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_trailing_page_progression"
   },
   {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/research_condition_root"
-  },
-  {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/research_marker_intro"
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_sources"
   },
   {
     "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/crafting_table"
   },
   {
-    "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/torch"
-  },
-  {
-    "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/stone_pickaxe"
-  },
-  {
-    "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/stick"
-  },
-  {
-    "id": "modonomicon:generated/demo/facts/item_acquired/minecraft/cobblestone"
+    "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/writable_book"
   },
   {
     "id": "modonomicon:generated/demo/facts/item_acquired/tag_minecraft/logs"
   },
   {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/progression_first_page_progression"
+    "id": "modonomicon:generated/demo/facts/item_acquired/minecraft/diamond"
   },
   {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/progression_trailing_page_progression"
-  },
-  {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/progression_placed_page_progression"
-  },
-  {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/progression_scholarship"
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_notes"
   },
   {
     "display": {
@@ -52,10 +34,22 @@
         "grants_fact": true
       },
       "title": {
-        "translate": "book.modonomicon.demo.progression.scholarship.stage.observation.action.observation.title"
+        "translate": "book.modonomicon.demo.scholarship.notes.stage.observation.action.observation.title"
       }
     },
-    "id": "modonomicon:generated/demo/nodes/entry_progression/progression_scholarship/stages/observation/observation"
+    "id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_notes/stages/observation/observation"
+  },
+  {
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_first_page_progression"
+  },
+  {
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_placed_page_progression"
+  },
+  {
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_two_parents"
+  },
+  {
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_condition_advancement"
   },
   {
     "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_recipe"
@@ -74,8 +68,5 @@
   },
   {
     "id": "modonomicon:generated/demo/facts/entry_viewed_once/formatting_advanced"
-  },
-  {
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/research_condition_level_2"
   }
 ]

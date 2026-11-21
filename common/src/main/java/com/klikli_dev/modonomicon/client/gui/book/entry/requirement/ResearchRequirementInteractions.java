@@ -90,10 +90,11 @@ public final class ResearchRequirementInteractions {
             return lines;
         }
         var action = info.action();
-        if (action.grantsFact()) {
+        //once the fact is recorded there is nothing left to record, a repeatable action only offers what it does again
+        if (action.grantsFact() && !row.met()) {
             lines.add(Component.translatable(Gui.REQUIREMENTS_ACTION_RECORD, row.title()).copy().withStyle(ChatFormatting.DARK_AQUA));
         }
-        var actionContext = new ResearchActionContext(action, row.title());
+        var actionContext = new ResearchActionContext(action, row.title(), row.met());
         for (var effect : action.effects()) {
             lines.add(ResearchEffectPresenterRegistry.get(effect.type().id()).line(effect, actionContext).copy().withStyle(ChatFormatting.DARK_AQUA));
         }

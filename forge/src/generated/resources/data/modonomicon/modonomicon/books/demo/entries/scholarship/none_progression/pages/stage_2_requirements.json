@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:stage_requirements",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "stage_2_requirements",
+  "sort_number": 3,
+  "stage": "modonomicon:demo/requirements_stage_2",
+  "text": "book.modonomicon.demo.scholarship.none_progression.stage_2_requirements.text",
+  "title": "book.modonomicon.demo.scholarship.none_progression.stage_2_requirements.title"
+}

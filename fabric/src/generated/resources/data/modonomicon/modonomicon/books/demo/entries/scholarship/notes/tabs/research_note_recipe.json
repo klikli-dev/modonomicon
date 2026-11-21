@@ -1,0 +1,21 @@
+{
+  "anchor": "transcription_process",
+  "condition": {
+    "type": "modonomicon:research_stage_completed",
+    "node_id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_notes",
+    "stage_id": "modonomicon:generated/demo/nodes/entry_progression/scholarship_notes/stages/observation"
+  },
+  "id": "research_note_recipe",
+  "page": {
+    "type": "modonomicon:crafting_recipe",
+    "condition": {
+      "type": "modonomicon:none"
+    },
+    "id": "research_note_recipe",
+    "recipe_id_1": "modonomicon:crafting/demo_research_note"
+  },
+  "sort_number": 0,
+  "title": {
+    "translate": "book.modonomicon.demo.scholarship.notes.tab.research_note_recipe.title"
+  }
+}
