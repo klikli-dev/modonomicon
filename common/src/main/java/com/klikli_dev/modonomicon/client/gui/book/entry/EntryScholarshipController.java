@@ -6,17 +6,17 @@
 
 package com.klikli_dev.modonomicon.client.gui.book.entry;
 
-import com.klikli_dev.modonomicon.book.RequirementsDisplay;
+import com.klikli_dev.modonomicon.book.ScholarshipDisplay;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.book.page.BookPage;
-import com.klikli_dev.modonomicon.book.page.BookStageRequirementsPage;
+import com.klikli_dev.modonomicon.book.page.BookScholarshipPage;
 import com.klikli_dev.modonomicon.client.gui.BookGuiManager;
-import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.RequirementBlock;
-import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.RequirementContext;
-import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchRequirementInteractions;
-import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchRequirementRows;
-import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.RowAction;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipBlock;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipContext;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipInteractions;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipRows;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipRowAction;
 import com.klikli_dev.modonomicon.research.ResearchServices;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -30,19 +30,19 @@ import java.util.Map;
 
 /**
  * Owns the research requirements of a {@link BookEntryScreen}: the requirement blocks of the entry research and its stages,
- * the browsed stage, the space reserved for the first page block and the trailing requirements page.
+ * the browsed stage, the space reserved for the first page block and the trailing scholarship page.
  * The screen delegates requirement state, layout, clicks and rendering to this controller.
  * <p>
  * Requirement blocks depend on live state (held items, levels, research), so they are not cached across frames.
  * Instead, each block is built at most once per frame: {@link #beginFrame()} clears the per-frame memo at the start of a frame,
  * and rendering, reserved heights and clicks all share it.
  */
-public class EntryRequirementsController {
+public class EntryScholarshipController {
 
     /**
-     * Id of the client-only trailing requirements page. Not part of the book data, so it is never persisted.
+     * Id of the client-only trailing scholarship page. Not part of the book data, so it is never persisted.
      */
-    private static final String TRAILING_PAGE_ID = "__requirements";
+    private static final String TRAILING_PAGE_ID = "__scholarship";
     private static final int FIRST_PAGE_INDEX = 0;
     private static final int ENTRY_START_PAGE = 0;
 
@@ -57,13 +57,13 @@ public class EntryRequirementsController {
     /**
      * Owns the completion requests in flight of this screen, shared by the renderer's complete button.
      */
-    private final ResearchRequirementInteractions interactions = new ResearchRequirementInteractions();
-    private final EntryRequirementsRenderer renderer = new EntryRequirementsRenderer(this.interactions);
+    private final ScholarshipInteractions interactions = new ScholarshipInteractions();
+    private final EntryScholarshipRenderer renderer = new EntryScholarshipRenderer(this.interactions);
 
     /**
      * Blocks built during the current frame. Cleared at the start of every frame and whenever the browsed stage changes.
      */
-    private final Map<BlockKey, RequirementBlock> frameBlocks = new HashMap<>();
+    private final Map<BlockKey, ScholarshipBlock> frameBlocks = new HashMap<>();
 
     /**
      * The 0-based stage index of the research the player browses with the stage line, null while the next stage is shown.
@@ -73,9 +73,9 @@ public class EntryRequirementsController {
     private Integer browsedStage;
 
     @Nullable
-    private BookStageRequirementsPage trailingPage;
+    private BookScholarshipPage trailingPage;
 
-    public EntryRequirementsController(BookEntryScreen screen) {
+    public EntryScholarshipController(BookEntryScreen screen) {
         this.screen = screen;
     }
 
@@ -97,9 +97,9 @@ public class EntryRequirementsController {
     /**
      * True if the requirements of the entry research are shown at the bottom of the first page.
      */
-    public boolean isRequirementsOnFirstPage() {
+    public boolean isScholarshipOnFirstPage() {
         return this.screen.getEntry().getResearch() != null
-                && this.screen.getEntry().getRequirementsDisplay() == RequirementsDisplay.FIRST_PAGE;
+                && this.screen.getEntry().getScholarshipDisplay() == ScholarshipDisplay.FIRST_PAGE;
     }
 
     /**
@@ -107,17 +107,17 @@ public class EntryRequirementsController {
      */
     public boolean showsTrailingPage() {
         return this.screen.getEntry().getResearch() != null
-                && this.screen.getEntry().getRequirementsDisplay() == RequirementsDisplay.TRAILING_PAGE;
+                && this.screen.getEntry().getScholarshipDisplay() == ScholarshipDisplay.TRAILING_PAGE;
     }
 
     /**
      * The client-only page that shows the requirements of the entry research. Its page number is after all authored pages and tabs,
      * so it never collides with them.
      */
-    public BookStageRequirementsPage getTrailingPage() {
+    public BookScholarshipPage getTrailingPage() {
         if (this.trailingPage == null) {
             var entry = this.screen.getEntry();
-            var page = new BookStageRequirementsPage(null, null, null, TRAILING_PAGE_ID, new BookNoneCondition(), List.of());
+            var page = new BookScholarshipPage(null, null, null, TRAILING_PAGE_ID, new BookNoneCondition(), List.of());
             page.attach(entry, entry.getPages().size() + entry.getTabs().size());
             this.trailingPage = page;
         }
@@ -132,14 +132,14 @@ public class EntryRequirementsController {
      * True if the requirements block is drawn on the first page, i.e. the first page is open on the left.
      */
     public boolean isVisibleOnFirstPage() {
-        return this.screen.openPagesIndex == FIRST_PAGE_INDEX && this.isRequirementsOnFirstPage() && !this.getBlock(null).isEmpty();
+        return this.screen.openPagesIndex == FIRST_PAGE_INDEX && this.isScholarshipOnFirstPage() && !this.getBlock(null).isEmpty();
     }
 
     /**
      * The height at the bottom of the first page that is reserved for the requirements block. Zero if the requirements are not shown there.
      */
     public int getReservedFirstPageHeight() {
-        return this.isRequirementsOnFirstPage() ? this.getBlockMaxHeight(null) : 0;
+        return this.isScholarshipOnFirstPage() ? this.getBlockMaxHeight(null) : 0;
     }
 
     /**
@@ -150,14 +150,14 @@ public class EntryRequirementsController {
      */
     public int getBlockMaxHeight(@Nullable String stage) {
         if (stage != null) {
-            return EntryRequirementsRenderer.getBlockHeight(this.getBlock(stage));
+            return EntryScholarshipRenderer.getBlockHeight(this.getBlock(stage));
         }
 
         var block = this.getBlock(null);
-        int height = EntryRequirementsRenderer.getBlockHeight(block);
+        int height = EntryScholarshipRenderer.getBlockHeight(block);
         if (block.stage() != null) {
             for (int index = 0; index < block.stage().total(); index++) {
-                height = Math.max(height, EntryRequirementsRenderer.getBlockHeight(this.getBuiltBlock(new BlockKey(null, index))));
+                height = Math.max(height, EntryScholarshipRenderer.getBlockHeight(this.getBuiltBlock(new BlockKey(null, index))));
             }
         }
         return height;
@@ -169,35 +169,35 @@ public class EntryRequirementsController {
      *
      * @param stage the research stage id, or null for the entry research
      */
-    public RequirementBlock getBlock(@Nullable String stage) {
+    public ScholarshipBlock getBlock(@Nullable String stage) {
         if (stage != null) {
             return this.getBuiltBlock(new BlockKey(stage, null));
         }
         return this.getBuiltBlock(new BlockKey(null, this.browsedStage));
     }
 
-    private RequirementBlock getBuiltBlock(BlockKey key) {
+    private ScholarshipBlock getBuiltBlock(BlockKey key) {
         return this.frameBlocks.computeIfAbsent(key, this::buildBlock);
     }
 
-    private RequirementBlock buildBlock(BlockKey key) {
+    private ScholarshipBlock buildBlock(BlockKey key) {
         var entry = this.screen.getEntry();
         var player = this.screen.getMinecraft().player;
         if (player == null || (key.stage() == null && entry.getResearch() == null)) {
-            return RequirementBlock.empty();
+            return ScholarshipBlock.empty();
         }
 
-        var context = new RequirementContext(
+        var context = new ScholarshipContext(
                 BookConditionContext.of(entry.getBook(), entry),
                 player,
                 ResearchServices.state().getStateFor(player),
                 ResearchDataManager.get().data()
         );
         if (key.stage() == null) {
-            return ResearchRequirementRows.research(entry.getResearch().node(), key.browsed(), context);
+            return ScholarshipRows.research(entry.getResearch().node(), key.browsed(), context);
         }
         var stageId = Identifier.tryParse(key.stage());
-        return stageId != null ? ResearchRequirementRows.stageBlock(stageId, context) : RequirementBlock.empty();
+        return stageId != null ? ScholarshipRows.stageBlock(stageId, context) : ScholarshipBlock.empty();
     }
 
     /**
@@ -229,8 +229,8 @@ public class EntryRequirementsController {
     /**
      * The y coordinate (book-relative) at which a block starts, so that it ends at the bottom of a page starting at pageTop.
      */
-    public int getBlockTop(RequirementBlock block, int pageTop) {
-        return EntryRequirementsRenderer.getBlockTop(block, pageTop, BookEntryScreen.PAGE_HEIGHT);
+    public int getBlockTop(ScholarshipBlock block, int pageTop) {
+        return EntryScholarshipRenderer.getBlockTop(block, pageTop, BookEntryScreen.PAGE_HEIGHT);
     }
 
     /**
@@ -253,7 +253,7 @@ public class EntryRequirementsController {
     /**
      * Renders a block at the given position. Call with the book origin as translation, i.e. coordinates are book-relative.
      */
-    public void renderBlock(GuiGraphicsExtractor guiGraphics, RequirementBlock block, int x, int top, int width,
+    public void renderBlock(GuiGraphicsExtractor guiGraphics, ScholarshipBlock block, int x, int top, int width,
                             int mouseX, int mouseY, boolean interactive) {
         this.renderer.render(guiGraphics, this.screen.getContentFont(), this.screen.getBook().theme().content(), block,
                 x, top, width, mouseX, mouseY, interactive, this.screen::setTooltip);
@@ -279,11 +279,11 @@ public class EntryRequirementsController {
      *
      * @return true if the click was consumed
      */
-    public boolean clickBlock(RequirementBlock block, int x, int top, int width, double mouseX, double mouseY) {
-        return this.renderer.click(block, this.screen.getContentFont(), x, top, width, mouseX, mouseY, this::browseStage, this::performRowAction);
+    public boolean clickBlock(ScholarshipBlock block, int x, int top, int width, double mouseX, double mouseY) {
+        return this.renderer.click(block, this.screen.getContentFont(), x, top, width, mouseX, mouseY, this::browseStage, this::performScholarshipRowAction);
     }
 
-    private void performRowAction(RowAction action) {
-        ResearchRequirementInteractions.perform(action, this::openEntry);
+    private void performScholarshipRowAction(ScholarshipRowAction action) {
+        ScholarshipInteractions.perform(action, this::openEntry);
     }
 }

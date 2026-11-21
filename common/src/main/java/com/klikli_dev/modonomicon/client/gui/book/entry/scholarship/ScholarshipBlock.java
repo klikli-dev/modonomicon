@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.client.gui.book.entry.requirement;
+package com.klikli_dev.modonomicon.client.gui.book.entry.scholarship;
 
 import com.klikli_dev.modonomicon.research.data.ResearchCost;
 import net.minecraft.network.chat.Component;
@@ -22,21 +22,21 @@ import java.util.List;
  * @param description optional description of the block, shown in the tooltip of the separator
  * @param stage       optional stage line below the rows, null if the block is not part of a staged research
  */
-public record RequirementBlock(Component title, List<RequirementRow> rows, boolean complete, @Nullable Component description, @Nullable StageLine stage) {
+public record ScholarshipBlock(Component title, List<ScholarshipRow> rows, boolean complete, @Nullable Component description, @Nullable StageLine stage) {
 
-    public RequirementBlock(Component title, List<RequirementRow> rows, boolean complete) {
+    public ScholarshipBlock(Component title, List<ScholarshipRow> rows, boolean complete) {
         this(title, rows, complete, null, null);
     }
 
-    public RequirementBlock(Component title, List<RequirementRow> rows, boolean complete, @Nullable Component description) {
+    public ScholarshipBlock(Component title, List<ScholarshipRow> rows, boolean complete, @Nullable Component description) {
         this(title, rows, complete, description, null);
     }
 
     /**
      * An empty block, nothing to show.
      */
-    public static RequirementBlock empty() {
-        return new RequirementBlock(Component.empty(), List.of(), false);
+    public static ScholarshipBlock empty() {
+        return new ScholarshipBlock(Component.empty(), List.of(), false);
     }
 
     /**

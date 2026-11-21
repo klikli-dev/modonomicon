@@ -139,7 +139,7 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
         //allow pages to prepare for being displayed
         if (this.leftDisplay != null) {
             this.leftPageRenderer = this.createDisplayRenderer(this.leftDisplay);
-            this.leftPageRenderer.setReservedBottomHeight(leftPageIndex == 0 ? this.requirements.getReservedFirstPageHeight() : 0);
+            this.leftPageRenderer.setReservedBottomHeight(leftPageIndex == 0 ? this.scholarship.getReservedFirstPageHeight() : 0);
             this.leftPageRenderer.onBeginDisplayPage(this, LEFT_PAGE_X, TOP_PADDING);
         } else {
             this.leftPageRenderer = null;
@@ -172,7 +172,7 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
     @Override
     public void extractRenderState(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         this.resetTooltip();
-        this.requirements.beginFrame();
+        this.scholarship.beginFrame();
 
         boolean overlayOpen = this.entryTabs.isOpen();
         int underlyingMouseX = overlayOpen ? MOUSE_OUT_OF_BOOK : pMouseX;
@@ -191,7 +191,7 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
 
         this.renderPage(guiGraphics, this.leftPageRenderer, underlyingMouseX, underlyingMouseY, pPartialTick);
         this.renderPage(guiGraphics, this.rightPageRenderer, underlyingMouseX, underlyingMouseY, pPartialTick);
-        this.requirements.renderFirstPage(guiGraphics, underlyingMouseX, underlyingMouseY, !overlayOpen);
+        this.scholarship.renderFirstPage(guiGraphics, underlyingMouseX, underlyingMouseY, !overlayOpen);
         guiGraphics.pose().popMatrix();
         guiGraphics.nextStratum();
 

@@ -64,7 +64,7 @@ public class DemoResearch extends SingleResearchSubProvider {
     public static final ResearchFactRef ADVANCEMENT_MINE_STONE_COMPLETED = factRef("demo/advancement_mine_stone_completed");
     public static final ResearchFactRef ADVANCEMENT_RIDE_BOAT_WITH_GOAT_COMPLETED = factRef("demo/advancement_ride_boat_with_goat_completed");
     public static final Identifier DEMO_SMITHING = Modonomicon.loc("demo_smithing");
-    private static final Identifier DEMO_SMITHING_ICON = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "modonomicon/requirement_categories/demo_smithing");
+    private static final Identifier DEMO_SMITHING_ICON = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "modonomicon/scholarship/groups/demo_smithing");
     private static final String DEMO_SMITHING_TITLE = "modonomicon.demo.category.smithing.title";
     private static final String DEMO_SMITHING_DESCRIPTION = "modonomicon.demo.category.smithing.description";
     private static final String PAPER_COLLECTED_TITLE = "modonomicon.demo.scholarship.paper_collected.title";

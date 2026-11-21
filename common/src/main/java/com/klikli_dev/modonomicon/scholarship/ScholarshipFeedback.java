@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.research;
+package com.klikli_dev.modonomicon.scholarship;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.research.cost.ResearchCostEntry;
@@ -20,9 +20,9 @@ import java.util.List;
 /**
  * Tells a player the outcome of a research action or manual stage completion: a quiet sound and an action bar message.
  */
-public final class ResearchFeedback {
+public final class ScholarshipFeedback {
 
-    private ResearchFeedback() {
+    private ScholarshipFeedback() {
     }
 
     /**

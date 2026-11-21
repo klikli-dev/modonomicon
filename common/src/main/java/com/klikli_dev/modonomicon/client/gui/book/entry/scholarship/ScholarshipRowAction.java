@@ -4,16 +4,16 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.client.gui.book.entry.requirement;
+package com.klikli_dev.modonomicon.client.gui.book.entry.scholarship;
 
 import com.klikli_dev.modonomicon.research.action.ResearchAction;
 import net.minecraft.resources.Identifier;
 
 /**
- * What clicking a requirement row asks for. The row only describes the action; {@link ResearchRequirementInteractions#perform}
+ * What clicking a requirement row asks for. The row only describes the action; {@link ScholarshipInteractions#perform}
  * interprets it, so rows stay plain data.
  */
-public sealed interface RowAction {
+public sealed interface ScholarshipRowAction {
 
     /**
      * Performs a research action that satisfies a fact of a node.
@@ -22,7 +22,7 @@ public sealed interface RowAction {
      * @param factId the fact the action satisfies
      * @param action the action attached to the fact, used for the tooltip and the local affordability check
      */
-    record Perform(Identifier nodeId, Identifier factId, ResearchAction action) implements RowAction {
+    record Perform(Identifier nodeId, Identifier factId, ResearchAction action) implements ScholarshipRowAction {
     }
 
     /**
@@ -31,6 +31,6 @@ public sealed interface RowAction {
      * @param bookId the book of the entry
      * @param entryId the entry to open
      */
-    record OpenEntry(Identifier bookId, Identifier entryId) implements RowAction {
+    record OpenEntry(Identifier bookId, Identifier entryId) implements ScholarshipRowAction {
     }
 }

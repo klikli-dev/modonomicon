@@ -36,26 +36,26 @@ import java.util.Optional;
  * Shows the research requirements of a stage. Without a stage, the next stage of the entry research is shown.
  * The title and text are optional, the requirement block is titled by the stage if no title is given.
  */
-public class BookStageRequirementsPage extends BookPage {
-    public static final Identifier ID = Modonomicon.loc("stage_requirements");
+public class BookScholarshipPage extends BookPage {
+    public static final Identifier ID = Modonomicon.loc("scholarship");
 
-    public static final MapCodec<BookStageRequirementsPage> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+    public static final MapCodec<BookScholarshipPage> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             BookTextHolder.CODEC.optionalFieldOf("title").forGetter(page -> Optional.ofNullable(page.title)),
             BookTextHolder.CODEC.optionalFieldOf("text").forGetter(page -> Optional.ofNullable(page.text)),
             Codec.STRING.optionalFieldOf("stage").forGetter(page -> Optional.ofNullable(page.stage)),
             Codec.STRING.fieldOf("id").forGetter(BookPage::getId),
             BookCondition.CODEC.optionalFieldOf("condition", new BookNoneCondition()).forGetter(BookPage::getCondition),
             BookPage.ASSOCIATED_ITEMS_CODEC.optionalFieldOf("associated_items", List.of()).forGetter(BookPage::getAssociatedItems)
-    ).apply(instance, (title, text, stage, id, condition, associatedItems) -> new BookStageRequirementsPage(title.orElse(null), text.orElse(null), stage.orElse(null), id, condition, associatedItems)));
+    ).apply(instance, (title, text, stage, id, condition, associatedItems) -> new BookScholarshipPage(title.orElse(null), text.orElse(null), stage.orElse(null), id, condition, associatedItems)));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, BookStageRequirementsPage> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, BookScholarshipPage> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.optional(BookTextHolder.STREAM_CODEC), page -> Optional.ofNullable(page.title),
             ByteBufCodecs.optional(BookTextHolder.STREAM_CODEC), page -> Optional.ofNullable(page.text),
             ByteBufCodecs.optional(ByteBufCodecs.STRING_UTF8), page -> Optional.ofNullable(page.stage),
             ByteBufCodecs.STRING_UTF8, BookPage::getId,
             BookCondition.STREAM_CODEC, BookPage::getCondition,
             BookPage.ASSOCIATED_ITEMS_STREAM_CODEC, BookPage::getAssociatedItems,
-            (title, text, stage, id, condition, associatedItems) -> new BookStageRequirementsPage(title.orElse(null), text.orElse(null), stage.orElse(null), id, condition, associatedItems)
+            (title, text, stage, id, condition, associatedItems) -> new BookScholarshipPage(title.orElse(null), text.orElse(null), stage.orElse(null), id, condition, associatedItems)
     );
 
     @Nullable
@@ -65,7 +65,7 @@ public class BookStageRequirementsPage extends BookPage {
     @Nullable
     protected String stage;
 
-    public BookStageRequirementsPage(@Nullable BookTextHolder title, @Nullable BookTextHolder text, @Nullable String stage, String id, BookCondition condition, List<Either<ItemStackTemplate, Ingredient>> associatedItems) {
+    public BookScholarshipPage(@Nullable BookTextHolder title, @Nullable BookTextHolder text, @Nullable String stage, String id, BookCondition condition, List<Either<ItemStackTemplate, Ingredient>> associatedItems) {
         super(id, condition, associatedItems);
         this.title = title;
         this.text = text;
@@ -100,7 +100,7 @@ public class BookStageRequirementsPage extends BookPage {
 
     @Override
     public BookPageType<?> type() {
-        return BookPageTypeRegistry.STAGE_REQUIREMENTS;
+        return BookPageTypeRegistry.SCHOLARSHIP;
     }
 
     @Override

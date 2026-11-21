@@ -14,9 +14,9 @@ public interface BookContentTheme {
 
     GuiSprite titleSeparator();
 
-    GuiSprite requirementsSeparator();
+    GuiSprite scholarshipSeparator();
 
-    GuiSprite requirementCheck();
+    GuiSprite scholarshipCheck();
 
     /**
      * The complete button of a manually completed stage, in its normal, hovered and disabled states.
@@ -30,7 +30,7 @@ public interface BookContentTheme {
     /**
      * The faint line that connects the requirement icons of a category row, fading out to the right.
      */
-    GuiSprite requirementRowLine();
+    GuiSprite scholarshipRowLine();
 
     GuiSprite lockIcon();
 

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.client.gui.book.entry.requirement;
+package com.klikli_dev.modonomicon.client.gui.book.entry.scholarship;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.research.effect.ResearchEffect;
@@ -19,38 +19,38 @@ import java.util.concurrent.ConcurrentHashMap;
  * Presenters of research effect types, keyed by effect type id. Used for reward rows and for describing actions.
  * Unregistered types fall back to a generic presenter.
  */
-public final class ResearchEffectPresenterRegistry {
+public final class ScholarshipEffectPresenterRegistry {
 
-    private static final Map<Identifier, ResearchEffectPresenter> PRESENTERS = new ConcurrentHashMap<>();
+    private static final Map<Identifier, ScholarshipEffectPresenter> PRESENTERS = new ConcurrentHashMap<>();
 
-    private static final ResearchEffectPresenter FALLBACK = new ResearchEffectPresenter() {
+    private static final ScholarshipEffectPresenter FALLBACK = new ScholarshipEffectPresenter() {
         @Override
-        public RequirementRow present(ResearchEffect effect, RequirementContext context) {
-            return RequirementRow.of(List.of(ResearchIcons.icon(ResearchIcons.GENERIC)), Component.translatable(Gui.REQUIREMENTS_REWARD_SPECIAL));
+        public ScholarshipRow present(ResearchEffect effect, ScholarshipContext context) {
+            return ScholarshipRow.of(List.of(ScholarshipIcons.icon(ScholarshipIcons.GENERIC)), Component.translatable(Gui.SCHOLARSHIP_REWARD_SPECIAL));
         }
     };
 
-    private ResearchEffectPresenterRegistry() {
+    private ScholarshipEffectPresenterRegistry() {
     }
 
     /**
      * Registers the presenters of the built-in effect types. Call from client setup.
      */
     public static void registerDefaults() {
-        DefaultResearchEffectPresenters.register();
+        DefaultScholarshipEffectPresenters.register();
     }
 
     /**
      * Registers the presenter for an effect type. Replaces any presenter previously registered for the id.
      */
-    public static void register(Identifier effectTypeId, ResearchEffectPresenter presenter) {
+    public static void register(Identifier effectTypeId, ScholarshipEffectPresenter presenter) {
         PRESENTERS.put(effectTypeId, presenter);
     }
 
     /**
      * The presenter of an effect type, or a generic presenter if none is registered.
      */
-    public static ResearchEffectPresenter get(Identifier effectTypeId) {
+    public static ScholarshipEffectPresenter get(Identifier effectTypeId) {
         return PRESENTERS.getOrDefault(effectTypeId, FALLBACK);
     }
 }

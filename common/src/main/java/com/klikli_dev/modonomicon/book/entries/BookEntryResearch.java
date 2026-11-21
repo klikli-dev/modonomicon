@@ -6,7 +6,7 @@
 
 package com.klikli_dev.modonomicon.book.entries;
 
-import com.klikli_dev.modonomicon.book.RequirementsDisplay;
+import com.klikli_dev.modonomicon.book.ScholarshipDisplay;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -21,20 +21,20 @@ import java.util.Optional;
  * The requirements of the node's next stage are shown in the entry, the entry is complete once the node is complete.
  *
  * @param node                the research node that tracks the research of this entry
- * @param requirementsDisplay optional override of the book's default requirements display
+ * @param scholarshipDisplay optional override of the book's default requirements display
  */
 public record BookEntryResearch(
         Identifier node,
-        Optional<RequirementsDisplay> requirementsDisplay
+        Optional<ScholarshipDisplay> scholarshipDisplay
 ) {
     public static final Codec<BookEntryResearch> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.fieldOf("node").forGetter(BookEntryResearch::node),
-            RequirementsDisplay.CODEC.optionalFieldOf("requirements_display").forGetter(BookEntryResearch::requirementsDisplay)
+            ScholarshipDisplay.CODEC.optionalFieldOf("scholarship_display").forGetter(BookEntryResearch::scholarshipDisplay)
     ).apply(instance, BookEntryResearch::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BookEntryResearch> STREAM_CODEC = StreamCodec.composite(
             Identifier.STREAM_CODEC, BookEntryResearch::node,
-            ByteBufCodecs.optional(RequirementsDisplay.STREAM_CODEC), BookEntryResearch::requirementsDisplay,
+            ByteBufCodecs.optional(ScholarshipDisplay.STREAM_CODEC), BookEntryResearch::scholarshipDisplay,
             BookEntryResearch::new
     );
 }

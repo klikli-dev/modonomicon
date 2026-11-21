@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.client.gui.book.entry.requirement;
+package com.klikli_dev.modonomicon.client.gui.book.entry.scholarship;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
 import com.klikli_dev.modonomicon.networking.PerformResearchActionMessage;
@@ -12,7 +12,7 @@ import com.klikli_dev.modonomicon.networking.CompleteResearchStageMessage;
 import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.research.action.ResearchAction;
 import com.klikli_dev.modonomicon.research.data.ResearchCost;
-import com.klikli_dev.modonomicon.research.ResearchFeedback;
+import com.klikli_dev.modonomicon.scholarship.ScholarshipFeedback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -33,7 +33,7 @@ import java.util.function.BiConsumer;
  * Client side of requirement interactions: pre-checks clicks locally for feedback, sends the requests and builds the cost lines.
  * The server validates every request again, so local checks only decide whether a request is sent.
  */
-public final class ResearchRequirementInteractions {
+public final class ScholarshipInteractions {
 
     private static final long COMPLETING_TIMEOUT_MS = 3000L;
 
@@ -48,7 +48,7 @@ public final class ResearchRequirementInteractions {
      */
     private final Map<Identifier, Completing> completing = new HashMap<>();
 
-    public ResearchRequirementInteractions() {
+    public ScholarshipInteractions() {
     }
 
     @Nullable
@@ -60,14 +60,14 @@ public final class ResearchRequirementInteractions {
      * Interprets a row action. A research action is performed if it looks available and affordable, otherwise the fail sound
      * plays and nothing is sent. Opening an entry is handed to the navigation of the screen.
      */
-    public static void perform(RowAction action, BiConsumer<Identifier, Identifier> openEntry) {
+    public static void perform(ScholarshipRowAction action, BiConsumer<Identifier, Identifier> openEntry) {
         switch (action) {
-            case RowAction.Perform perform -> performAction(perform);
-            case RowAction.OpenEntry open -> openEntry.accept(open.bookId(), open.entryId());
+            case ScholarshipRowAction.Perform perform -> performAction(perform);
+            case ScholarshipRowAction.OpenEntry open -> openEntry.accept(open.bookId(), open.entryId());
         }
     }
 
-    private static void performAction(RowAction.Perform info) {
+    private static void performAction(ScholarshipRowAction.Perform info) {
         var player = player();
         if (player == null) {
             return;
@@ -84,19 +84,19 @@ public final class ResearchRequirementInteractions {
     /**
      * Tooltip lines of an action row: what clicking does, the cost, and the reason it is unavailable, if any.
      */
-    public static List<Component> actionTooltip(RequirementRow row, Player player) {
+    public static List<Component> actionTooltip(ScholarshipRow row, Player player) {
         var lines = new ArrayList<Component>();
-        if (!(row.action() instanceof RowAction.Perform info)) {
+        if (!(row.action() instanceof ScholarshipRowAction.Perform info)) {
             return lines;
         }
         var action = info.action();
         //once the fact is recorded there is nothing left to record, a repeatable action only offers what it does again
         if (action.grantsFact() && !row.met()) {
-            lines.add(Component.translatable(Gui.REQUIREMENTS_ACTION_RECORD, row.title()).copy().withStyle(ChatFormatting.DARK_AQUA));
+            lines.add(Component.translatable(Gui.SCHOLARSHIP_ACTION_RECORD, row.title()).copy().withStyle(ChatFormatting.DARK_AQUA));
         }
-        var actionContext = new ResearchActionContext(action, row.title(), row.met());
+        var actionContext = new ScholarshipActionContext(action, row.title(), row.met());
         for (var effect : action.effects()) {
-            lines.add(ResearchEffectPresenterRegistry.get(effect.type().id()).line(effect, actionContext).copy().withStyle(ChatFormatting.DARK_AQUA));
+            lines.add(ScholarshipEffectPresenterRegistry.get(effect.type().id()).line(effect, actionContext).copy().withStyle(ChatFormatting.DARK_AQUA));
         }
         lines.addAll(costLines(action.cost(), player));
         var reason = unavailableReason(action, player);
@@ -112,7 +112,7 @@ public final class ResearchRequirementInteractions {
     @Nullable
     public static Component unavailableReason(ResearchAction action, Player player) {
         for (var effect : action.effects()) {
-            var reason = ResearchEffectPresenterRegistry.get(effect.type().id()).unavailableReason(effect, player);
+            var reason = ScholarshipEffectPresenterRegistry.get(effect.type().id()).unavailableReason(effect, player);
             if (reason != null) {
                 return reason;
             }
@@ -129,12 +129,12 @@ public final class ResearchRequirementInteractions {
         if (cost.isEmpty()) {
             return lines;
         }
-        lines.add(Component.translatable(Gui.REQUIREMENTS_COSTS).withStyle(ChatFormatting.GRAY));
+        lines.add(Component.translatable(Gui.SCHOLARSHIP_COSTS).withStyle(ChatFormatting.GRAY));
         var missing = cost.missing(player);
         for (var entry : cost.entries()) {
             boolean unpayable = missing.stream().anyMatch(candidate -> candidate == entry);
             var color = unpayable ? ChatFormatting.RED : ChatFormatting.GRAY;
-            lines.add(ResearchCostPresenterRegistry.get(entry.type().id()).line(entry).copy().withStyle(color));
+            lines.add(ScholarshipCostPresenterRegistry.get(entry.type().id()).line(entry).copy().withStyle(color));
         }
         return lines;
     }
@@ -142,7 +142,7 @@ public final class ResearchRequirementInteractions {
      * Requests the completion of a manual stage if it is affordable locally. Otherwise plays the fail sound and sends nothing.
      * Starts the "Completing..." state, which ends when the stage changes or after a timeout.
      */
-    public void completeStage(RequirementBlock.ManualStage manual) {
+    public void completeStage(ScholarshipBlock.ManualStage manual) {
         var player = player();
         if (player == null || isCompleting(manual)) {
             return;
@@ -159,7 +159,7 @@ public final class ResearchRequirementInteractions {
     /**
      * True while a completion of the shown stage is in flight. Ends once the stage index changed (the sync arrived) or after a timeout.
      */
-    public boolean isCompleting(RequirementBlock.ManualStage manual) {
+    public boolean isCompleting(ScholarshipBlock.ManualStage manual) {
         var inFlight = this.completing.get(manual.nodeId());
         if (inFlight == null) {
             return false;

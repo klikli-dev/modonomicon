@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.book.entries;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.BookCategory;
-import com.klikli_dev.modonomicon.book.RequirementsDisplay;
+import com.klikli_dev.modonomicon.book.ScholarshipDisplay;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.bookstate.BookServices;
@@ -142,11 +142,11 @@ public class BookContentEntry extends BookEntry {
     /**
      * The requirements display of this entry: the entry's own override, or the book default.
      */
-    public RequirementsDisplay getRequirementsDisplay() {
-        if (this.research != null && this.research.requirementsDisplay().isPresent()) {
-            return this.research.requirementsDisplay().get();
+    public ScholarshipDisplay getScholarshipDisplay() {
+        if (this.research != null && this.research.scholarshipDisplay().isPresent()) {
+            return this.research.scholarshipDisplay().get();
         }
-        return this.getBook() != null ? this.getBook().getDefaultRequirementsDisplay() : RequirementsDisplay.FIRST_PAGE;
+        return this.getBook() != null ? this.getBook().getDefaultScholarshipDisplay() : ScholarshipDisplay.FIRST_PAGE;
     }
 
     /**

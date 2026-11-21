@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.networking;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
-import com.klikli_dev.modonomicon.research.ResearchFeedback;
+import com.klikli_dev.modonomicon.scholarship.ScholarshipFeedback;
 import com.klikli_dev.modonomicon.research.action.ResearchActions;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -47,13 +47,13 @@ public class PerformResearchActionMessage implements Message {
         switch (result) {
             case PERFORMED -> {
                 BookVisualStateManager.get().syncFor(player);
-                ResearchFeedback.performed(player);
+                ScholarshipFeedback.performed(player);
             }
             case UNAFFORDABLE -> ResearchActions.actionFor(this.factId)
-                    .ifPresentOrElse(action -> ResearchFeedback.missing(player, action.cost().missing(player)),
-                            () -> ResearchFeedback.invalid(player));
-            case UNAVAILABLE -> ResearchFeedback.unavailable(player);
-            case INVALID -> ResearchFeedback.invalid(player);
+                    .ifPresentOrElse(action -> ScholarshipFeedback.missing(player, action.cost().missing(player)),
+                            () -> ScholarshipFeedback.invalid(player));
+            case UNAVAILABLE -> ScholarshipFeedback.unavailable(player);
+            case INVALID -> ScholarshipFeedback.invalid(player);
         }
     }
 

@@ -184,6 +184,6 @@ public record ItemCostEntry(ResearchItemMatcher item, int count) implements Rese
 
     @Override
     public Component describe() {
-        return Component.translatable(Gui.REQUIREMENTS_COST_ITEM, this.count, this.item.displayName());
+        return Component.translatable(Gui.SCHOLARSHIP_COST_ITEM, this.count, this.item.displayName());
     }
 }

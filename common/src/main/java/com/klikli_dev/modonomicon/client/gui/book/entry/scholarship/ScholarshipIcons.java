@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.client.gui.book.entry.requirement;
+package com.klikli_dev.modonomicon.client.gui.book.entry.scholarship;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
@@ -16,21 +16,21 @@ import net.minecraft.resources.Identifier;
  * <p>
  * Icons are drawn at 16x16 GUI pixels, independent of the resolution of the PNG files: the whole texture is scaled to
  * the drawn size, so higher resolution artwork works as long as it is square. All of them live in
- * {@code assets/modonomicon/textures/gui/sprites/modonomicon/research_icons/} and are referenced by file name, so
+ * {@code assets/modonomicon/textures/gui/sprites/modonomicon/scholarship/icons/} and are referenced by file name, so
  * artwork can be replaced by dropping in a file with the same name.
  * <p>
  * The built-in presenters do not use overlay badges, as they cover the item and its count. Addons can still attach a
- * badge (drawn at {@link #BADGE_SIZE} over the bottom right of the icon) via {@link RequirementIcon#withBadge}.
+ * badge (drawn at {@link #BADGE_SIZE} over the bottom right of the icon) via {@link ScholarshipIcon#withBadge}.
  * <p>
  * The icons are fallbacks: where a research requirement shows dynamic data (e.g. the item of a cost or the icon of an
  * entry), that data is shown instead and the texture is not used.
  */
-public final class ResearchIcons {
+public final class ScholarshipIcons {
 
     /**
      * The directory of the research icon textures, relative to the mod's namespace.
      */
-    public static final String DIRECTORY = "textures/gui/sprites/modonomicon/research_icons/";
+    public static final String DIRECTORY = "textures/gui/sprites/modonomicon/scholarship/icons/";
 
     /**
      * The size of a badge in pixels, badges are drawn at the bottom right corner of a 16x16 icon.
@@ -55,7 +55,7 @@ public final class ResearchIcons {
     /**
      * The generic fallback, shares the artwork of the default research requirement category.
      */
-    public static final Identifier GENERIC = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "textures/gui/sprites/modonomicon/requirement_categories/research.png");
+    public static final Identifier GENERIC = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "textures/gui/sprites/modonomicon/scholarship/groups/research.png");
 
     // ---- icons of stage completion modes and book conditions, no default UI location yet ----
 
@@ -76,7 +76,7 @@ public final class ResearchIcons {
      */
     public static final Identifier CONDITION_STAGE_COMPLETED = texture("condition_stage_completed");
 
-    private ResearchIcons() {
+    private ScholarshipIcons() {
     }
 
     /**
@@ -92,7 +92,7 @@ public final class ResearchIcons {
      * The width and height passed to {@link BookIcon} are logical sizes: the blit covers the full texture (region size
      * equals texture size), so the actual resolution of the PNG does not matter.
      */
-    public static RequirementIcon icon(Identifier texture) {
-        return RequirementIcon.of(new BookIcon(texture, ModonomiconConstants.Data.Icon.DEFAULT_WIDTH, ModonomiconConstants.Data.Icon.DEFAULT_HEIGHT));
+    public static ScholarshipIcon icon(Identifier texture) {
+        return ScholarshipIcon.of(new BookIcon(texture, ModonomiconConstants.Data.Icon.DEFAULT_WIDTH, ModonomiconConstants.Data.Icon.DEFAULT_HEIGHT));
     }
 }

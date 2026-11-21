@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookEntryTabModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchStageCompletedConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookCraftingRecipePageModel;
-import com.klikli_dev.modonomicon.api.datagen.book.page.BookStageRequirementsPageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookScholarshipPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
@@ -42,7 +42,7 @@ public class StageResearchEntry extends EntryProvider {
                 .withTitle(this.tabTitleKey()));
         this.tabTitle("Writable book recipe");
 
-        this.page("progress", () -> BookStageRequirementsPageModel.create()
+        this.page("progress", () -> BookScholarshipPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
                 .withStage(DemoResearch.WRITABLE_BOOK_STAGE_1));
@@ -62,7 +62,7 @@ public class StageResearchEntry extends EntryProvider {
                 Stage-gated page: visible once 1 book is crafted.
                 """);
 
-        this.page("progress_2", () -> BookStageRequirementsPageModel.create()
+        this.page("progress_2", () -> BookScholarshipPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
                 .withStage(DemoResearch.WRITABLE_BOOK_STAGE_2));
@@ -82,7 +82,7 @@ public class StageResearchEntry extends EntryProvider {
                 Stage-gated page: visible once 3 books are crafted.
                 """);
 
-        this.page("progress_3", () -> BookStageRequirementsPageModel.create()
+        this.page("progress_3", () -> BookScholarshipPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
                 .withStage(DemoResearch.WRITABLE_BOOK_STAGE_3));

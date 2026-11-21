@@ -72,6 +72,6 @@ public final class ResearchCategories {
     }
 
     private static Identifier icon(String name) {
-        return Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "modonomicon/requirement_categories/" + name);
+        return Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "modonomicon/scholarship/groups/" + name);
     }
 }

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.client.gui.book.entry.requirement;
+package com.klikli_dev.modonomicon.client.gui.book.entry.scholarship;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
@@ -39,18 +39,18 @@ import java.util.function.Consumer;
  * Title and icon of facts and values resolve in this order: the definition's display data, the default
  * translation key (research_fact / research_value / research_node), then the hooks that grant or increment them.
  */
-public final class ResearchRequirementRows {
+public final class ScholarshipRows {
 
-    private static final RequirementIcon GENERIC_RESEARCH_ICON = ResearchIcons.icon(ResearchIcons.GENERIC);
+    private static final ScholarshipIcon GENERIC_RESEARCH_ICON = ScholarshipIcons.icon(ScholarshipIcons.GENERIC);
     private static final Set<Identifier> UNKNOWN_CATEGORIES = ConcurrentHashMap.newKeySet();
 
-    private ResearchRequirementRows() {
+    private ScholarshipRows() {
     }
 
     /**
      * A row for a research fact. Met if the fact is granted, or if forceMet is set.
      */
-    public static RequirementRow fact(Identifier factId, RequirementContext context, boolean forceMet) {
+    public static ScholarshipRow fact(Identifier factId, ScholarshipContext context, boolean forceMet) {
         return fact(factId, context, forceMet, null);
     }
 
@@ -59,7 +59,7 @@ public final class ResearchRequirementRows {
      * the action is repeatable, or when the fact is unmet and its stage is the active one.
      * Callers pass the node only if the stage of the fact is reached, so future stages never offer actions.
      */
-    public static RequirementRow fact(Identifier factId, RequirementContext context, boolean forceMet, @Nullable Identifier actionNode) {
+    public static ScholarshipRow fact(Identifier factId, ScholarshipContext context, boolean forceMet, @Nullable Identifier actionNode) {
         return fact(factId, context, forceMet, actionNode, true);
     }
 
@@ -67,16 +67,16 @@ public final class ResearchRequirementRows {
      * A row for a research fact that shows the given icon if neither its display nor the hooks granting it define one.
      * Used by reward rows, so the reward type icon is shown instead of the generic research icon.
      */
-    static RequirementRow factWithFallbackIcon(Identifier factId, RequirementContext context, boolean forceMet, RequirementIcon fallbackIcon) {
+    static ScholarshipRow factWithFallbackIcon(Identifier factId, ScholarshipContext context, boolean forceMet, ScholarshipIcon fallbackIcon) {
         return fact(factId, context, forceMet, null, true, fallbackIcon);
     }
 
-    private static RequirementRow fact(Identifier factId, RequirementContext context, boolean forceMet, @Nullable Identifier actionNode, boolean active) {
+    private static ScholarshipRow fact(Identifier factId, ScholarshipContext context, boolean forceMet, @Nullable Identifier actionNode, boolean active) {
         return fact(factId, context, forceMet, actionNode, active, GENERIC_RESEARCH_ICON);
     }
 
-    private static RequirementRow fact(Identifier factId, RequirementContext context, boolean forceMet, @Nullable Identifier actionNode, boolean active,
-                                       RequirementIcon fallbackIcon) {
+    private static ScholarshipRow fact(Identifier factId, ScholarshipContext context, boolean forceMet, @Nullable Identifier actionNode, boolean active,
+                                       ScholarshipIcon fallbackIcon) {
         var definition = context.data().factDefinitions().get(factId);
         var display = definition != null ? definition.display().orElse(ResearchDisplay.EMPTY) : ResearchDisplay.EMPTY;
         var hookRows = hookRows(context.hooksGranting(factId), context);
@@ -90,7 +90,7 @@ public final class ResearchRequirementRows {
         var category = rowCategory(display, hookRow, ResearchCategories.RESEARCH, context);
 
         boolean met = forceMet || context.state().hasFact(factId);
-        var row = new RequirementRow(
+        var row = new ScholarshipRow(
                 category,
                 iconsOr(display.icon(), hookRows, fallbackIcon),
                 title,
@@ -103,7 +103,7 @@ public final class ResearchRequirementRows {
         if (actionNode != null) {
             var action = display.action();
             if (action.isPresent() && (action.get().repeatable() || (active && !met))) {
-                row = row.withAction(new RowAction.Perform(actionNode, factId, action.get()));
+                row = row.withAction(new ScholarshipRowAction.Perform(actionNode, factId, action.get()));
             }
         }
         return row;
@@ -112,7 +112,7 @@ public final class ResearchRequirementRows {
     /**
      * A row for a research value, showing its progress towards the threshold.
      */
-    public static RequirementRow value(ResearchNodeDefinition.ValueRequirement requirement, RequirementContext context, boolean forceMet) {
+    public static ScholarshipRow value(ResearchNodeDefinition.ValueRequirement requirement, ScholarshipContext context, boolean forceMet) {
         var valueId = requirement.valueId();
         var threshold = requirement.threshold();
         var definition = context.data().valueDefinitions().get(valueId);
@@ -127,13 +127,13 @@ public final class ResearchRequirementRows {
                 .or(() -> translated(Research.valueKey(valueId)))
                 .orElseGet(() -> Component.literal(valueId.getPath()));
 
-        return new RequirementRow(
+        return new ScholarshipRow(
                 rowCategory(display, hookRow, ResearchCategories.PROGRESS, context),
                 iconsOr(display.icon(), hookRows),
                 title,
                 descriptionOr(display, List.of()),
                 forceMet || current >= threshold,
-                new RequirementRow.Progress(shown, threshold),
+                new ScholarshipRow.Progress(shown, threshold),
                 null,
                 null
         );
@@ -148,10 +148,10 @@ public final class ResearchRequirementRows {
      *
      * @param browsed the 0-based stage index to show instead of the next stage, or null to show the next stage
      */
-    public static RequirementBlock research(Identifier nodeId, @Nullable Integer browsed, RequirementContext context) {
+    public static ScholarshipBlock research(Identifier nodeId, @Nullable Integer browsed, ScholarshipContext context) {
         var node = context.data().nodeDefinitions().get(nodeId);
         if (node == null) {
-            return new RequirementBlock(Component.translatable(Gui.REQUIREMENTS_NEXT_STEPS), List.of(unknown(nodeId, context)), false);
+            return new ScholarshipBlock(Component.translatable(Gui.SCHOLARSHIP_NEXT_STEPS), List.of(unknown(nodeId, context)), false);
         }
 
         int total = node.stages().size();
@@ -161,7 +161,7 @@ public final class ResearchRequirementRows {
         int shown = browsed != null && total > 0 ? Math.min(browsed, total - 1) : (total > 0 ? current : 0);
         boolean browsing = browsed != null && total > 0;
 
-        var leading = new ArrayList<RequirementRow>();
+        var leading = new ArrayList<ScholarshipRow>();
         for (var dependency : node.requiredStages()) {
             stageDependency(dependency, context, leading::add);
         }
@@ -173,7 +173,7 @@ public final class ResearchRequirementRows {
             for (var requirement : node.requiredValues()) {
                 leading.add(value(requirement, context, false));
             }
-            return new RequirementBlock(Component.translatable(Gui.REQUIREMENTS_TITLE), leading, false);
+            return new ScholarshipBlock(Component.translatable(Gui.SCHOLARSHIP_TITLE), leading, false);
         }
 
         //stages before the current one are done, the current one is only done once the node is complete
@@ -183,7 +183,7 @@ public final class ResearchRequirementRows {
         //a completed research keeps showing the steps of its last stage, all met, so the player sees what was done
         boolean finished = complete && !browsing;
         var slot = new StageSlot(nodeId, node, shown, current, done, active, nodeId, true, finished);
-        var title = finished ? Component.translatable(Gui.REQUIREMENTS_COMPLETE)
+        var title = finished ? Component.translatable(Gui.SCHOLARSHIP_COMPLETE)
                 : stageTitle(node.stages().get(shown), !(browsing || complete));
         return stageBlock(slot, title, leading, context);
     }
@@ -191,12 +191,12 @@ public final class ResearchRequirementRows {
     /**
      * The requirement block of one stage, e.g. for a stage requirement page. Completed stages show all rows met.
      */
-    public static RequirementBlock stageBlock(Identifier stageId, RequirementContext context) {
+    public static ScholarshipBlock stageBlock(Identifier stageId, ScholarshipContext context) {
         var data = context.data();
         var location = data.stageLocations().get(stageId);
         var node = location != null ? data.nodeDefinitions().get(location.nodeId()) : null;
         if (location == null || node == null) {
-            return new RequirementBlock(Component.translatable(Gui.REQUIREMENTS_NEXT_STEPS), List.of(unknown(stageId, context)), false);
+            return new ScholarshipBlock(Component.translatable(Gui.SCHOLARSHIP_NEXT_STEPS), List.of(unknown(stageId, context)), false);
         }
 
         int index = location.stageIndex();
@@ -228,7 +228,7 @@ public final class ResearchRequirementRows {
      * The one builder of stage blocks: the leading rows, then the stage requirements and rewards, with the manual completion
      * and the stage line of the stage. Callers derive the slot state and the title.
      */
-    private static RequirementBlock stageBlock(StageSlot slot, Component title, List<RequirementRow> leading, RequirementContext context) {
+    private static ScholarshipBlock stageBlock(StageSlot slot, Component title, List<ScholarshipRow> leading, ScholarshipContext context) {
         var stage = slot.node().stages().get(slot.index());
         var rows = new ArrayList<>(leading);
         var consumed = stage.completion().isManual() ? stage.completion().cost() : null;
@@ -236,18 +236,18 @@ public final class ResearchRequirementRows {
         rewardRows(stage.rewards(), slot.done(), context, rows::add);
 
         var manual = slot.active() && consumed != null
-                ? new RequirementBlock.ManualStage(slot.nodeId(), slot.index(), consumed, requirementsMet(stage, context))
+                ? new ScholarshipBlock.ManualStage(slot.nodeId(), slot.index(), consumed, requirementsMet(stage, context))
                 : null;
         var description = stageDescription(stage);
-        var line = new RequirementBlock.StageLine(slot.index(), slot.node().stages().size(), slot.lastBrowsable(), slot.navigable(),
+        var line = new ScholarshipBlock.StageLine(slot.index(), slot.node().stages().size(), slot.lastBrowsable(), slot.navigable(),
                 stageTitle(stage, false), description, manual);
-        return new RequirementBlock(title, rows, slot.complete(), description, line);
+        return new ScholarshipBlock(title, rows, slot.complete(), description, line);
     }
 
     /**
      * True if all facts of the stage are granted and all its values reached their thresholds.
      */
-    private static boolean requirementsMet(ResearchStageDefinition stage, RequirementContext context) {
+    private static boolean requirementsMet(ResearchStageDefinition stage, ScholarshipContext context) {
         for (var factId : stage.requiredFacts()) {
             if (!context.state().hasFact(factId)) {
                 return false;
@@ -267,9 +267,9 @@ public final class ResearchRequirementRows {
     private static Component stageTitle(ResearchStageDefinition stage, boolean next) {
         var title = stage.display().flatMap(ResearchDisplay::title).or(() -> translated(Research.stageKey(stage.id())));
         if (title.isEmpty()) {
-            return Component.translatable(Gui.REQUIREMENTS_NEXT_STEPS);
+            return Component.translatable(Gui.SCHOLARSHIP_NEXT_STEPS);
         }
-        return next ? Component.translatable(Gui.REQUIREMENTS_NEXT, title.get()) : title.get();
+        return next ? Component.translatable(Gui.SCHOLARSHIP_NEXT, title.get()) : title.get();
     }
 
     private static @Nullable Component stageDescription(ResearchStageDefinition stage) {
@@ -279,7 +279,7 @@ public final class ResearchRequirementRows {
     /**
      * A research row for another node reaching a stage, titled by the node name and the stage name.
      */
-    public static void stageDependency(ResearchNodeDefinition.StageDependency dependency, RequirementContext context, Consumer<RequirementRow> out) {
+    public static void stageDependency(ResearchNodeDefinition.StageDependency dependency, ScholarshipContext context, Consumer<ScholarshipRow> out) {
         var data = context.data();
         var location = data.stageLocations().get(dependency.stageId());
         //an unknown stage is not met, it must not show as done
@@ -294,10 +294,10 @@ public final class ResearchRequirementRows {
         var stageName = translated(Research.stageKey(dependency.stageId()))
                 .orElseGet(() -> Component.literal(dependency.stageId().getPath()));
 
-        out.accept(new RequirementRow(
+        out.accept(new ScholarshipRow(
                 category(ResearchCategories.RESEARCH, context),
                 iconsOr(display.icon(), List.of()),
-                Component.translatable(Gui.REQUIREMENTS_STAGE_TITLE, nodeName, stageName),
+                Component.translatable(Gui.SCHOLARSHIP_STAGE_TITLE, nodeName, stageName),
                 descriptionOr(display, List.of()),
                 met,
                 null,
@@ -309,23 +309,23 @@ public final class ResearchRequirementRows {
     /**
      * The rewards of a stage as rows of the rewards category, met once the stage is completed.
      */
-    private static void rewardRows(List<ResearchEffect> rewards, boolean met, RequirementContext context, Consumer<RequirementRow> out) {
+    private static void rewardRows(List<ResearchEffect> rewards, boolean met, ScholarshipContext context, Consumer<ScholarshipRow> out) {
         var category = category(ResearchCategories.REWARDS, context);
         for (var reward : rewards) {
-            out.accept(ResearchEffectPresenterRegistry.get(reward.type().id()).present(reward, context)
+            out.accept(ScholarshipEffectPresenterRegistry.get(reward.type().id()).present(reward, context)
                     .withCategory(category)
                     .withMet(met)
-                    .withMissing(Component.translatable(Gui.REQUIREMENTS_REWARD_PENDING)));
+                    .withMissing(Component.translatable(Gui.SCHOLARSHIP_REWARD_PENDING)));
         }
     }
 
-    private static void stageRequirements(ResearchStageDefinition stage, RequirementContext context, boolean forceMet, @Nullable Identifier actionNode,
-                                          boolean active, @Nullable ResearchCost consumed, Consumer<RequirementRow> out) {
+    private static void stageRequirements(ResearchStageDefinition stage, ScholarshipContext context, boolean forceMet, @Nullable Identifier actionNode,
+                                          boolean active, @Nullable ResearchCost consumed, Consumer<ScholarshipRow> out) {
         for (var factId : stage.requiredFacts()) {
             var row = fact(factId, context, forceMet, actionNode, active);
             if (active && consumed != null && consumedOnCompletion(factId, consumed, context)) {
                 var details = new ArrayList<>(row.details());
-                details.add(Component.translatable(Gui.REQUIREMENTS_CONSUMED_ON_COMPLETION).withStyle(ChatFormatting.GOLD));
+                details.add(Component.translatable(Gui.SCHOLARSHIP_CONSUMED_ON_COMPLETION).withStyle(ChatFormatting.GOLD));
                 row = row.withDetails(details);
             }
             out.accept(row);
@@ -342,37 +342,37 @@ public final class ResearchRequirementRows {
      * The cost of a manual stage as rows, one per entry, each described by its cost presenter. Completed stages show the entries met,
      * where the cost was paid.
      */
-    private static void costRows(ResearchCost cost, boolean forceMet, RequirementContext context, Consumer<RequirementRow> out) {
-        var consumed = List.<Component>of(Component.translatable(Gui.REQUIREMENTS_CONSUMED_ON_COMPLETION).withStyle(ChatFormatting.GOLD));
+    private static void costRows(ResearchCost cost, boolean forceMet, ScholarshipContext context, Consumer<ScholarshipRow> out) {
+        var consumed = List.<Component>of(Component.translatable(Gui.SCHOLARSHIP_CONSUMED_ON_COMPLETION).withStyle(ChatFormatting.GOLD));
         for (var entry : cost.entries()) {
-            out.accept(ResearchCostPresenterRegistry.get(entry.type().id()).row(entry, context, forceMet).withDetails(consumed));
+            out.accept(ScholarshipCostPresenterRegistry.get(entry.type().id()).row(entry, context, forceMet).withDetails(consumed));
         }
     }
 
     /**
      * True if the fact is granted by an item acquisition whose item is part of the cost, i.e. the item is consumed on completion.
      */
-    private static boolean consumedOnCompletion(Identifier factId, ResearchCost cost, RequirementContext context) {
+    private static boolean consumedOnCompletion(Identifier factId, ResearchCost cost, ScholarshipContext context) {
         return context.hooksGranting(factId).stream().anyMatch(hook -> hook.triggerTarget() instanceof ResearchItemMatcher matcher
                 && cost.entries().stream().anyMatch(entry -> entry instanceof ItemCostEntry item && matcher.matches(item.item().displayStack())));
     }
     /**
      * Placeholder for references to definitions that are not known to the client.
      */
-    public static RequirementRow unknown(Identifier id, RequirementContext context) {
-        return RequirementRow.of(List.of(GENERIC_RESEARCH_ICON), Component.literal(id.toString()).withStyle(ChatFormatting.RED))
+    public static ScholarshipRow unknown(Identifier id, ScholarshipContext context) {
+        return ScholarshipRow.of(List.of(GENERIC_RESEARCH_ICON), Component.literal(id.toString()).withStyle(ChatFormatting.RED))
                 .withCategory(category(ResearchCategories.RESEARCH, context));
     }
 
     /**
      * The rows presented by the trigger presenters of the hooks, grouped by the category claiming their trigger type.
      */
-    private static List<RequirementRow> hookRows(List<ResearchHookDefinition<?>> hooks, RequirementContext context) {
+    private static List<ScholarshipRow> hookRows(List<ResearchHookDefinition<?>> hooks, ScholarshipContext context) {
         return hooks.stream()
                 .map(hook -> {
                     var triggerCategory = context.data().categoryForTriggerType(hook.triggerType().id())
                             .orElseGet(() -> category(ResearchCategories.RESEARCH, context));
-                    return ResearchTriggerPresenterRegistry.present(hook, context).withCategory(triggerCategory);
+                    return ScholarshipTriggerPresenterRegistry.present(hook, context).withCategory(triggerCategory);
                 })
                 .toList();
     }
@@ -386,7 +386,7 @@ public final class ResearchRequirementRows {
      * </ol>
      * This is the only place that resolves row categories. Presenters that build rows directly use the same precedence.
      */
-    private static ResearchCategoryDefinition rowCategory(ResearchDisplay display, @Nullable RequirementRow hookRow, Identifier fallback, RequirementContext context) {
+    private static ResearchCategoryDefinition rowCategory(ResearchDisplay display, @Nullable ScholarshipRow hookRow, Identifier fallback, ScholarshipContext context) {
         if (display.category().isPresent()) {
             return category(display.category().get(), context);
         }
@@ -399,7 +399,7 @@ public final class ResearchRequirementRows {
     /**
      * Resolves a category id to its definition. Unknown ids fall back to the research category and are logged once.
      */
-    public static ResearchCategoryDefinition category(Identifier categoryId, RequirementContext context) {
+    public static ResearchCategoryDefinition category(Identifier categoryId, ScholarshipContext context) {
         var category = context.data().categoryDefinitions().get(categoryId);
         if (category != null) {
             return category;
@@ -410,13 +410,13 @@ public final class ResearchRequirementRows {
         return context.data().categoryDefinitions().get(ResearchCategories.RESEARCH);
     }
 
-    private static List<RequirementIcon> iconsOr(Optional<BookIcon> displayIcon, List<RequirementRow> hookRows) {
+    private static List<ScholarshipIcon> iconsOr(Optional<BookIcon> displayIcon, List<ScholarshipRow> hookRows) {
         return iconsOr(displayIcon, hookRows, GENERIC_RESEARCH_ICON);
     }
 
-    private static List<RequirementIcon> iconsOr(Optional<BookIcon> displayIcon, List<RequirementRow> hookRows, RequirementIcon fallbackIcon) {
+    private static List<ScholarshipIcon> iconsOr(Optional<BookIcon> displayIcon, List<ScholarshipRow> hookRows, ScholarshipIcon fallbackIcon) {
         if (displayIcon.isPresent()) {
-            return List.of(RequirementIcon.of(displayIcon.get()));
+            return List.of(ScholarshipIcon.of(displayIcon.get()));
         }
         var icons = hookRows.stream().flatMap(row -> row.icons().stream()).toList();
         return icons.isEmpty() ? List.of(fallbackIcon) : icons;
@@ -428,8 +428,8 @@ public final class ResearchRequirementRows {
                 .orElse(fallback);
     }
 
-    private static RowAction firstAction(List<RequirementRow> rows) {
-        return rows.stream().map(RequirementRow::action).filter(action -> action != null).findFirst().orElse(null);
+    private static ScholarshipRowAction firstAction(List<ScholarshipRow> rows) {
+        return rows.stream().map(ScholarshipRow::action).filter(action -> action != null).findFirst().orElse(null);
     }
 
     private static Optional<Component> translated(String key) {

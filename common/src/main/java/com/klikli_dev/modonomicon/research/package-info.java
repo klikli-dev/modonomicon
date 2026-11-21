@@ -70,8 +70,8 @@
  * <h2>Default icons</h2>
  * The client presenters of cost, effect and trigger types show a texture icon where the icon is a type default, e.g. the
  * level cost or the reward of a function. Dynamic data keeps its own icon, such as the item of a cost or the icon of an entry.
- * The textures and their file names are listed in {@code ResearchIcons}. Addons can draw an 8x8 badge over the bottom
- * right of an icon with {@code RequirementIcon#withBadge}; the built-in presenters don't, to keep item icons readable.
+ * The textures and their file names are listed in {@code ScholarshipIcons}. Addons can draw an 8x8 badge over the bottom
+ * right of an icon with {@code ScholarshipIcon#withBadge}; the built-in presenters don't, to keep item icons readable.
  *
  * <h2>Layering</h2>
  * Research does not depend on the book package, with two exceptions that only carry presentation data:

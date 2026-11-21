@@ -16,10 +16,10 @@ import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
-import com.klikli_dev.modonomicon.api.datagen.book.page.BookStageRequirementsPageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookScholarshipPageModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchDisplayModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
-import com.klikli_dev.modonomicon.book.RequirementsDisplay;
+import com.klikli_dev.modonomicon.book.ScholarshipDisplay;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.phys.Vec2;
@@ -40,9 +40,9 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
 
     protected BookEntryModel entry;
     private final List<StageRequest> researchStages = new ArrayList<>();
-    private final List<PendingRequirementsPage> requirementsPages = new ArrayList<>();
+    private final List<PendingScholarshipPage> scholarshipPages = new ArrayList<>();
     private ResearchStageRef currentStage;
-    private boolean requirementsPageUsed;
+    private boolean scholarshipPageUsed;
 
     public EntryProvider(CategoryProviderBase parent) {
         super(parent.modId(), parent.lang(), parent.langsAsMapOfBiConsumers(), parent.context(), parent.condition());
@@ -230,7 +230,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
      *         .title("Breathing life into clay")
      *         .icon(Items.CLAY_BALL));
      * this.page("notebook2", ...);              // only visible after "quickening" is completed
-     * this.requirementsPage("next");            // shows the requirements of the next stage, see requirementsPage
+     * this.scholarshipPage("next");            // shows the requirements of the next stage, see scholarshipPage
      * this.stage("mastery", s -> s.craft(Items.GOLD_INGOT).consume(Items.GOLD_INGOT, 1));
      * }</pre>
      *
@@ -282,39 +282,39 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
      * Places a page that shows the requirements of the stage that comes next at this point of the entry.
      * The stage is the first stage declared after this page, or the last stage if this page comes after all stages.
      * The page is never gated by stages, so it stays visible and shows the completed requirements with check marks.
-     * Its title and text are the built-in translations, see {@link #requirementsPage(String, String, String)} for custom ones.
+     * Its title and text are the built-in translations, see {@link #scholarshipPage(String, String, String)} for custom ones.
      * <p>
-     * Declaring this page switches the requirements display of the entry to {@link RequirementsDisplay#PAGES}, unless it was set explicitly.
+     * Declaring this page switches the requirements display of the entry to {@link ScholarshipDisplay#PAGES}, unless it was set explicitly.
      * Requires a stage to be declared in this entry.
      *
      * @param id the page id, e.g. {@code next}
      */
-    protected BookStageRequirementsPageModel requirementsPage(String id) {
-        return this.addRequirementsPage(this.page(id, () -> BookStageRequirementsPageModel.create()
-                .withTitle(Gui.REQUIREMENTS_TITLE)
-                .withText(Gui.REQUIREMENTS_PAGE_TEXT)));
+    protected BookScholarshipPageModel scholarshipPage(String id) {
+        return this.addScholarshipPage(this.page(id, () -> BookScholarshipPageModel.create()
+                .withTitle(Gui.SCHOLARSHIP_TITLE)
+                .withText(Gui.SCHOLARSHIP_PAGE_TEXT)));
     }
 
     /**
-     * Like {@link #requirementsPage(String)}, but with a custom literal English title and text for this page.
+     * Like {@link #scholarshipPage(String)}, but with a custom literal English title and text for this page.
      * The texts are written to the language file under the page's keys.
      *
      * @param id    the page id, e.g. {@code next}
      * @param title the literal English title of the page
      * @param text  the literal English text of the page
      */
-    protected BookStageRequirementsPageModel requirementsPage(String id, String title, String text) {
-        var page = this.page(id, () -> BookStageRequirementsPageModel.create()
+    protected BookScholarshipPageModel scholarshipPage(String id, String title, String text) {
+        var page = this.page(id, () -> BookScholarshipPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText()));
         this.pageTitle(title);
         this.pageText(text);
-        return this.addRequirementsPage(page);
+        return this.addScholarshipPage(page);
     }
 
-    private BookStageRequirementsPageModel addRequirementsPage(BookStageRequirementsPageModel page) {
-        this.requirementsPages.add(new PendingRequirementsPage(page, this.researchStages.size()));
-        this.requirementsPageUsed = true;
+    private BookScholarshipPageModel addScholarshipPage(BookScholarshipPageModel page) {
+        this.scholarshipPages.add(new PendingScholarshipPage(page, this.researchStages.size()));
+        this.scholarshipPageUsed = true;
         return page;
     }
 
@@ -322,8 +322,8 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
      * Sets where the requirements of this entry are shown, overriding the book default.
      * Only has an effect for entries with stages.
      */
-    protected void requirementsDisplay(RequirementsDisplay requirementsDisplay) {
-        this.entry.withRequirementsDisplay(requirementsDisplay);
+    protected void scholarshipDisplay(ScholarshipDisplay scholarshipDisplay) {
+        this.entry.withScholarshipDisplay(scholarshipDisplay);
     }
 
     private BookConditionModel<?> stageGate(BookConditionModel<?> condition) {
@@ -336,7 +336,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
     }
 
     private void gatePage(BookPageModel<?> page) {
-        if (this.currentStage == null || page instanceof BookStageRequirementsPageModel) {
+        if (this.currentStage == null || page instanceof BookScholarshipPageModel) {
             return;
         }
         page.withCondition(this.stageGate(page.getCondition()));
@@ -344,14 +344,14 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
 
     private void resetResearch() {
         this.researchStages.clear();
-        this.requirementsPages.clear();
+        this.scholarshipPages.clear();
         this.currentStage = null;
-        this.requirementsPageUsed = false;
+        this.scholarshipPageUsed = false;
     }
 
     private void finishResearch() {
         if (this.researchStages.isEmpty()) {
-            if (!this.requirementsPages.isEmpty()) {
+            if (!this.scholarshipPages.isEmpty()) {
                 throw new IllegalStateException("Entry '" + this.entryId() + "' has a requirements page, but no stage. "
                         + "Declare a stage with this.stage(...).");
             }
@@ -367,13 +367,13 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
         this.condition().addEntryResearch(new EntryResearchRequest(this.entry.getId(), List.copyOf(this.researchStages)));
         this.entry.withResearch(this.condition().entryResearchNode(this.entry), this.researchStages.get(lastIndex).ref());
 
-        for (var pending : this.requirementsPages) {
+        for (var pending : this.scholarshipPages) {
             var next = this.researchStages.get(Math.min(pending.nextStageIndex(), lastIndex));
             pending.page().withStage(next.ref());
         }
 
-        if (this.requirementsPageUsed && this.entry.getRequirementsDisplay() == null) {
-            this.entry.withRequirementsDisplay(RequirementsDisplay.PAGES);
+        if (this.scholarshipPageUsed && this.entry.getScholarshipDisplay() == null) {
+            this.entry.withScholarshipDisplay(ScholarshipDisplay.PAGES);
         }
     }
 
@@ -382,7 +382,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
         return Character.toUpperCase(text.charAt(0)) + text.substring(1);
     }
 
-    private record PendingRequirementsPage(BookStageRequirementsPageModel page, int nextStageIndex) {}
+    private record PendingScholarshipPage(BookScholarshipPageModel page, int nextStageIndex) {}
 
     /**
      * Ensures present tab ids are unique within the entry and that every tab anchor refers to a page of the entry.

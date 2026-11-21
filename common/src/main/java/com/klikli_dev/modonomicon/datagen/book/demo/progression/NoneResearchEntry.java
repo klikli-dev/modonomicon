@@ -9,9 +9,9 @@ import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
 import com.klikli_dev.modonomicon.api.datagen.EntryProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookIconModel;
-import com.klikli_dev.modonomicon.api.datagen.book.page.BookStageRequirementsPageModel;
+import com.klikli_dev.modonomicon.api.datagen.book.page.BookScholarshipPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookTextPageModel;
-import com.klikli_dev.modonomicon.book.RequirementsDisplay;
+import com.klikli_dev.modonomicon.book.ScholarshipDisplay;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
 import net.minecraft.world.item.Items;
@@ -35,7 +35,7 @@ public class NoneResearchEntry extends EntryProvider {
 
     @Override
     protected void generatePages() {
-        this.requirementsDisplay(RequirementsDisplay.NONE);
+        this.scholarshipDisplay(ScholarshipDisplay.NONE);
 
         this.page("intro", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
@@ -45,7 +45,7 @@ public class NoneResearchEntry extends EntryProvider {
                 No requirements display: the requirements pages below show each stage instead.
                 """);
 
-        this.page("stage_1_requirements", () -> BookStageRequirementsPageModel.create()
+        this.page("stage_1_requirements", () -> BookScholarshipPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
                 .withStage(DemoResearch.REQUIREMENTS_STAGE_1));
@@ -63,7 +63,7 @@ public class NoneResearchEntry extends EntryProvider {
                 Stage-gated page: visible once stage 1 is complete.
                 """);
 
-        this.page("stage_2_requirements", () -> BookStageRequirementsPageModel.create()
+        this.page("stage_2_requirements", () -> BookScholarshipPageModel.create()
                 .withTitle(this.context().pageTitle())
                 .withText(this.context().pageText())
                 .withStage(DemoResearch.REQUIREMENTS_STAGE_2));

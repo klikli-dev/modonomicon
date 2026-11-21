@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.client.gui.book.entry.requirement;
+package com.klikli_dev.modonomicon.client.gui.book.entry.scholarship;
 
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
 import com.klikli_dev.modonomicon.research.data.ResearchData;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * Everything a requirement presenter needs to evaluate and describe requirements for one player.
  * Create a new context whenever the research state or the research data changes.
  */
-public final class RequirementContext {
+public final class ScholarshipContext {
     private final BookConditionContext conditionContext;
     private final Player player;
     private final PlayerResearchState state;
@@ -36,7 +36,7 @@ public final class RequirementContext {
      * @param state            the research state of the player
      * @param data             the research data the state is evaluated against
      */
-    public RequirementContext(BookConditionContext conditionContext, Player player, PlayerResearchState state, ResearchData data) {
+    public ScholarshipContext(BookConditionContext conditionContext, Player player, PlayerResearchState state, ResearchData data) {
         this.conditionContext = conditionContext;
         this.player = player;
         this.state = state;

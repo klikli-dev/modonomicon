@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package com.klikli_dev.modonomicon.client.gui.book.entry.requirement;
+package com.klikli_dev.modonomicon.client.gui.book.entry.scholarship;
 
 import com.klikli_dev.modonomicon.research.action.ResearchAction;
 import net.minecraft.network.chat.Component;
@@ -16,9 +16,9 @@ import net.minecraft.network.chat.Component;
  * @param factTitle the title of the requirement row the action is attached to
  * @param performed whether the row the action is attached to is already met, i.e. the action was performed at least once
  */
-public record ResearchActionContext(ResearchAction action, Component factTitle, boolean performed) {
+public record ScholarshipActionContext(ResearchAction action, Component factTitle, boolean performed) {
 
-    public ResearchActionContext(ResearchAction action, Component factTitle) {
+    public ScholarshipActionContext(ResearchAction action, Component factTitle) {
         this(action, factTitle, false);
     }
 }

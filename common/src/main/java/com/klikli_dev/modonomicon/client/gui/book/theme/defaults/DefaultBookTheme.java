@@ -27,12 +27,12 @@ public class DefaultBookTheme implements BookTheme {
     private final GuiSprite doublePageBackground;
     private final GuiSprite singlePageBackground;
     private final GuiSprite titleSeparator;
-    private final GuiSprite requirementsSeparator;
-    private final GuiSprite requirementCheck;
+    private final GuiSprite scholarshipSeparator;
+    private final GuiSprite scholarshipCheck;
     private final GuiSprite completeButtonNormal;
     private final GuiSprite completeButtonHover;
     private final GuiSprite completeButtonDisabled;
-    private final GuiSprite requirementRowLine;
+    private final GuiSprite scholarshipRowLine;
     private final GuiSprite lockIcon;
     private final GuiButtonSprites unreadIndicator;
     private final GuiSprite markerIndicator;
@@ -116,13 +116,13 @@ public class DefaultBookTheme implements BookTheme {
         }
 
         @Override
-        public GuiSprite requirementsSeparator() {
-            return DefaultBookTheme.this.requirementsSeparator;
+        public GuiSprite scholarshipSeparator() {
+            return DefaultBookTheme.this.scholarshipSeparator;
         }
 
         @Override
-        public GuiSprite requirementCheck() {
-            return DefaultBookTheme.this.requirementCheck;
+        public GuiSprite scholarshipCheck() {
+            return DefaultBookTheme.this.scholarshipCheck;
         }
 
         @Override
@@ -141,8 +141,8 @@ public class DefaultBookTheme implements BookTheme {
         }
 
         @Override
-        public GuiSprite requirementRowLine() {
-            return DefaultBookTheme.this.requirementRowLine;
+        public GuiSprite scholarshipRowLine() {
+            return DefaultBookTheme.this.scholarshipRowLine;
         }
 
         @Override
@@ -485,12 +485,12 @@ public class DefaultBookTheme implements BookTheme {
         this.doublePageBackground = this.sprite("content/backgrounds/book/double_page_background.png", 272, 178);
         this.singlePageBackground = this.sprite("content/backgrounds/book/single_page_background.png", 145, 178);
         this.titleSeparator = this.sprite("content/decorations/book/title_separator.png", 110, 3);
-        this.requirementsSeparator = this.sprite("content/decorations/book/requirement_separator.png", 112, 7);
-        this.requirementCheck = this.sprite("content/icons/book/requirement_check.png", 10, 7);
-        this.completeButtonNormal = this.sprite("content/buttons/stage/complete_button_normal.png", 12, 10);
-        this.completeButtonHover = this.sprite("content/buttons/stage/complete_button_hover.png", 12, 10);
-        this.completeButtonDisabled = this.sprite("content/buttons/stage/complete_button_disabled.png", 12, 10);
-        this.requirementRowLine = this.sprite("content/decorations/book/requirement_row_line.png", 64, 3);
+        this.scholarshipSeparator = this.sprite("content/decorations/book/scholarship_separator.png", 112, 7);
+        this.scholarshipCheck = this.sprite("content/icons/book/scholarship_check.png", 10, 7);
+        this.completeButtonNormal = this.sprite("content/buttons/scholarship/complete_button_normal.png", 12, 10);
+        this.completeButtonHover = this.sprite("content/buttons/scholarship/complete_button_hover.png", 12, 10);
+        this.completeButtonDisabled = this.sprite("content/buttons/scholarship/complete_button_disabled.png", 12, 10);
+        this.scholarshipRowLine = this.sprite("content/decorations/book/scholarship_row_line.png", 64, 3);
         this.lockIcon = this.sprite("content/icons/book/lock_icon.png", 16, 16);
         this.unreadIndicator = this.button("content/indicators/book/unread_indicator", 11, 11, true);
         var markerOverride = data.content().markerIndicator();

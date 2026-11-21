@@ -7,10 +7,10 @@
 package com.klikli_dev.modonomicon.client.render.page;
 
 import com.klikli_dev.modonomicon.book.BookTextHolder;
-import com.klikli_dev.modonomicon.book.page.BookStageRequirementsPage;
+import com.klikli_dev.modonomicon.book.page.BookScholarshipPage;
 import com.klikli_dev.modonomicon.client.gui.book.entry.BookEntryScreen;
-import com.klikli_dev.modonomicon.client.gui.book.entry.EntryRequirementsController;
-import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.RequirementBlock;
+import com.klikli_dev.modonomicon.client.gui.book.entry.EntryScholarshipController;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipBlock;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
  * Renders a stage requirements page: optional title and text, then the requirement block of the stage at the bottom of the page.
  * Without an authored title, the title of the block (e.g. the stage title) is used.
  */
-public class BookStageRequirementsPageRenderer extends BookPageRenderer<BookStageRequirementsPage> {
+public class BookScholarshipPageRenderer extends BookPageRenderer<BookScholarshipPage> {
 
     private static final int TITLE_CENTER_X = BookEntryScreen.PAGE_WIDTH / 2;
     private static final int TITLE_Y = 0;
@@ -35,11 +35,11 @@ public class BookStageRequirementsPageRenderer extends BookPageRenderer<BookStag
     /**
      * The requirement block drawn at the bottom of the page. Empty if there is nothing to show.
      */
-    private RequirementBlock block = RequirementBlock.empty();
+    private ScholarshipBlock block = ScholarshipBlock.empty();
     @Nullable
     private BookTextHolder title;
 
-    public BookStageRequirementsPageRenderer(BookStageRequirementsPage page) {
+    public BookScholarshipPageRenderer(BookScholarshipPage page) {
         super(page);
     }
 
@@ -48,23 +48,23 @@ public class BookStageRequirementsPageRenderer extends BookPageRenderer<BookStag
         super.onBeginDisplayPage(parentScreen, left, top);
 
         this.refreshBlock();
-        this.setReservedBottomHeight(this.requirements().getBlockMaxHeight(this.page.getStage()));
+        this.setReservedBottomHeight(this.scholarship().getBlockMaxHeight(this.page.getStage()));
     }
 
-    private EntryRequirementsController requirements() {
-        return this.parentScreen.getRequirements();
+    private EntryScholarshipController scholarship() {
+        return this.parentScreen.getScholarship();
     }
 
     /**
      * The block is fetched every time, since browsing the stages of the research changes it.
      */
     private void refreshBlock() {
-        this.block = this.requirements().getBlock(this.page.getStage());
+        this.block = this.scholarship().getBlock(this.page.getStage());
         this.title = this.resolveTitle(this.block);
     }
 
     @Nullable
-    private BookTextHolder resolveTitle(RequirementBlock block) {
+    private BookTextHolder resolveTitle(ScholarshipBlock block) {
         if (this.page.hasTitle()) {
             return this.page.getTitle();
         }
@@ -90,7 +90,7 @@ public class BookStageRequirementsPageRenderer extends BookPageRenderer<BookStag
         }
 
         if (!this.block.isEmpty()) {
-            this.requirements().renderBlock(guiGraphics, this.block, PAGE_ORIGIN, this.requirements().getBlockTop(this.block, PAGE_ORIGIN),
+            this.scholarship().renderBlock(guiGraphics, this.block, PAGE_ORIGIN, this.scholarship().getBlockTop(this.block, PAGE_ORIGIN),
                     BookEntryScreen.PAGE_WIDTH, mouseX, mouseY, true);
         }
 
@@ -107,7 +107,7 @@ public class BookStageRequirementsPageRenderer extends BookPageRenderer<BookStag
             return false;
         }
 
-        return this.requirements().clickBlock(this.block, PAGE_ORIGIN, this.requirements().getBlockTop(this.block, PAGE_ORIGIN),
+        return this.scholarship().clickBlock(this.block, PAGE_ORIGIN, this.scholarship().getBlockTop(this.block, PAGE_ORIGIN),
                 BookEntryScreen.PAGE_WIDTH, event.x(), event.y());
     }
 

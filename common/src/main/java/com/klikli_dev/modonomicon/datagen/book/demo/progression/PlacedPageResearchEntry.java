@@ -34,7 +34,7 @@ public class PlacedPageResearchEntry extends EntryProvider {
                 The marker of this entry clears once you have crafted a writable book.
                 """);
 
-        this.requirementsPage("requirements_iron");
+        this.scholarshipPage("requirements_iron");
 
         this.stage("iron", s -> s
                 .fact(DemoResearch.IRON_INGOT_ACQUIRED)
@@ -50,7 +50,7 @@ public class PlacedPageResearchEntry extends EntryProvider {
                 Stage-gated page: visible once you have the iron ingot.
                 """);
 
-        this.requirementsPage("requirements_ink");
+        this.scholarshipPage("requirements_ink");
 
         this.stage("ink", s -> s
                 .fact(DemoResearch.INK_SAC_ACQUIRED)

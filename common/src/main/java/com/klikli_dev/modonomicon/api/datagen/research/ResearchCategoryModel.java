@@ -50,7 +50,7 @@ public class ResearchCategoryModel {
     }
 
     /**
-     * Sets the icon, a GUI sprite id such as {@code modonomicon:modonomicon/requirement_categories/research}.
+     * Sets the icon, a GUI sprite id such as {@code modonomicon:modonomicon/scholarship/groups/research}.
      */
     public ResearchCategoryModel withIcon(Identifier icon) {
         this.icon = icon;

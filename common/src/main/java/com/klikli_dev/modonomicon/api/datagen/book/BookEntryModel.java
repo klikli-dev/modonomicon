@@ -18,7 +18,7 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchStageCo
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
-import com.klikli_dev.modonomicon.book.RequirementsDisplay;
+import com.klikli_dev.modonomicon.book.ScholarshipDisplay;
 import com.klikli_dev.modonomicon.book.entries.BookEntryResearch;
 import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
@@ -83,7 +83,7 @@ public class BookEntryModel {
     @Nullable
     protected Identifier researchNode;
     @Nullable
-    protected RequirementsDisplay requirementsDisplay;
+    protected ScholarshipDisplay scholarshipDisplay;
     @Nullable
     protected ResearchStageRef researchCompletionStage;
     protected Identifier entryToOpen;
@@ -679,14 +679,14 @@ public class BookEntryModel {
     /**
      * Overrides the book's default requirements display for this entry. Only has an effect together with a research.
      */
-    public BookEntryModel withRequirementsDisplay(RequirementsDisplay requirementsDisplay) {
-        this.requirementsDisplay = requirementsDisplay;
+    public BookEntryModel withScholarshipDisplay(ScholarshipDisplay scholarshipDisplay) {
+        this.scholarshipDisplay = scholarshipDisplay;
         return this;
     }
 
     @Nullable
-    public RequirementsDisplay getRequirementsDisplay() {
-        return this.requirementsDisplay;
+    public ScholarshipDisplay getScholarshipDisplay() {
+        return this.scholarshipDisplay;
     }
 
     @Nullable
@@ -694,7 +694,7 @@ public class BookEntryModel {
         if (this.researchNode == null) {
             return null;
         }
-        return new BookEntryResearch(this.researchNode, Optional.ofNullable(this.requirementsDisplay));
+        return new BookEntryResearch(this.researchNode, Optional.ofNullable(this.scholarshipDisplay));
     }
 
     /**

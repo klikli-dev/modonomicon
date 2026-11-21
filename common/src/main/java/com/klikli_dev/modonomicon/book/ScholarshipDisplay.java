@@ -18,7 +18,7 @@ import java.util.function.IntFunction;
 /**
  * Governs where the research requirements of an entry research are shown.
  */
-public enum RequirementsDisplay implements StringRepresentable {
+public enum ScholarshipDisplay implements StringRepresentable {
     /**
      * Requirements are shown at the bottom of the first page of the entry.
      */
@@ -36,20 +36,20 @@ public enum RequirementsDisplay implements StringRepresentable {
      */
     NONE("none");
 
-    public static final StringRepresentable.EnumCodec<RequirementsDisplay> CODEC = StringRepresentable.fromEnum(RequirementsDisplay::values);
-    private static final IntFunction<RequirementsDisplay> BY_ID = ByIdMap.continuous(Enum::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
-    public static final StreamCodec<ByteBuf, RequirementsDisplay> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, RequirementsDisplay::ordinal);
+    public static final StringRepresentable.EnumCodec<ScholarshipDisplay> CODEC = StringRepresentable.fromEnum(ScholarshipDisplay::values);
+    private static final IntFunction<ScholarshipDisplay> BY_ID = ByIdMap.continuous(Enum::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
+    public static final StreamCodec<ByteBuf, ScholarshipDisplay> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ScholarshipDisplay::ordinal);
     private final String name;
 
-    RequirementsDisplay(String name) {
+    ScholarshipDisplay(String name) {
         this.name = name;
     }
 
-    public static RequirementsDisplay byName(String pName) {
+    public static ScholarshipDisplay byName(String pName) {
         return CODEC.byName(pName);
     }
 
-    public static RequirementsDisplay byId(int pId) {
+    public static ScholarshipDisplay byId(int pId) {
         return BY_ID.apply(pId);
     }
 

@@ -7,10 +7,10 @@
 package com.klikli_dev.modonomicon.client.gui.book.entry;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
-import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.RequirementBlock;
-import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.RequirementRow;
-import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchRequirementInteractions;
-import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.RowAction;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipBlock;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipRow;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipInteractions;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipRowAction;
 import com.klikli_dev.modonomicon.client.gui.book.theme.BookContentTheme;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import com.klikli_dev.modonomicon.research.data.ResearchCategoryDefinition;
@@ -40,7 +40,7 @@ import java.util.function.IntPredicate;
  * A staged block ends with a stage line ("Stage k/n") with small arrows to browse the stages, see {@link #stageLineClick}.
  * Coordinates are relative to the book (bookLeft/bookTop), the block is aligned to the bottom of the page.
  */
-public final class EntryRequirementsRenderer {
+public final class EntryScholarshipRenderer {
 
     public static final int ROW_HEIGHT = 18;
     public static final int SLOT_SIZE = 16;
@@ -88,7 +88,7 @@ public final class EntryRequirementsRenderer {
     /**
      * A laid out requirement slot, in book-relative coordinates.
      */
-    public record Slot(RequirementRow row, int x, int y, int width, int height) {
+    public record Slot(ScholarshipRow row, int x, int y, int width, int height) {
         public boolean contains(double mouseX, double mouseY) {
             return inside(this.x, this.y, this.width, this.height, mouseX, mouseY);
         }
@@ -97,7 +97,7 @@ public final class EntryRequirementsRenderer {
     /**
      * A row of requirement icons of one category. Only the first row of a category shows the category icon.
      */
-    private record Line(ResearchCategoryDefinition category, boolean first, int y, List<RequirementRow> rows) {
+    private record Line(ResearchCategoryDefinition category, boolean first, int y, List<ScholarshipRow> rows) {
     }
 
     /**
@@ -109,19 +109,19 @@ public final class EntryRequirementsRenderer {
         }
     }
 
-    private final ResearchRequirementInteractions interactions;
+    private final ScholarshipInteractions interactions;
 
-    public EntryRequirementsRenderer(ResearchRequirementInteractions interactions) {
+    public EntryScholarshipRenderer(ScholarshipInteractions interactions) {
         this.interactions = interactions;
     }
 
     /**
      * The requirements grouped by category, categories in their sort order.
      */
-    public static Map<ResearchCategoryDefinition, List<RequirementRow>> group(List<RequirementRow> rows) {
-        var groups = new LinkedHashMap<ResearchCategoryDefinition, List<RequirementRow>>();
+    public static Map<ResearchCategoryDefinition, List<ScholarshipRow>> group(List<ScholarshipRow> rows) {
+        var groups = new LinkedHashMap<ResearchCategoryDefinition, List<ScholarshipRow>>();
         rows.stream()
-                .sorted(Comparator.comparingInt((RequirementRow row) -> row.category().sortOrder())
+                .sorted(Comparator.comparingInt((ScholarshipRow row) -> row.category().sortOrder())
                         .thenComparing(row -> row.category().id().toString()))
                 .forEach(row -> groups.computeIfAbsent(row.category(), k -> new ArrayList<>()).add(row));
         return groups;
@@ -170,7 +170,7 @@ public final class EntryRequirementsRenderer {
      * the check mark (7) for a complete block without rows, else {@code 18} per requirement row.
      * Blocks are always laid out with the page width.
      */
-    public static int getBlockHeight(RequirementBlock block) {
+    public static int getBlockHeight(ScholarshipBlock block) {
         if (block.isEmpty()) {
             return 0;
         }
@@ -182,7 +182,7 @@ public final class EntryRequirementsRenderer {
     /**
      * The y coordinate (book-relative) at which the block starts, so that it ends at the bottom of the page.
      */
-    public static int getBlockTop(RequirementBlock block, int pageTop, int pageHeight) {
+    public static int getBlockTop(ScholarshipBlock block, int pageTop, int pageHeight) {
         return pageTop + pageHeight - getBlockHeight(block);
     }
 
@@ -193,7 +193,7 @@ public final class EntryRequirementsRenderer {
      * @param top   top edge of the block (book-relative)
      * @param width width of the block
      */
-    public static List<Slot> layout(RequirementBlock block, int x, int top, int width) {
+    public static List<Slot> layout(ScholarshipBlock block, int x, int top, int width) {
         var slots = new ArrayList<Slot>();
         for (var line : lines(block, x, top, width)) {
             int step = iconStep(line.rows().size(), iconsWidth(width));
@@ -212,7 +212,7 @@ public final class EntryRequirementsRenderer {
      * @param mouseY      book-relative mouse y
      * @param interactive whether hovering shows tooltips
      */
-    public void render(GuiGraphicsExtractor guiGraphics, Font font, BookContentTheme content, RequirementBlock block,
+    public void render(GuiGraphicsExtractor guiGraphics, Font font, BookContentTheme content, ScholarshipBlock block,
                               int x, int top, int width, int mouseX, int mouseY, boolean interactive,
                               Consumer<List<Component>> tooltipSink) {
         if (block.isEmpty()) {
@@ -220,7 +220,7 @@ public final class EntryRequirementsRenderer {
         }
 
         int separatorX = x + (width - SEPARATOR_WIDTH) / 2;
-        content.requirementsSeparator().extractRenderState(guiGraphics, separatorX, top);
+        content.scholarshipSeparator().extractRenderState(guiGraphics, separatorX, top);
         if (interactive && inside(separatorX, top, SEPARATOR_WIDTH, SEPARATOR_HEIGHT, mouseX, mouseY)) {
             tooltipSink.accept(separatorTooltip(block));
         }
@@ -228,9 +228,9 @@ public final class EntryRequirementsRenderer {
         int contentY = contentY(block, top);
         if (isCheckOnly(block)) {
             int checkX = x + (width - CHECK_WIDTH) / 2;
-            content.requirementCheck().extractRenderState(guiGraphics, checkX, contentY);
+            content.scholarshipCheck().extractRenderState(guiGraphics, checkX, contentY);
             if (interactive && inside(checkX, contentY, CHECK_WIDTH, CHECK_HEIGHT, mouseX, mouseY)) {
-                tooltipSink.accept(List.of(Component.translatable(Gui.REQUIREMENTS_COMPLETE)));
+                tooltipSink.accept(List.of(Component.translatable(Gui.SCHOLARSHIP_COMPLETE)));
             }
         } else {
             renderRows(guiGraphics, font, content, block, x, top, width, mouseX, mouseY, interactive, tooltipSink);
@@ -246,11 +246,11 @@ public final class EntryRequirementsRenderer {
      * Stage arrows are passed to browse. A requirement icon performs its action if it has one, else runs its click handler.
      *
      * @param browse browses the stages by the given delta, returns true if the click was consumed
-     * @param onRowAction receives the action of a clicked row, see {@link RowAction}
+     * @param onScholarshipRowAction receives the action of a clicked row, see {@link ScholarshipRowAction}
      * @return true if the click was consumed
      */
-    public boolean click(RequirementBlock block, Font font, int x, int top, int width, double mouseX, double mouseY,
-                                IntPredicate browse, Consumer<RowAction> onRowAction) {
+    public boolean click(ScholarshipBlock block, Font font, int x, int top, int width, double mouseX, double mouseY,
+                                IntPredicate browse, Consumer<ScholarshipRowAction> onScholarshipRowAction) {
         int stageDelta = stageLineClick(block, font, x, top, width, mouseX, mouseY);
         if (stageDelta != 0) {
             return browse.test(stageDelta);
@@ -262,7 +262,7 @@ public final class EntryRequirementsRenderer {
             if (slot.contains(mouseX, mouseY)) {
                 var row = slot.row();
                 if (row.action() != null) {
-                    onRowAction.accept(row.action());
+                    onScholarshipRowAction.accept(row.action());
                     return true;
                 }
                 return false;
@@ -275,7 +275,7 @@ public final class EntryRequirementsRenderer {
      * Returns -1 if the left stage arrow was clicked, 1 for the right arrow, 0 otherwise.
      * Coordinates are relative to the same origin as the layout.
      */
-    public static int stageLineClick(RequirementBlock block, Font font, int x, int top, int width, double mouseX, double mouseY) {
+    public static int stageLineClick(ScholarshipBlock block, Font font, int x, int top, int width, double mouseX, double mouseY) {
         if (block.stage() == null) {
             return 0;
         }
@@ -293,7 +293,7 @@ public final class EntryRequirementsRenderer {
     /**
      * The y coordinate of the first requirement row: below the separator and, for manual stages, below the complete button band.
      */
-    private static int contentY(RequirementBlock block, int top) {
+    private static int contentY(ScholarshipBlock block, int top) {
         return top + SEPARATOR_HEIGHT + SEPARATOR_GAP + buttonBandHeight(block);
     }
 
@@ -301,11 +301,11 @@ public final class EntryRequirementsRenderer {
      * Manual stages reserve a band between the separator and the first row for the complete button, so the button stays
      * on the page regardless of the page side and nothing moves when it appears.
      */
-    private static int buttonBandHeight(RequirementBlock block) {
+    private static int buttonBandHeight(ScholarshipBlock block) {
         return reservesCompleteButton(block) ? STAGE_LINE_HEIGHT + BUTTON_BAND_GAP : 0;
     }
 
-    private static StageGeometry stageGeometry(RequirementBlock block, Font font, int x, int top, int width) {
+    private static StageGeometry stageGeometry(ScholarshipBlock block, Font font, int x, int top, int width) {
         int stageY = contentY(block, top) + contentHeight(block, width);
         int textWidth = font.width(stageLabel(block));
         //the label is centered on its own, the arrow slots are symmetric around it, so they never depend on the button
@@ -323,7 +323,7 @@ public final class EntryRequirementsRenderer {
     /**
      * A manual stage reserves the button space, the button itself is only drawn once its requirements are met.
      */
-    private static boolean reservesCompleteButton(RequirementBlock block) {
+    private static boolean reservesCompleteButton(ScholarshipBlock block) {
         return block.stage() != null && block.stage().manual() != null;
     }
 
@@ -331,13 +331,13 @@ public final class EntryRequirementsRenderer {
      * The complete button is drawn once the requirements of the manual stage are met. It is only ever on the current stage,
      * so it never shares the line with the right browse arrow.
      */
-    private static boolean showsCompleteButton(RequirementBlock block) {
+    private static boolean showsCompleteButton(ScholarshipBlock block) {
         return reservesCompleteButton(block) && block.stage().manual().ready();
     }
 
     private static int completeButtonWidth(Font font) {
-        return Math.max(font.width(Component.translatable(Gui.REQUIREMENTS_STAGE_COMPLETE)),
-                font.width(Component.translatable(Gui.REQUIREMENTS_STAGE_COMPLETING))) + 2 * BUTTON_PADDING;
+        return Math.max(font.width(Component.translatable(Gui.SCHOLARSHIP_STAGE_COMPLETE)),
+                font.width(Component.translatable(Gui.SCHOLARSHIP_STAGE_COMPLETING))) + 2 * BUTTON_PADDING;
     }
 
     private static boolean inCompleteButton(StageGeometry geometry, double mouseX, double mouseY) {
@@ -347,7 +347,7 @@ public final class EntryRequirementsRenderer {
     /**
      * Completes the shown manual stage if the complete button was clicked. Coordinates relative to the same origin as the layout.
      */
-    private boolean clickCompleteButton(RequirementBlock block, Font font, int x, int top, int width, double mouseX, double mouseY) {
+    private boolean clickCompleteButton(ScholarshipBlock block, Font font, int x, int top, int width, double mouseX, double mouseY) {
         if (!showsCompleteButton(block) || !inCompleteButton(stageGeometry(block, font, x, top, width), mouseX, mouseY)) {
             return false;
         }
@@ -355,7 +355,7 @@ public final class EntryRequirementsRenderer {
         return true;
     }
 
-    private static int contentHeight(RequirementBlock block, int width) {
+    private static int contentHeight(ScholarshipBlock block, int width) {
         return isCheckOnly(block) ? CHECK_HEIGHT : rows(block, width) * ROW_HEIGHT;
     }
 
@@ -363,23 +363,23 @@ public final class EntryRequirementsRenderer {
      * A complete block without rows (e.g. a research without stages) only shows a check mark.
      * Complete blocks with rows show them, all met.
      */
-    private static boolean isCheckOnly(RequirementBlock block) {
+    private static boolean isCheckOnly(ScholarshipBlock block) {
         return block.complete() && block.rows().isEmpty();
     }
 
     /**
      * "Stage k/n", followed by a check mark once the whole research is complete.
      */
-    private static Component stageLabel(RequirementBlock block) {
+    private static Component stageLabel(ScholarshipBlock block) {
         var stage = block.stage();
-        var label = Component.translatable(Gui.REQUIREMENTS_STAGE_LINE, stage.index() + 1, stage.total());
+        var label = Component.translatable(Gui.SCHOLARSHIP_STAGE_LINE, stage.index() + 1, stage.total());
         if (block.complete()) {
             return Component.empty().append(label).append(Component.literal(" ✔").withStyle(ChatFormatting.DARK_GREEN));
         }
         return label;
     }
 
-    private void renderStageLine(GuiGraphicsExtractor guiGraphics, Font font, BookContentTheme content, RequirementBlock block,
+    private void renderStageLine(GuiGraphicsExtractor guiGraphics, Font font, BookContentTheme content, ScholarshipBlock block,
                                         int x, int top, int width, int mouseX, int mouseY, boolean interactive,
                                         Consumer<List<Component>> tooltipSink) {
         var stage = block.stage();
@@ -401,26 +401,26 @@ public final class EntryRequirementsRenderer {
         }
 
         if (interactive && inside(geometry.textX(), geometry.textY(), geometry.textWidth(), font.lineHeight, mouseX, mouseY)) {
-            tooltipSink.accept(stageTooltip(stage, ResearchRequirementInteractions.player()));
+            tooltipSink.accept(stageTooltip(stage, ScholarshipInteractions.player()));
         }
         if (showsCompleteButton(block)) {
             renderCompleteButton(guiGraphics, font, content, block, geometry, mouseX, mouseY, interactive, tooltipSink);
         }
     }
 
-    private void renderCompleteButton(GuiGraphicsExtractor guiGraphics, Font font, BookContentTheme content, RequirementBlock block, StageGeometry geometry,
+    private void renderCompleteButton(GuiGraphicsExtractor guiGraphics, Font font, BookContentTheme content, ScholarshipBlock block, StageGeometry geometry,
                                       int mouseX, int mouseY, boolean interactive, Consumer<List<Component>> tooltipSink) {
         if (!showsCompleteButton(block)) {
             return;
         }
         var manual = block.stage().manual();
-        var player = ResearchRequirementInteractions.player();
+        var player = ScholarshipInteractions.player();
         boolean completing = this.interactions.isCompleting(manual);
         boolean enabled = !completing && player != null && manual.cost().canAfford(player);
         boolean hovered = inCompleteButton(geometry, mouseX, mouseY);
         var sprite = !enabled ? content.completeButtonDisabled() : (hovered ? content.completeButtonHover() : content.completeButtonNormal());
         sprite.extractRenderState(guiGraphics, geometry.buttonX(), geometry.buttonY(), geometry.buttonWidth(), STAGE_LINE_HEIGHT);
-        var label = Component.translatable(completing ? Gui.REQUIREMENTS_STAGE_COMPLETING : Gui.REQUIREMENTS_STAGE_COMPLETE);
+        var label = Component.translatable(completing ? Gui.SCHOLARSHIP_STAGE_COMPLETING : Gui.SCHOLARSHIP_STAGE_COMPLETE);
         int labelX = geometry.buttonX() + (geometry.buttonWidth() - font.width(label)) / 2;
         guiGraphics.text(font, label, labelX, geometry.buttonY() + TEXT_INSET_Y, enabled ? STAGE_TEXT_COLOR : COMPLETE_DISABLED_COLOR, false);
         if (interactive && hovered && !completing) {
@@ -428,16 +428,16 @@ public final class EntryRequirementsRenderer {
         }
     }
 
-    private static List<Component> completeTooltip(RequirementBlock.ManualStage manual, @Nullable Player player) {
+    private static List<Component> completeTooltip(ScholarshipBlock.ManualStage manual, @Nullable Player player) {
         var lines = new ArrayList<Component>();
-        lines.add(Component.translatable(Gui.REQUIREMENTS_STAGE_COMPLETE_HINT));
+        lines.add(Component.translatable(Gui.SCHOLARSHIP_STAGE_COMPLETE_HINT));
         if (player != null) {
-            lines.addAll(ResearchRequirementInteractions.costLines(manual.cost(), player));
+            lines.addAll(ScholarshipInteractions.costLines(manual.cost(), player));
         }
         return lines;
     }
 
-    private static List<Component> stageTooltip(RequirementBlock.StageLine stage, @Nullable Player player) {
+    private static List<Component> stageTooltip(ScholarshipBlock.StageLine stage, @Nullable Player player) {
         var lines = new ArrayList<Component>();
         lines.add(stage.title());
         if (stage.description() != null) {
@@ -445,10 +445,10 @@ public final class EntryRequirementsRenderer {
         }
         if (stage.manual() != null) {
             if (!stage.manual().ready()) {
-                lines.add(Component.translatable(Gui.REQUIREMENTS_STAGE_MANUAL).withStyle(ChatFormatting.GRAY));
+                lines.add(Component.translatable(Gui.SCHOLARSHIP_STAGE_MANUAL).withStyle(ChatFormatting.GRAY));
             }
             if (player != null) {
-                lines.addAll(ResearchRequirementInteractions.costLines(stage.manual().cost(), player));
+                lines.addAll(ScholarshipInteractions.costLines(stage.manual().cost(), player));
             }
         }
         return lines;
@@ -457,7 +457,7 @@ public final class EntryRequirementsRenderer {
     /**
      * The rows of the block, in display order: one line per category row, wrapping categories into several lines.
      */
-    private static List<Line> lines(RequirementBlock block, int x, int top, int width) {
+    private static List<Line> lines(ScholarshipBlock block, int x, int top, int width) {
         var lines = new ArrayList<Line>();
         if (block.rows().isEmpty()) {
             return lines;
@@ -477,11 +477,11 @@ public final class EntryRequirementsRenderer {
         return lines;
     }
 
-    private static int rows(RequirementBlock block, int width) {
+    private static int rows(ScholarshipBlock block, int width) {
         return lines(block, 0, 0, width).size();
     }
 
-    private static void renderRows(GuiGraphicsExtractor guiGraphics, Font font, BookContentTheme content, RequirementBlock block,
+    private static void renderRows(GuiGraphicsExtractor guiGraphics, Font font, BookContentTheme content, ScholarshipBlock block,
                                    int x, int top, int width, int mouseX, int mouseY, boolean interactive,
                                    Consumer<List<Component>> tooltipSink) {
         var lines = lines(block, x, top, width);
@@ -505,15 +505,15 @@ public final class EntryRequirementsRenderer {
         for (var slot : slots) {
             var row = slot.row();
             if (row.met()) {
-                content.requirementCheck().extractRenderState(guiGraphics, slot.x() + SLOT_SIZE - CHECK_WIDTH, slot.y() + SLOT_SIZE - CHECK_HEIGHT);
+                content.scholarshipCheck().extractRenderState(guiGraphics, slot.x() + SLOT_SIZE - CHECK_WIDTH, slot.y() + SLOT_SIZE - CHECK_HEIGHT);
             } else if (row.progress() != null) {
                 renderCount(guiGraphics, font, slot, String.valueOf(row.progress().target()));
             }
             if (interactive && slot.contains(mouseX, mouseY)) {
                 var tooltip = new ArrayList<>(row.tooltip(block.title()));
-                var player = ResearchRequirementInteractions.player();
+                var player = ScholarshipInteractions.player();
                 if (row.action() != null && player != null) {
-                    tooltip.addAll(ResearchRequirementInteractions.actionTooltip(row, player));
+                    tooltip.addAll(ScholarshipInteractions.actionTooltip(row, player));
                 }
                 tooltipSink.accept(tooltip);
             }
@@ -533,7 +533,7 @@ public final class EntryRequirementsRenderer {
             }
 
             int lineX = x + CATEGORY_ICON_SIZE + CATEGORY_LINE_GAP;
-            content.requirementRowLine().extractRenderState(guiGraphics, lineX, rowY + (ROW_HEIGHT - CATEGORY_LINE_HEIGHT) / 2,
+            content.scholarshipRowLine().extractRenderState(guiGraphics, lineX, rowY + (ROW_HEIGHT - CATEGORY_LINE_HEIGHT) / 2,
                     x + width - lineX, CATEGORY_LINE_HEIGHT, CATEGORY_LINE_TINT);
         }
     }
@@ -545,7 +545,7 @@ public final class EntryRequirementsRenderer {
         return lines;
     }
 
-    private static List<Component> separatorTooltip(RequirementBlock block) {
+    private static List<Component> separatorTooltip(ScholarshipBlock block) {
         var lines = new ArrayList<Component>();
         lines.add(block.title());
         if (block.description() != null) {
