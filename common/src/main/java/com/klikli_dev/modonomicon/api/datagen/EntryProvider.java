@@ -47,6 +47,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
     public EntryProvider(CategoryProviderBase parent) {
         super(parent.modId(), parent.lang(), parent.langsAsMapOfBiConsumers(), parent.context(), parent.condition());
         this.parent = parent;
+        this.researchHelper = parent.research();
         this.entry = null;
     }
 
@@ -239,7 +240,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
      * @throws IllegalStateException if the id is already used or the stage has no requirements
      */
     protected void stage(String id, Consumer<ResearchStageBuilder> configuration) {
-        var stageRef = this.condition().entryResearchStage(this.entry, id);
+        var stageRef = this.research().entryResearchStage(this.entry, id);
         if (this.researchStages.stream().anyMatch(stage -> stage.ref().equals(stageRef))) {
             throw new IllegalStateException("Duplicate stage id '" + id + "' in entry '" + this.entryId() + "'.");
         }
@@ -328,7 +329,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
 
     private BookConditionModel<?> stageGate(BookConditionModel<?> condition) {
         var gate = this.condition().researchStageCompleted(
-                this.condition().entryResearchNode(this.entry), this.currentStage);
+                this.research().entryResearchNode(this.entry), this.currentStage);
         if (condition == null || condition instanceof BookNoneConditionModel) {
             return gate;
         }
@@ -364,8 +365,8 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
         }
 
         var lastIndex = this.researchStages.size() - 1;
-        this.condition().addEntryResearch(new EntryResearchRequest(this.entry.getId(), List.copyOf(this.researchStages)));
-        this.entry.withResearch(this.condition().entryResearchNode(this.entry), this.researchStages.get(lastIndex).ref());
+        this.research().addEntryResearch(new EntryResearchRequest(this.entry.getId(), List.copyOf(this.researchStages)));
+        this.entry.withResearch(this.research().entryResearchNode(this.entry), this.researchStages.get(lastIndex).ref());
 
         for (var pending : this.scholarshipPages) {
             var next = this.researchStages.get(Math.min(pending.nextStageIndex(), lastIndex));

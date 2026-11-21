@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * A per-book sidecar store that collects generated research requests from book-authored conditions and researches.
  * <p>
- * The {@link ConditionHelper} and {@link EntryProvider} write into this store during authoring, and the
+ * The {@link ResearchHelper} and {@link EntryProvider} write into this store during authoring, and the
  * {@link BookHierarchyResearchCompiler} reads from it during compilation. Requests are deduplicated by their generated
  * path, so equal requirements share one fact and one node.
  */

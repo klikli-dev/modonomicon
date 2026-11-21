@@ -39,7 +39,8 @@ public abstract class SingleBookSubProvider extends ModonomiconProviderBase impl
         this.bookId = bookId;
         this.currentSortIndex = 0;
         this.generatedResearchStore = new GeneratedBookResearchStore(modId, bookId);
-        this.conditionHelper = new ConditionHelper(this.context, this.generatedResearchStore);
+        this.conditionHelper = new ConditionHelper();
+        this.researchHelper = new ResearchHelper(this.context, this.generatedResearchStore);
     }
 
     /**

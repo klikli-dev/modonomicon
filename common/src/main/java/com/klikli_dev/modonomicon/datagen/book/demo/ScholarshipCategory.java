@@ -59,10 +59,10 @@ public class ScholarshipCategory extends CategoryProvider {
         var index = this.add(new PlacedPageResearchEntry(this).generate()
                 .withParent(catalogue)
                 .withCondition(this.condition().and(
-                        this.condition().entryViewedOnce(catalogue),
+                        this.research().entryViewedOnce(catalogue),
                         this.condition().researchStageCompleted(
-                                this.condition().entryResearchNode(catalogue),
-                                this.condition().entryResearchStage(catalogue, "sources"))))
+                                this.research().entryResearchNode(catalogue),
+                                this.research().entryResearchStage(catalogue, "sources"))))
                 .markerUntilCrafted(Items.WRITABLE_BOOK));
         this.layout().entry(index).rightOf(catalogue, 3);
 
