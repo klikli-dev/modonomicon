@@ -61,7 +61,7 @@ public class DemoResearch extends SingleResearchSubProvider {
     public static final ResearchValueRef SOURCES_CONSULTED = valueRef("demo/research/sources_consulted");
     public static final ResearchValueRef WRITABLE_BOOKS_CRAFTED = valueRef("demo/writable_books_crafted");
     public static final ResearchFactRef INK_SAC_ACQUIRED = factRef("demo/research/ink_sac_acquired");
-    public static final ResearchFactRef IRON_INGOT_ACQUIRED = factRef("demo/scholarship_iron_ingot_acquired");
+    public static final ResearchFactRef IRON_INGOT_ACQUIRED = factRef("demo/research/iron_ingot_acquired");
     public static final ResearchFactRef ADVANCEMENT_MINE_STONE_COMPLETED = factRef("demo/advancement_mine_stone_completed");
     public static final ResearchFactRef ADVANCEMENT_RIDE_BOAT_WITH_GOAT_COMPLETED = factRef("demo/advancement_ride_boat_with_goat_completed");
     public static final Identifier DEMO_SMITHING = Modonomicon.loc("demo_smithing");

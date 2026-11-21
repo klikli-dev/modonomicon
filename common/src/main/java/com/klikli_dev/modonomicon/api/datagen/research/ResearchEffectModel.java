@@ -85,7 +85,7 @@ public final class ResearchEffectModel {
     }
 
     /**
-     * Runs the function as the player, e.g. {@code modonomicon:demo/scholarship_synthesis} for {@code data/modonomicon/function/demo/synthesis_effect.mcfunction}.
+     * Runs the function as the player, e.g. {@code modonomicon:demo/synthesis_effect} for {@code data/modonomicon/function/demo/synthesis_effect.mcfunction}.
      */
     public static ResearchEffectModel function(Identifier function) {
         return new ResearchEffectModel(new FunctionEffect(function));

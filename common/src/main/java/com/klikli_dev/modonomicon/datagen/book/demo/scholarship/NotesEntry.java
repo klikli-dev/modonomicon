@@ -26,7 +26,7 @@ import net.minecraft.world.item.Items;
  */
 public class NotesEntry extends EntryProvider {
     public static final String ID = "notes";
-    public static final Identifier SYNTHESIS_FUNCTION = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "demo/scholarship_synthesis");
+    public static final Identifier SYNTHESIS_FUNCTION = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "demo/synthesis_effect");
     /**
      * The demo recipe that processes a blank research note into a completed one, see {@code data/modonomicon/recipe/crafting/demo_research_note.json}.
      * Vanilla ingredients ignore components, so plain paper also processes into a completed note. The demo accepts this loophole on purpose.
