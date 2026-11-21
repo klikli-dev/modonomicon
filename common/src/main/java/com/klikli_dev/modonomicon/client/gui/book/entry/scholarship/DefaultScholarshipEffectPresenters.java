@@ -31,7 +31,7 @@ final class DefaultScholarshipEffectPresenters {
             public ScholarshipRow present(ResearchEffect effect, ScholarshipContext context) {
                 var stack = ((GiveItemEffect) effect).stack().create();
                 var icon = stack.isEmpty() ? ScholarshipIcons.icon(ScholarshipIcons.EFFECT_GIVE_ITEM) : ScholarshipIcon.of(stack);
-                return ScholarshipRow.of(List.of(icon), Component.translatable(Gui.SCHOLARSHIP_REWARD, stack.getHoverName()));
+                return ScholarshipRow.of(List.of(icon), Component.translatable(Gui.SCHOLARSHIP_EFFECT, stack.getHoverName()));
             }
 
             @Override
@@ -57,9 +57,9 @@ final class DefaultScholarshipEffectPresenters {
             public ScholarshipRow present(ResearchEffect effect, ScholarshipContext context) {
                 var experience = (ExperienceEffect) effect;
                 var amount = experience.levels()
-                        ? Component.translatable(Gui.SCHOLARSHIP_REWARD_LEVELS, experience.amount())
-                        : Component.translatable(Gui.SCHOLARSHIP_REWARD_EXPERIENCE, experience.amount());
-                return ScholarshipRow.of(List.of(ScholarshipIcons.icon(ScholarshipIcons.EFFECT_EXPERIENCE)), Component.translatable(Gui.SCHOLARSHIP_REWARD, amount));
+                        ? Component.translatable(Gui.SCHOLARSHIP_EFFECT_LEVELS, experience.amount())
+                        : Component.translatable(Gui.SCHOLARSHIP_EFFECT_EXPERIENCE, experience.amount());
+                return ScholarshipRow.of(List.of(ScholarshipIcons.icon(ScholarshipIcons.EFFECT_EXPERIENCE)), Component.translatable(Gui.SCHOLARSHIP_EFFECT, amount));
             }
         });
 
@@ -68,7 +68,7 @@ final class DefaultScholarshipEffectPresenters {
             public ScholarshipRow present(ResearchEffect effect, ScholarshipContext context) {
                 var factId = ((GrantFactEffect) effect).factId();
                 var fact = ScholarshipRows.factWithFallbackIcon(factId, context, false, ScholarshipIcons.icon(ScholarshipIcons.EFFECT_GRANT_FACT));
-                return fact.withTitle(Component.translatable(Gui.SCHOLARSHIP_REWARD, fact.title()));
+                return fact.withTitle(Component.translatable(Gui.SCHOLARSHIP_EFFECT, fact.title()));
             }
         });
 
@@ -84,15 +84,15 @@ final class DefaultScholarshipEffectPresenters {
                 var name = display != null && display.title().isPresent()
                         ? display.title().get()
                         : Component.literal(add.valueId().getPath());
-                return ScholarshipRow.of(List.of(icon), Component.translatable(Gui.SCHOLARSHIP_REWARD,
-                        Component.translatable(Gui.SCHOLARSHIP_REWARD_VALUE, add.amount(), name)));
+                return ScholarshipRow.of(List.of(icon), Component.translatable(Gui.SCHOLARSHIP_EFFECT,
+                        Component.translatable(Gui.SCHOLARSHIP_EFFECT_VALUE, add.amount(), name)));
             }
         });
 
         ScholarshipEffectPresenterRegistry.register(ResearchEffectTypeRegistry.FUNCTION.id(), new ScholarshipEffectPresenter() {
             @Override
             public ScholarshipRow present(ResearchEffect effect, ScholarshipContext context) {
-                return ScholarshipRow.of(List.of(ScholarshipIcons.icon(ScholarshipIcons.EFFECT_FUNCTION)), Component.translatable(Gui.SCHOLARSHIP_REWARD_SPECIAL));
+                return ScholarshipRow.of(List.of(ScholarshipIcons.icon(ScholarshipIcons.EFFECT_FUNCTION)), Component.translatable(Gui.SCHOLARSHIP_EFFECT_SPECIAL));
             }
         });
     }

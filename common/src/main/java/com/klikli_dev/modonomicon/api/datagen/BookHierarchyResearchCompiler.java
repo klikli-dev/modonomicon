@@ -140,7 +140,7 @@ public final class BookHierarchyResearchCompiler {
                     facts.add(actionRef);
                 }
                 stages.add(new ResearchStageSpec(stage.ref(), facts, stage.values(), Optional.empty(),
-                        Optional.ofNullable(stage.display()), stage.completion(), stage.rewards()));
+                        Optional.ofNullable(stage.display()), stage.completion(), stage.effects()));
             }
             research.nodeBuilder(ResearchNodeRef.of(effectiveStore.researchNodeId(entryResearch.entryId())))
                     .withFact(baseFact)

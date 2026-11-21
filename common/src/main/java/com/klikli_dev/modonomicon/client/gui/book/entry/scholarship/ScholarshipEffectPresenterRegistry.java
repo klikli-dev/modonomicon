@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Presenters of research effect types, keyed by effect type id. Used for reward rows and for describing actions.
+ * Presenters of research effect types, keyed by effect type id. Used for effect rows and for describing actions.
  * Unregistered types fall back to a generic presenter.
  */
 public final class ScholarshipEffectPresenterRegistry {
@@ -26,7 +26,7 @@ public final class ScholarshipEffectPresenterRegistry {
     private static final ScholarshipEffectPresenter FALLBACK = new ScholarshipEffectPresenter() {
         @Override
         public ScholarshipRow present(ResearchEffect effect, ScholarshipContext context) {
-            return ScholarshipRow.of(List.of(ScholarshipIcons.icon(ScholarshipIcons.GENERIC)), Component.translatable(Gui.SCHOLARSHIP_REWARD_SPECIAL));
+            return ScholarshipRow.of(List.of(ScholarshipIcons.icon(ScholarshipIcons.GENERIC)), Component.translatable(Gui.SCHOLARSHIP_EFFECT_SPECIAL));
         }
     };
 

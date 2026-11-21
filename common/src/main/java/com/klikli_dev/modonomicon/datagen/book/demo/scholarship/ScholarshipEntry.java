@@ -22,7 +22,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 
 /**
- * The entry point of the book: a staged research demonstrating research actions, the take, process and submit loop of an item_used fact, rewards and manual completion.
+ * The entry point of the book: a staged research demonstrating research actions, the take, process and submit loop of an item_used fact, effects and manual completion.
  */
 public class ScholarshipEntry extends EntryProvider {
     public static final String ID = "notes";
@@ -52,7 +52,7 @@ public class ScholarshipEntry extends EntryProvider {
                         ResearchActionModel.learn(ResearchCostModel.create().item(Items.PAPER)))
                 .title("Observation")
                 .description("Pay 1 paper with the action button.")
-                .reward(ResearchEffectModel.experience(10)));
+                .effect(ResearchEffectModel.experience(10)));
 
         this.page("observation_done", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
@@ -97,16 +97,16 @@ public class ScholarshipEntry extends EntryProvider {
                 .fact(DemoResearch.SCHOLARSHIP_NOTE_STUDIED)
                 .title("Transcription")
                 .description("Take a blank note, craft it with an ink sac, then use the completed note in the air.")
-                .reward(ResearchEffectModel.addValue(DemoResearch.SCHOLARSHIP_INSIGHT, 1))
-                .reward(ResearchEffectModel.grantFact(DemoResearch.SCHOLARSHIP_NOTES_READ)));
+                .effect(ResearchEffectModel.addValue(DemoResearch.SCHOLARSHIP_INSIGHT, 1))
+                .effect(ResearchEffectModel.grantFact(DemoResearch.SCHOLARSHIP_NOTES_READ)));
 
         //the study fact of transcription is already granted, so this stage only consumes its cost
         this.stage("synthesis", s -> s
                 .consume(Items.IRON_INGOT, 2)
                 .title("Synthesis")
                 .description("Hold 2 iron ingots, then press Complete.")
-                .reward(ResearchEffectModel.giveItem(Items.EMERALD))
-                .reward(ResearchEffectModel.function(SYNTHESIS_FUNCTION)));
+                .effect(ResearchEffectModel.giveItem(Items.EMERALD))
+                .effect(ResearchEffectModel.function(SYNTHESIS_FUNCTION)));
 
         this.page("synthesis_done", () -> BookTextPageModel.create()
                 .withTitle(this.context().pageTitle())
@@ -124,7 +124,7 @@ public class ScholarshipEntry extends EntryProvider {
 
     @Override
     protected String entryDescription() {
-        return "Actions, research notes, rewards and manual completion.";
+        return "Actions, research notes, effects and manual completion.";
     }
 
     @Override

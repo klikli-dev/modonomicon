@@ -40,7 +40,7 @@ public class PlayerResearchState {
             Codecs.set(Identifier.CODEC).optionalFieldOf("unlocked_nodes", Set.of()).forGetter(PlayerResearchState::unlockedNodeIds),
             Codecs.identifierIntMap().optionalFieldOf("values", Map.of()).forGetter(PlayerResearchState::valuesMap),
             Codecs.identifierIntMap().optionalFieldOf("node_stages", Map.of()).forGetter(PlayerResearchState::nodeStagesMap),
-            Codecs.set(Identifier.CODEC).optionalFieldOf("rewarded_stages", Set.of()).forGetter(PlayerResearchState::rewardedStageIds)
+            Codecs.set(Identifier.CODEC).optionalFieldOf("granted_effect_stages", Set.of()).forGetter(PlayerResearchState::grantedEffectStageIds)
     ).apply(instance, PlayerResearchState::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PlayerResearchState> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
@@ -49,7 +49,7 @@ public class PlayerResearchState {
     private final Set<Identifier> unlockedNodeIds;
     private final Object2IntOpenHashMap<Identifier> internalValues;
     private final Object2IntOpenHashMap<Identifier> nodeStageIndexes;
-    private final Set<Identifier> rewardedStageIds;
+    private final Set<Identifier> grantedEffectStageIds;
 
     public PlayerResearchState() {
         this(Set.of(), Set.of(), Map.of(), Map.of(), Set.of());
@@ -75,12 +75,12 @@ public class PlayerResearchState {
         this(factIds, unlockedNodeIds, values, nodeStages, Set.of());
     }
 
-    public PlayerResearchState(Set<Identifier> factIds, Set<Identifier> unlockedNodeIds, Map<Identifier, Integer> values, Map<Identifier, Integer> nodeStages, Set<Identifier> rewardedStageIds) {
+    public PlayerResearchState(Set<Identifier> factIds, Set<Identifier> unlockedNodeIds, Map<Identifier, Integer> values, Map<Identifier, Integer> nodeStages, Set<Identifier> grantedEffectStageIds) {
         this.factIds = new ObjectOpenHashSet<>(factIds);
         this.unlockedNodeIds = new ObjectOpenHashSet<>(unlockedNodeIds);
         this.internalValues = new Object2IntOpenHashMap<>(values);
         this.nodeStageIndexes = new Object2IntOpenHashMap<>(nodeStages);
-        this.rewardedStageIds = new ObjectOpenHashSet<>(rewardedStageIds);
+        this.grantedEffectStageIds = new ObjectOpenHashSet<>(grantedEffectStageIds);
     }
 
     public boolean grantFact(Identifier factId) {
@@ -189,25 +189,25 @@ public class PlayerResearchState {
     }
 
     /**
-     * Resets all research state including stage indexes and granted rewards.
+     * Resets all research state including stage indexes and granted effects.
      */
     public void reset() {
         this.factIds.clear();
         this.unlockedNodeIds.clear();
         this.internalValues.clear();
         this.nodeStageIndexes.clear();
-        this.rewardedStageIds.clear();
+        this.grantedEffectStageIds.clear();
     }
 
     /**
-     * Marks the rewards of a stage as granted. Returns true if they were not granted before.
+     * Marks the effects of a stage as granted. Returns true if they were not granted before.
      */
-    public boolean markRewardsGranted(Identifier stageId) {
-        return this.rewardedStageIds.add(stageId);
+    public boolean markEffectsGranted(Identifier stageId) {
+        return this.grantedEffectStageIds.add(stageId);
     }
 
-    public Set<Identifier> rewardedStageIds() {
-        return Set.copyOf(this.rewardedStageIds);
+    public Set<Identifier> grantedEffectStageIds() {
+        return Set.copyOf(this.grantedEffectStageIds);
     }
 
     public Set<Identifier> factIds() {

@@ -28,7 +28,7 @@ public final class ResearchCategories {
     public static final Identifier ITEMS = Modonomicon.loc("items");
     public static final Identifier KNOWLEDGE = Modonomicon.loc("knowledge");
     public static final Identifier PROGRESS = Modonomicon.loc("progress");
-    public static final Identifier REWARDS = Modonomicon.loc("rewards");
+    public static final Identifier EFFECTS = Modonomicon.loc("effects");
 
     /**
      * The sprite of the research category, also the fallback icon of custom categories.
@@ -56,7 +56,7 @@ public final class ResearchCategories {
                 builtin(ITEMS, "items", 10, TriggerTypeRegistry.ITEM_CRAFTED.id(), TriggerTypeRegistry.ITEM_ACQUIRED.id()),
                 builtin(KNOWLEDGE, "knowledge", 20, TriggerTypeRegistry.ENTRY_VIEWED_ONCE.id(), TriggerTypeRegistry.ADVANCEMENT.id(), TriggerTypeRegistry.ITEM_USED.id()),
                 builtin(PROGRESS, "progress", 30),
-                builtin(REWARDS, "rewards", 100)
+                builtin(EFFECTS, "effects", 100)
         );
     }
 

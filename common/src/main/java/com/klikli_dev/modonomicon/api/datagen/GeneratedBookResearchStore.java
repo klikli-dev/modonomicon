@@ -350,7 +350,7 @@ public final class GeneratedBookResearchStore {
      * @param actionFacts hand-authored facts that the player satisfies with an action, created for this stage
      * @param display    the display of the stage in requirement blocks
      * @param completion how the stage completes, manual with its cost or automatic
-     * @param rewards    rewards granted once when the stage completes
+     * @param effects    effects granted once when the stage completes
      */
     public record StageRequest(
             ResearchStageRef ref,
@@ -363,6 +363,6 @@ public final class GeneratedBookResearchStore {
             List<ActionFact> actionFacts,
             ResearchDisplayModel display,
             ResearchStageCompletion completion,
-            List<ResearchEffectModel> rewards
+            List<ResearchEffectModel> effects
     ) {}
 }

@@ -238,7 +238,7 @@ public record ResearchData(
                         stage.completion(),
                         List.copyOf(stage.requiredFacts()),
                         List.copyOf(stage.requiredValues()),
-                        List.copyOf(stage.rewards())
+                        List.copyOf(stage.effects())
                 ));
             }
 
@@ -386,7 +386,7 @@ public record ResearchData(
             ResearchStageCompletion completion,
             List<Identifier> requiredFactIds,
             List<ResearchNodeDefinition.ValueRequirement> requiredValueRequirements,
-            List<ResearchEffect> rewards
+            List<ResearchEffect> effects
     ) {
     }
 

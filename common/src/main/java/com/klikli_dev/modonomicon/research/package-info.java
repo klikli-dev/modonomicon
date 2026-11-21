@@ -40,7 +40,7 @@
  *
  * <h2>Effects</h2>
  * A {@code ResearchEffect} changes the player: it grants a fact, increments a value, gives an item, grants experience or runs a
- * function. Effects are the building block of stage rewards and of action effects. {@code apply} returns true if the effect changed
+ * function. Effects are the building block of stage effects and of action effects. {@code apply} returns true if the effect changed
  * something (research state, inventory or experience), so a caller can tell a real change from a no-op. Effects run on the server,
  * inside a state change, see {@code ResearchHookService#applyStateChange}.
  *
@@ -69,7 +69,7 @@
  *
  * <h2>Default icons</h2>
  * The client presenters of cost, effect and trigger types show a texture icon where the icon is a type default, e.g. the
- * level cost or the reward of a function. Dynamic data keeps its own icon, such as the item of a cost or the icon of an entry.
+ * level cost or the effect of a function. Dynamic data keeps its own icon, such as the item of a cost or the icon of an entry.
  * The textures and their file names are listed in {@code ScholarshipIcons}. Addons can draw an 8x8 badge over the bottom
  * right of an icon with {@code ScholarshipIcon#withBadge}; the built-in presenters don't, to keep item icons readable.
  *

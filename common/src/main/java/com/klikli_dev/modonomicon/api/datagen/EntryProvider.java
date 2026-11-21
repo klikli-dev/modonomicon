@@ -235,7 +235,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
      * }</pre>
      *
      * @param id            the stage id, unique within the entry. Used in the generated research and lang keys.
-     * @param configuration configures the requirements, completion, rewards and display of the stage
+     * @param configuration configures the requirements, completion, effects and display of the stage
      * @throws IllegalStateException if the id is already used or the stage has no requirements
      */
     protected void stage(String id, Consumer<ResearchStageBuilder> configuration) {
@@ -274,7 +274,7 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
 
         this.researchStages.add(new StageRequest(stageRef,
                 builder.crafted(), builder.acquired(), builder.used(), builder.viewed(), builder.facts(), builder.values(),
-                actionFacts, display, builder.completion(), builder.rewards()));
+                actionFacts, display, builder.completion(), builder.effects()));
         this.currentStage = stageRef;
     }
 

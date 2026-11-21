@@ -25,7 +25,7 @@ import java.util.function.UnaryOperator;
  * @param toast optional toast display data for stage completion
  * @param display optional display data of the stage, e.g. its title in requirement blocks
  * @param completion how the stage completes, automatic by default, see {@link #withManual()}
- * @param rewards rewards granted once when the stage completes, see {@link #withReward(ResearchEffectModel)}
+ * @param effects effects granted once when the stage completes, see {@link #withEffect(ResearchEffectModel)}
  */
 public record ResearchStageSpec(
         ResearchStageRef ref,
@@ -34,7 +34,7 @@ public record ResearchStageSpec(
         Optional<ResearchToastDefinition> toast,
         Optional<ResearchDisplayModel> display,
         ResearchStageCompletion completion,
-        List<ResearchEffectModel> rewards
+        List<ResearchEffectModel> effects
 ) {
     public static ResearchStageSpec factsOnly(ResearchStageRef ref, List<ResearchFactRef> requiredFacts) {
         return new ResearchStageSpec(ref, requiredFacts, List.of(), Optional.empty(), Optional.empty(), ResearchStageCompletion.AUTO, List.of());
@@ -52,7 +52,7 @@ public record ResearchStageSpec(
      * Adds toast display data to this stage spec.
      */
     public ResearchStageSpec withToast(ResearchToastDefinition toast) {
-        return new ResearchStageSpec(this.ref, this.requiredFacts, this.requiredValues, Optional.of(toast), this.display, this.completion, this.rewards);
+        return new ResearchStageSpec(this.ref, this.requiredFacts, this.requiredValues, Optional.of(toast), this.display, this.completion, this.effects);
     }
 
     /**
@@ -81,16 +81,16 @@ public record ResearchStageSpec(
      * Sets the completion of the stage, e.g. a manual completion with a cost, see {@link #withManual(ResearchCostModel)}.
      */
     public ResearchStageSpec withCompletion(ResearchStageCompletion completion) {
-        return new ResearchStageSpec(this.ref, this.requiredFacts, this.requiredValues, this.toast, this.display, completion, this.rewards);
+        return new ResearchStageSpec(this.ref, this.requiredFacts, this.requiredValues, this.toast, this.display, completion, this.effects);
     }
 
     /**
-     * Adds a reward, granted once when the stage completes.
+     * Adds a effect, granted once when the stage completes.
      */
-    public ResearchStageSpec withReward(ResearchEffectModel reward) {
-        var rewards = new ArrayList<>(this.rewards);
-        rewards.add(reward);
-        return new ResearchStageSpec(this.ref, this.requiredFacts, this.requiredValues, this.toast, this.display, this.completion, List.copyOf(rewards));
+    public ResearchStageSpec withEffect(ResearchEffectModel effect) {
+        var effects = new ArrayList<>(this.effects);
+        effects.add(effect);
+        return new ResearchStageSpec(this.ref, this.requiredFacts, this.requiredValues, this.toast, this.display, this.completion, List.copyOf(effects));
     }
 
     /**
@@ -105,7 +105,7 @@ public record ResearchStageSpec(
      */
     public ResearchStageSpec withDisplay(UnaryOperator<ResearchDisplayModel> update) {
         return new ResearchStageSpec(this.ref, this.requiredFacts, this.requiredValues, this.toast,
-                Optional.of(update.apply(ResearchDisplayModel.copyOrCreate(this.display))), this.completion, this.rewards);
+                Optional.of(update.apply(ResearchDisplayModel.copyOrCreate(this.display))), this.completion, this.effects);
     }
 
     public ResearchStageDefinition toDefinition() {
@@ -118,7 +118,7 @@ public record ResearchStageSpec(
                 this.toast,
                 this.display.map(ResearchDisplayModel::toResearchDisplay),
                 this.completion,
-                this.rewards.stream().map(ResearchEffectModel::toResearchEffect).toList()
+                this.effects.stream().map(ResearchEffectModel::toResearchEffect).toList()
         );
     }
 }

@@ -65,7 +65,7 @@ public final class ScholarshipRows {
 
     /**
      * A row for a research fact that shows the given icon if neither its display nor the hooks granting it define one.
-     * Used by reward rows, so the reward type icon is shown instead of the generic research icon.
+     * Used by effect rows, so the effect type icon is shown instead of the generic research icon.
      */
     static ScholarshipRow factWithFallbackIcon(Identifier factId, ScholarshipContext context, boolean forceMet, ScholarshipIcon fallbackIcon) {
         return fact(factId, context, forceMet, null, true, fallbackIcon);
@@ -225,7 +225,7 @@ public final class ScholarshipRows {
     }
 
     /**
-     * The one builder of stage blocks: the leading rows, then the stage requirements and rewards, with the manual completion
+     * The one builder of stage blocks: the leading rows, then the stage requirements and effects, with the manual completion
      * and the stage line of the stage. Callers derive the slot state and the title.
      */
     private static ScholarshipBlock stageBlock(StageSlot slot, Component title, List<ScholarshipRow> leading, ScholarshipContext context) {
@@ -233,7 +233,7 @@ public final class ScholarshipRows {
         var rows = new ArrayList<>(leading);
         var consumed = stage.completion().isManual() ? stage.completion().cost() : null;
         stageRequirements(stage, context, slot.done(), slot.actionNode(), slot.active(), consumed, rows::add);
-        rewardRows(stage.rewards(), slot.done(), context, rows::add);
+        effectRows(stage.effects(), slot.done(), context, rows::add);
 
         var manual = slot.active() && consumed != null
                 ? new ScholarshipBlock.ManualStage(slot.nodeId(), slot.index(), consumed, requirementsMet(stage, context))
@@ -307,15 +307,15 @@ public final class ScholarshipRows {
     }
 
     /**
-     * The rewards of a stage as rows of the rewards category, met once the stage is completed.
+     * The effects of a stage as rows of the effects category, met once the stage is completed.
      */
-    private static void rewardRows(List<ResearchEffect> rewards, boolean met, ScholarshipContext context, Consumer<ScholarshipRow> out) {
-        var category = category(ResearchCategories.REWARDS, context);
-        for (var reward : rewards) {
-            out.accept(ScholarshipEffectPresenterRegistry.get(reward.type().id()).present(reward, context)
+    private static void effectRows(List<ResearchEffect> effects, boolean met, ScholarshipContext context, Consumer<ScholarshipRow> out) {
+        var category = category(ResearchCategories.EFFECTS, context);
+        for (var effect : effects) {
+            out.accept(ScholarshipEffectPresenterRegistry.get(effect.type().id()).present(effect, context)
                     .withCategory(category)
                     .withMet(met)
-                    .withMissing(Component.translatable(Gui.SCHOLARSHIP_REWARD_PENDING)));
+                    .withMissing(Component.translatable(Gui.SCHOLARSHIP_EFFECT_PENDING)));
         }
     }
 

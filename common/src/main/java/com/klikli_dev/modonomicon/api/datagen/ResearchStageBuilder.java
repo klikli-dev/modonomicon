@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 /**
- * Collects the requirements, completion, rewards and display of one stage of an entry research.
+ * Collects the requirements, completion, effects and display of one stage of an entry research.
  * Use it in {@link EntryProvider#stage(String, Consumer)}.
  * <p>
  * Requirements are generated research facts: {@link #craft}, {@link #obtain} and {@link #use} take an item, an item stack
@@ -51,7 +51,7 @@ public final class ResearchStageBuilder {
     private final List<ResearchFactRef> facts = new ArrayList<>();
     private final List<ActionFact> actionFacts = new ArrayList<>();
     private final List<ResearchNodeSpec.ValueRequirement> values = new ArrayList<>();
-    private final List<ResearchEffectModel> rewards = new ArrayList<>();
+    private final List<ResearchEffectModel> effects = new ArrayList<>();
     private final ResearchCostModel cost = ResearchCostModel.create();
     private boolean manual;
     @Nullable
@@ -254,10 +254,10 @@ public final class ResearchStageBuilder {
     }
 
     /**
-     * Grants a reward once when the stage completes.
+     * Grants a effect once when the stage completes.
      */
-    public ResearchStageBuilder reward(ResearchEffectModel reward) {
-        this.rewards.add(reward);
+    public ResearchStageBuilder effect(ResearchEffectModel effect) {
+        this.effects.add(effect);
         return this;
     }
 
@@ -367,8 +367,8 @@ public final class ResearchStageBuilder {
         return this.manual ? ResearchStageCompletion.manual(this.cost.toResearchCost()) : ResearchStageCompletion.AUTO;
     }
 
-    List<ResearchEffectModel> rewards() {
-        return List.copyOf(this.rewards);
+    List<ResearchEffectModel> effects() {
+        return List.copyOf(this.effects);
     }
 
     @Nullable
