@@ -4,7 +4,7 @@ sidebar_position: 47
 
 # Custom Costs and Effects
 
-Mods add their own cost and effect types, so that actions and stage rewards can do or take things Modonomicon does not know about. A type has a codec for its JSON parameters, a stream codec for syncing to the client, and a presenter for the book (see [Custom Presenters](./custom-presenters.md)).
+Mods add their own cost and effect types, so that actions and stage rewards can do or take things Modonomicon does not know about. A type has a codec for its JSON parameters, a stream codec for syncing to the client, and a presenter for the book (see [Custom Presenters](../basics/scholarship/custom-presenters.md)).
 
 - **Effect types** implement `ResearchEffect` and are registered with `ResearchEffectTypeRegistry.register`.
 - **Cost types** implement `ResearchCostEntry` and are registered with `ResearchCostTypeRegistry.register`.
@@ -55,7 +55,7 @@ public final class MyModResearchTypes {
 
 The `bootstrap()` method only makes sure the static fields are initialized.
 
-Presenters are different: they only run on the client, and they are registered in client setup, see [Custom Presenters](./custom-presenters.md#registration).
+Presenters are different: they only run on the client, and they are registered in client setup, see [Custom Presenters](../basics/scholarship/custom-presenters.md#registration).
 
 ## Effect types
 
@@ -156,4 +156,4 @@ Creative players (infinite materials) pay nothing. The cost skips them before `p
 - Keep the stream codec in step with the map codec. Both sides need the same type.
 - A cost re-plans if the reserved stacks change during an action, so `apply` must only use the reservations of the plan it receives.
 
-See [Actions, Costs and Effects](../basics/research/actions.md#consumption-order) for the consumption order, and [Rewards](../basics/research/effects.md) for the built-in effect types.
+See [Actions, Costs and Effects](../basics/research/actions.md#consumption-order) for the consumption order, and [Effects](../basics/research/effects.md) for the built-in effect types.

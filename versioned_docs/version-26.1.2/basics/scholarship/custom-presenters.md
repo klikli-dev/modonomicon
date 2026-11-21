@@ -1,15 +1,15 @@
 ---
-sidebar_position: 46
+sidebar_position: 6
 ---
 
 # Custom Presenters
 
-Presenters decide how a research element is drawn in a requirements block. There is one registry per kind of element, and all three share the same shape:
+Presenters decide how a research element is drawn in a scholarship block. They are the client side of the scholarship layer: they turn a hook, an effect or a cost into a row. There is one registry per kind of element, and all three share the same shape:
 
 | Registry | Presents | Interface | Method |
 |----------|----------|-----------|--------|
-| `ScholarshipTriggerPresenterRegistry` | A hook of a trigger type, as a requirement row | `ScholarshipTriggerPresenter` | `present(hook, context)` |
-| `ScholarshipEffectPresenterRegistry` | An effect of a stage reward or action, as a row | `ScholarshipEffectPresenter` | `present(effect, context)` |
+| `ScholarshipTriggerPresenterRegistry` | A hook of a trigger type, as a scholarship row | `ScholarshipTriggerPresenter` | `present(hook, context)` |
+| `ScholarshipEffectPresenterRegistry` | An effect of a stage or action, as a row | `ScholarshipEffectPresenter` | `present(effect, context)` |
 | `ScholarshipCostPresenterRegistry` | A cost entry, as a row and as a tooltip line | `ScholarshipCostPresenter` | `row(entry, context, forceMet)`, `line(entry)` |
 
 Each registry has the same three methods:
@@ -22,21 +22,21 @@ Unknown types never break a block. They show a generic row with a book icon and 
 
 ## Trigger presenters
 
-A trigger presenter turns a hook into a row. Only the icon, title, details and click action matter. The met state comes from the requirement itself. The category of the row is assigned by the caller, see [Requirement Categories](../basics/research/categories.md#where-a-row-goes). The built-in trigger presenters are in `DefaultScholarshipTriggerPresenters`.
+A trigger presenter turns a hook into a row. Only the icon, title, details and click action matter. The met state comes from the research element itself. The group of the row is assigned by the caller, see [Scholarship Groups](./groups.md#where-a-row-goes). The built-in trigger presenters are in `DefaultScholarshipTriggerPresenters`.
 
-Any requirement icon can carry a small badge with `ScholarshipIcon.withBadge(texture)`. The badge is drawn at 8x8 pixels in the bottom right corner of the 16x16 icon. The built-in presenters do not use badges, because they would cover the item and its count.
+Any scholarship icon can carry a small badge with `ScholarshipIcon.withBadge(texture)`. The badge is drawn at 8x8 pixels in the bottom right corner of the 16x16 icon. The built-in presenters do not use badges, because they would cover the item and its count.
 
 ```java
 ScholarshipTriggerPresenterRegistry.register(MyModTriggers.ENTITY_KILLED.id(), (hook, context) ->
         ScholarshipRow.of(
                 List.of(ScholarshipIcon.of(new ItemStack(Items.IRON_SWORD))),
-                Component.translatable("mymod.requirement.entity_killed", entityName(hook)))
+                Component.translatable("mymod.trigger.entity_killed", entityName(hook)))
 );
 ```
 
 ## Effect presenters
 
-An effect presenter describes an effect that is shown as a reward or as part of an action. It returns a row:
+An effect presenter describes an effect that is shown as a stage effect or as part of an action. It returns a row:
 
 ```java
 ScholarshipEffectPresenterRegistry.register(MyModResearchTypes.GRANT_MANA.id(), new ScholarshipEffectPresenter() {
@@ -45,7 +45,7 @@ ScholarshipEffectPresenterRegistry.register(MyModResearchTypes.GRANT_MANA.id(), 
         var mana = (GrantManaEffect) effect;
         return ScholarshipRow.of(
                 List.of(ScholarshipIcon.of(new ItemStack(MyModItems.MANA_CRYSTAL))),
-                Component.translatable("mymod.reward.mana", mana.amount()));
+                Component.translatable("mymod.effect.mana", mana.amount()));
     }
 });
 ```
@@ -54,7 +54,7 @@ The built-in effect presenters are in `DefaultScholarshipEffectPresenters`.
 
 ## Cost presenters
 
-A cost presenter describes one cost entry in two places: the requirement row of a manual stage, and the tooltip line of an action. Both come from the same presenter, so each entry is described in one place.
+A cost presenter describes one cost entry in two places: the scholarship row of a manual stage, and the tooltip line of an action. Both come from the same presenter, so each entry is described in one place.
 
 ```java
 ScholarshipCostPresenterRegistry.register(MyModResearchTypes.MANA.id(), new ScholarshipCostPresenter() {
@@ -67,7 +67,7 @@ ScholarshipCostPresenterRegistry.register(MyModResearchTypes.MANA.id(), new Scho
 });
 ```
 
-`line(entry)` is the tooltip line. It defaults to the entry's own `describe()`, so a cost type that describes itself well needs no override. The `row` is what the player sees in the stage requirements, and the caller adds the "consumed on completion" detail.
+`line(entry)` is the tooltip line. It defaults to the entry's own `describe()`, so a cost type that describes itself well needs no override. The `row` is what the player sees in the scholarship block of the stage, and the caller adds the "consumed on completion" detail.
 
 The built-in cost presenters are in `DefaultScholarshipCostPresenters`: item costs, durability costs and level costs.
 
@@ -95,8 +95,8 @@ public void onInitializeClient() {
 }
 ```
 
-Presenters must not change any state. The requirement block may draw them often while the book is open.
+Presenters must not change any state. The scholarship block may draw them often while the book is open.
 
 ## Custom types
 
-Presenters are keyed by the id of the type, so the type must exist. Register the type in common setup, see [Custom Costs and Effects](./custom-effects-and-costs.md#registration). For trigger types see [Custom Research Hooks](./custom-hooks.md).
+Presenters are keyed by the id of the type, so the type must exist. Register the type in common setup, see [Custom Costs and Effects](../../advanced/custom-effects-and-costs.md#registration). For trigger types see [Custom Research Triggers](../../advanced/custom-hooks.md).
