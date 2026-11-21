@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-package com.klikli_dev.modonomicon.datagen.book.demo.features;
+package com.klikli_dev.modonomicon.datagen.book.demo.scholarship;
 
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
@@ -16,10 +16,10 @@ import net.minecraft.world.item.Items;
 /**
  * An entry with two parents. It shows up as soon as any of its parents is unlocked, and it asks for an advancement that unlocks the next entry.
  */
-public class TwoParentEntry extends EntryProvider {
+public class TwoParentsEntry extends EntryProvider {
     public static final String ID = "two_parents";
 
-    public TwoParentEntry(CategoryProvider parent) {
+    public TwoParentsEntry(CategoryProvider parent) {
         super(parent);
     }
 

@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-package com.klikli_dev.modonomicon.datagen.book.demo.research;
+package com.klikli_dev.modonomicon.datagen.book.demo.scholarship;
 
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
@@ -18,10 +18,10 @@ import net.minecraft.world.item.Items;
 /**
  * First page research: its requirements are listed at the bottom of the first page (the default display). It is the child of the scholarship entry.
  */
-public class FirstPageResearchEntry extends EntryProvider {
-    public static final String ID = "first_page_research";
+public class FirstPageDisplayEntry extends EntryProvider {
+    public static final String ID = "first_page_display";
 
-    public FirstPageResearchEntry(CategoryProvider parent) {
+    public FirstPageDisplayEntry(CategoryProvider parent) {
         super(parent);
     }
 

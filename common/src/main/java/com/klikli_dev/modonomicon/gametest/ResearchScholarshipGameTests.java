@@ -19,7 +19,7 @@ import net.minecraft.world.item.Items;
 import static com.klikli_dev.modonomicon.gametest.ResearchGameTestData.freshPlayer;
 
 /**
- * Runs the scholarship demo research of {@code DemoResearch} and {@code ScholarshipEntry} with its generated research data.
+ * Runs the scholarship demo research of {@code DemoResearch} and {@code NotesEntry} with its generated research data.
  */
 public class ResearchScholarshipGameTests {
 
@@ -52,12 +52,12 @@ public class ResearchScholarshipGameTests {
     public static void takingNoteMetsRowAndStaysRepeatable(GameTestHelper helper) {
         var player = observedPlayer(helper);
 
-        var first = ResearchActions.perform(player, SCHOLARSHIP_NODE, DemoResearch.SCHOLARSHIP_NOTE_TAKEN.id());
+        var first = ResearchActions.perform(player, SCHOLARSHIP_NODE, DemoResearch.NOTE_TAKEN.id());
         helper.assertTrue(first == ResearchActions.Result.PERFORMED, "First take should be performed, was " + first);
-        helper.assertTrue(ResearchServices.state().getStateFor(player).hasFact(DemoResearch.SCHOLARSHIP_NOTE_TAKEN.id()),
+        helper.assertTrue(ResearchServices.state().getStateFor(player).hasFact(DemoResearch.NOTE_TAKEN.id()),
                 "The take row should be met after taking a note");
 
-        var second = ResearchActions.perform(player, SCHOLARSHIP_NODE, DemoResearch.SCHOLARSHIP_NOTE_TAKEN.id());
+        var second = ResearchActions.perform(player, SCHOLARSHIP_NODE, DemoResearch.NOTE_TAKEN.id());
         helper.assertTrue(second == ResearchActions.Result.PERFORMED, "The take action should stay repeatable, was " + second);
         helper.succeed();
     }
@@ -68,14 +68,14 @@ public class ResearchScholarshipGameTests {
      */
     public static void transcriptionNeedsMakeAndStudy(GameTestHelper helper) {
         var player = observedPlayer(helper);
-        ResearchActions.perform(player, SCHOLARSHIP_NODE, DemoResearch.SCHOLARSHIP_NOTE_TAKEN.id());
+        ResearchActions.perform(player, SCHOLARSHIP_NODE, DemoResearch.NOTE_TAKEN.id());
         helper.assertTrue(ResearchServices.state().getStateFor(player).currentStageIndex(SCHOLARSHIP_NODE) == TRANSCRIPTION_STAGE_INDEX,
                 "Taking a note alone should keep transcription active");
 
         ResearchServices.hooks().applyStateChange(player, () -> {
             var state = ResearchServices.state();
-            boolean crafted = state.grantFact(player, DemoResearch.SCHOLARSHIP_NOTE_CRAFTED.id());
-            boolean studied = state.grantFact(player, DemoResearch.SCHOLARSHIP_NOTE_STUDIED.id());
+            boolean crafted = state.grantFact(player, DemoResearch.NOTE_CRAFTED.id());
+            boolean studied = state.grantFact(player, DemoResearch.NOTE_STUDIED.id());
             return crafted || studied;
         });
         helper.assertTrue(ResearchServices.state().getStateFor(player).currentStageIndex(SCHOLARSHIP_NODE) == SYNTHESIS_STAGE_INDEX,

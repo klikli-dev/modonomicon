@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-package com.klikli_dev.modonomicon.datagen.book.demo.stages;
+package com.klikli_dev.modonomicon.datagen.book.demo.scholarship;
 
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
@@ -20,10 +20,10 @@ import net.minecraft.world.item.Items;
 /**
  * Research stages: pages are gated by the stages of a value based node, and the last page is gated by the stage complete condition.
  */
-public class StageResearchEntry extends EntryProvider {
-    public static final String ID = "stage_research";
+public class StagesEntry extends EntryProvider {
+    public static final String ID = "stages";
 
-    public StageResearchEntry(CategoryProvider parent) {
+    public StagesEntry(CategoryProvider parent) {
         super(parent);
     }
 

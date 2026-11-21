@@ -24,7 +24,7 @@ import net.minecraft.world.item.Items;
 /**
  * The entry point of the book: a staged research demonstrating research actions, the take, process and submit loop of an item_used fact, effects and manual completion.
  */
-public class ScholarshipEntry extends EntryProvider {
+public class NotesEntry extends EntryProvider {
     public static final String ID = "notes";
     public static final Identifier SYNTHESIS_FUNCTION = Identifier.fromNamespaceAndPath(Modonomicon.MOD_ID, "demo/scholarship_synthesis");
     /**
@@ -33,7 +33,7 @@ public class ScholarshipEntry extends EntryProvider {
      */
     public static final String RESEARCH_NOTE_RECIPE = "modonomicon:crafting/demo_research_note";
 
-    public ScholarshipEntry(CategoryProvider parent) {
+    public NotesEntry(CategoryProvider parent) {
         super(parent);
     }
 
@@ -92,13 +92,13 @@ public class ScholarshipEntry extends EntryProvider {
                 """);
 
         this.stage("transcription", s -> s
-                .fact(DemoResearch.SCHOLARSHIP_NOTE_TAKEN)
-                .fact(DemoResearch.SCHOLARSHIP_NOTE_CRAFTED)
-                .fact(DemoResearch.SCHOLARSHIP_NOTE_STUDIED)
+                .fact(DemoResearch.NOTE_TAKEN)
+                .fact(DemoResearch.NOTE_CRAFTED)
+                .fact(DemoResearch.NOTE_STUDIED)
                 .title("Transcription")
                 .description("Take a blank note, craft it with an ink sac, then use the completed note in the air.")
-                .effect(ResearchEffectModel.addValue(DemoResearch.SCHOLARSHIP_INSIGHT, 1))
-                .effect(ResearchEffectModel.grantFact(DemoResearch.SCHOLARSHIP_NOTES_READ)));
+                .effect(ResearchEffectModel.addValue(DemoResearch.INSIGHT, 1))
+                .effect(ResearchEffectModel.grantFact(DemoResearch.NOTES_READ)));
 
         //the study fact of transcription is already granted, so this stage only consumes its cost
         this.stage("synthesis", s -> s

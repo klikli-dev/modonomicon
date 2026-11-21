@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-package com.klikli_dev.modonomicon.datagen.book.demo.research;
+package com.klikli_dev.modonomicon.datagen.book.demo.scholarship;
 
 import com.klikli_dev.modonomicon.api.datagen.CategoryProvider;
 import com.klikli_dev.modonomicon.api.datagen.EntryBackground;
@@ -16,10 +16,10 @@ import net.minecraft.world.item.Items;
 /**
  * Placed page research: requirements pages are placed between the content, they keep showing progress after a stage is complete.
  */
-public class PlacedPageResearchEntry extends EntryProvider {
-    public static final String ID = "placed_page_research";
+public class PlacedPagesEntry extends EntryProvider {
+    public static final String ID = "placed_pages";
 
-    public PlacedPageResearchEntry(CategoryProvider parent) {
+    public PlacedPagesEntry(CategoryProvider parent) {
         super(parent);
     }
 
@@ -34,7 +34,7 @@ public class PlacedPageResearchEntry extends EntryProvider {
                 The marker of this entry clears once you have crafted a writable book.
                 """);
 
-        this.scholarshipPage("requirements_iron");
+        this.scholarshipPage("scholarship_iron");
 
         this.stage("iron", s -> s
                 .fact(DemoResearch.IRON_INGOT_ACQUIRED)
@@ -50,7 +50,7 @@ public class PlacedPageResearchEntry extends EntryProvider {
                 Stage-gated page: visible once you have the iron ingot.
                 """);
 
-        this.scholarshipPage("requirements_ink");
+        this.scholarshipPage("scholarship_ink");
 
         this.stage("ink", s -> s
                 .fact(DemoResearch.INK_SAC_ACQUIRED)
