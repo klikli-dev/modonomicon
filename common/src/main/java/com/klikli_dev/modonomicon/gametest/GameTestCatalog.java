@@ -35,7 +35,8 @@ public final class GameTestCatalog {
             new Group("research_state", List.of(
                     new GameTest("stage_progress_not_started", ResearchStateGameTests::stageProgressNotStarted),
                     new GameTest("stage_progress_advances", ResearchStateGameTests::stageProgressAdvances),
-                    new GameTest("stage_index_is_one_based", ResearchStateGameTests::stageIndexIsOneBased)
+                    new GameTest("stage_index_is_one_based", ResearchStateGameTests::stageIndexIsOneBased),
+                    new GameTest("legacy_rewarded_stages_are_read", ResearchStateGameTests::legacyRewardedStagesAreRead)
             )),
             new Group("research_cost", List.of(
                     new GameTest("overlapping_items_share_stacks", ResearchCostGameTests::overlappingItemsShareStacks),

@@ -17,7 +17,9 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -40,8 +42,17 @@ public class PlayerResearchState {
             Codecs.set(Identifier.CODEC).optionalFieldOf("unlocked_nodes", Set.of()).forGetter(PlayerResearchState::unlockedNodeIds),
             Codecs.identifierIntMap().optionalFieldOf("values", Map.of()).forGetter(PlayerResearchState::valuesMap),
             Codecs.identifierIntMap().optionalFieldOf("node_stages", Map.of()).forGetter(PlayerResearchState::nodeStagesMap),
-            Codecs.set(Identifier.CODEC).optionalFieldOf("granted_effect_stages", Set.of()).forGetter(PlayerResearchState::grantedEffectStageIds)
-    ).apply(instance, PlayerResearchState::new));
+            Codecs.set(Identifier.CODEC).optionalFieldOf("granted_effect_stages", Set.of()).forGetter(PlayerResearchState::grantedEffectStageIds),
+            //legacy key of granted_effect_stages: only read, so saves from before the rename do not re-grant their effects
+            Codecs.set(Identifier.CODEC).optionalFieldOf("rewarded_stages").forGetter(state -> Optional.empty())
+    ).apply(instance, (facts, unlockedNodes, values, nodeStages, grantedEffectStages, legacyRewardedStages) ->
+            new PlayerResearchState(facts, unlockedNodes, values, nodeStages, withLegacyStages(grantedEffectStages, legacyRewardedStages))));
+
+    private static Set<Identifier> withLegacyStages(Set<Identifier> granted, Optional<Set<Identifier>> legacy) {
+        var merged = new HashSet<>(granted);
+        legacy.ifPresent(merged::addAll);
+        return merged;
+    }
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PlayerResearchState> STREAM_CODEC = ByteBufCodecs.fromCodecWithRegistries(CODEC);
 
