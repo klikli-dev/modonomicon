@@ -69,7 +69,7 @@ public class ResetBookResearchCommand implements com.mojang.brigadier.Command<Co
         for (var graphId : graphIdsToReset) {
             for (var nodeId : ResearchDataManager.get().data().graphNodeIds().getOrDefault(graphId, Set.of())) {
                 state.lockNode(nodeId);
-                state.setNodeStageIndex(nodeId, 0);
+                ResearchServices.state().setNodeStage(player, nodeId, 0);
             }
 
             for (var factId : ResearchDataManager.get().data().graphFactIds().getOrDefault(graphId, Set.of())) {
