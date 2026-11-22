@@ -18,12 +18,21 @@ public class ShowBookmarksButton extends Button {
 
     private final BookParentScreen parent;
     private final int scissorX;
+    private int frameOverlap;
 
     public ShowBookmarksButton(BookParentScreen parent, int pX, int pY, int scissorX, int width, int height, OnPress pOnPress, Tooltip tooltip) {
         super(pX, pY, width, height, Component.literal(""), pOnPress, Button.DEFAULT_NARRATION);
         this.setTooltip(tooltip);
         this.scissorX = scissorX;
         this.parent = parent;
+    }
+
+    /**
+     * Sets how many pixels the button extends under the book frame, see {@link BookSideButtonRenderer#renderSlidingButton}.
+     */
+    public ShowBookmarksButton withFrameOverlap(int frameOverlap) {
+        this.frameOverlap = frameOverlap;
+        return this;
     }
 
     @Override
@@ -34,7 +43,7 @@ public class ShowBookmarksButton extends Button {
             BookSideButtonRenderer.renderSlidingButton(guiGraphics, xOffset, this.getX(), this.getY(), this.width, this.height,
                     this.scissorX, ((net.minecraft.client.gui.screens.Screen) this.parent).height, this.isHovered(),
                     background,
-                    GuiSprite.EMPTY);
+                    GuiSprite.EMPTY, this.frameOverlap);
 
             var icon = BookSideButtonRenderer.collectionIconOrEmpty(background,
                     this.parent.getBook().theme().content().collectionButtonNormal(),

@@ -14,9 +14,10 @@ public record BookThemeLayout(int bookTextOffsetX, int bookTextOffsetY, int book
                               int indexTextOffsetX, int indexTextOffsetY, int indexTextOffsetWidth, int indexTextOffsetHeight,
                               int categoryButtonXOffset, int categoryButtonYOffset,
                               int searchButtonXOffset, int searchButtonYOffset,
-                              int readAllButtonYOffset, float categoryButtonIconScale) implements BookLayoutTheme {
+                              int readAllButtonYOffset, float categoryButtonIconScale, int sideButtonFrameOverlap,
+                              int categoryButtonIconXOffset, int categoryButtonIconYOffset) implements BookLayoutTheme {
 
-    public static final BookThemeLayout DEFAULT = new BookThemeLayout(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1.0f);
+    public static final BookThemeLayout DEFAULT = new BookThemeLayout(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1.0f, 0, 0, 0);
 
     public static BookThemeLayout fromJson(JsonObject json) {
         return new BookThemeLayout(
@@ -33,7 +34,10 @@ public record BookThemeLayout(int bookTextOffsetX, int bookTextOffsetY, int book
                 GsonHelper.getAsInt(json, "search_button_x_offset", DEFAULT.searchButtonXOffset),
                 GsonHelper.getAsInt(json, "search_button_y_offset", DEFAULT.searchButtonYOffset),
                 GsonHelper.getAsInt(json, "read_all_button_y_offset", DEFAULT.readAllButtonYOffset),
-                GsonHelper.getAsFloat(json, "category_button_icon_scale", DEFAULT.categoryButtonIconScale)
+                GsonHelper.getAsFloat(json, "category_button_icon_scale", DEFAULT.categoryButtonIconScale),
+                GsonHelper.getAsInt(json, "side_button_frame_overlap", DEFAULT.sideButtonFrameOverlap),
+                GsonHelper.getAsInt(json, "category_button_icon_x_offset", DEFAULT.categoryButtonIconXOffset),
+                GsonHelper.getAsInt(json, "category_button_icon_y_offset", DEFAULT.categoryButtonIconYOffset)
         );
     }
 
@@ -52,7 +56,10 @@ public record BookThemeLayout(int bookTextOffsetX, int bookTextOffsetY, int book
                 buffer.readShort(),
                 buffer.readShort(),
                 buffer.readShort(),
-                buffer.readFloat()
+                buffer.readFloat(),
+                buffer.readShort(),
+                buffer.readShort(),
+                buffer.readShort()
         );
     }
 
@@ -71,5 +78,8 @@ public record BookThemeLayout(int bookTextOffsetX, int bookTextOffsetY, int book
         buffer.writeShort(this.searchButtonYOffset);
         buffer.writeShort(this.readAllButtonYOffset);
         buffer.writeFloat(this.categoryButtonIconScale);
+        buffer.writeShort(this.sideButtonFrameOverlap);
+        buffer.writeShort(this.categoryButtonIconXOffset);
+        buffer.writeShort(this.categoryButtonIconYOffset);
     }
 }

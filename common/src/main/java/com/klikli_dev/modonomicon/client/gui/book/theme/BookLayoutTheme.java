@@ -35,4 +35,22 @@ public interface BookLayoutTheme {
     int readAllButtonYOffset();
 
     float categoryButtonIconScale();
+
+    /**
+     * Number of pixels the category and side buttons extend under the book frame.
+     * The buttons are drawn behind the frame, so the frame covers their inner end.
+     */
+    int sideButtonFrameOverlap();
+
+    /**
+     * Horizontal offset of the category button icon in screen pixels, applied before the icon scale.
+     * Moves only the icon, not the button background.
+     */
+    int categoryButtonIconXOffset();
+
+    /**
+     * Vertical offset of the category button icon in screen pixels, applied before the icon scale.
+     * Moves only the icon, not the button background.
+     */
+    int categoryButtonIconYOffset();
 }
