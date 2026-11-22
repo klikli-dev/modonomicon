@@ -25,6 +25,8 @@ public class BookThemeLayoutModel {
     protected int readAllButtonYOffset = 0;
     protected float categoryButtonIconScale = 1.0f;
     protected int sideButtonFrameOverlap = 0;
+    protected int categoryButtonIconXOffset = 0;
+    protected int categoryButtonIconYOffset = 0;
 
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
@@ -43,6 +45,8 @@ public class BookThemeLayoutModel {
         json.addProperty("read_all_button_y_offset", this.readAllButtonYOffset);
         json.addProperty("category_button_icon_scale", this.categoryButtonIconScale);
         json.addProperty("side_button_frame_overlap", this.sideButtonFrameOverlap);
+        json.addProperty("category_button_icon_x_offset", this.categoryButtonIconXOffset);
+        json.addProperty("category_button_icon_y_offset", this.categoryButtonIconYOffset);
         return json;
     }
 
@@ -165,6 +169,26 @@ public class BookThemeLayoutModel {
      */
     public BookThemeLayoutModel withSideButtonFrameOverlap(int value) {
         this.sideButtonFrameOverlap = value;
+        return this;
+    }
+
+    /**
+     * Sets the horizontal offset of the category button icon in screen pixels.
+     * Only the icon is moved, not the button background. Applied before the icon scale.
+     * The lock overlay moves with the icon, the unread indicator does not.
+     */
+    public BookThemeLayoutModel withCategoryButtonIconXOffset(int value) {
+        this.categoryButtonIconXOffset = value;
+        return this;
+    }
+
+    /**
+     * Sets the vertical offset of the category button icon in screen pixels.
+     * Only the icon is moved, not the button background. Applied before the icon scale.
+     * The lock overlay moves with the icon, the unread indicator does not.
+     */
+    public BookThemeLayoutModel withCategoryButtonIconYOffset(int value) {
+        this.categoryButtonIconYOffset = value;
         return this;
     }
 }

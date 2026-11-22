@@ -65,10 +65,13 @@ public class CategoryButton extends Button {
             int iconSize = 16;
             int centerIconOffset = iconSize / 2;
             float scale = this.getCategory().getBook().theme().layout().categoryButtonIconScale();
+            //icon offsets are in screen pixels and applied before the scale, so they do not depend on the scale
+            int iconXOffset = this.getCategory().getBook().theme().layout().categoryButtonIconXOffset();
+            int iconYOffset = this.getCategory().getBook().theme().layout().categoryButtonIconYOffset();
 
             guiGraphics.pose().pushMatrix();
             //TODO had a +100 z here
-            guiGraphics.pose().translate(renderX + 8, this.getY() + 2); //move to desired render location
+            guiGraphics.pose().translate(renderX + 8 + iconXOffset, this.getY() + 2 + iconYOffset); //move to desired render location
             //not sure why in 1.21.6+ it is 2 instead of 20, but it works ... otherwise the icons render below
 //            guiGraphics.pose().translate(renderX + 8, this.getY() + 20); //move to desired render location
 
