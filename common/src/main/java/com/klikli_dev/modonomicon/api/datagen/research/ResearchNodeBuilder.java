@@ -76,7 +76,7 @@ public final class ResearchNodeBuilder {
     }
 
     /**
-     * Adds a stage to this node. Stages are ordered and define the node's intrinsic progression.
+     * Adds a stage to this node. Stages are ordered and define the node's intrinsic research.
      */
     public ResearchNodeBuilder withStage(ResearchStageSpec stage) {
         this.stages.add(stage);

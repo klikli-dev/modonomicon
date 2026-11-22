@@ -122,8 +122,8 @@ public class ResearchStateManager {
 
     /**
      * Activates all nodes whose requirements are met and advances their stages as far as possible.
-     * Repeats until nothing changes, because stage rewards can grant facts and values that unlock further nodes or stages.
-     * Every change is monotonic (unlocks, stage advances and rewards happen once), so this terminates.
+     * Repeats until nothing changes, because stage effects can grant facts and values that unlock further nodes or stages.
+     * Every change is monotonic (unlocks, stage advances and effects happen once), so this terminates.
      *
      * @return true if any research state changed
      */
@@ -185,16 +185,16 @@ public class ResearchStateManager {
     }
 
     /**
-     * Marks the current stage of the rule's node as completed and grants its rewards, at most once per stage and player.
+     * Marks the current stage of the rule's node as completed and grants its effects, at most once per stage and player.
      * Used by automatic and manual completion.
      */
     private static void completeStage(ServerPlayer player, PlayerResearchState state, ResearchData data, ResearchData.NodeStageRule rule) {
         state.completeCurrentStage(rule.nodeId());
         collectToast(ToastTriggerType.NODE_STAGE_COMPLETED, rule.stageId(), 0, data.stageToasts().containsKey(rule.stageId()));
 
-        if (!rule.rewards().isEmpty() && state.markRewardsGranted(rule.stageId())) {
-            for (var reward : rule.rewards()) {
-                reward.apply(player, ResearchEffectContext.NONE);
+        if (!rule.effects().isEmpty() && state.markEffectsGranted(rule.stageId())) {
+            for (var effect : rule.effects()) {
+                effect.apply(player, ResearchEffectContext.NONE);
             }
         }
     }
@@ -217,7 +217,7 @@ public class ResearchStateManager {
     }
 
     /**
-     * Completes a manual stage returned by {@link #readyManualStage}, grants its rewards and cascades through
+     * Completes a manual stage returned by {@link #readyManualStage}, grants its effects and cascades through
      * following automatic stages. Costs are not handled here, the caller consumes them.
      */
     public void completeManualStage(ServerPlayer player, ResearchData.NodeStageRule rule) {

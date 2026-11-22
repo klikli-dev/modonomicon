@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "intro",
+  "show_title_separator": true,
+  "sort_number": 0,
+  "text": "book.modonomicon.demo.scholarship.first_page_display.intro.text",
+  "title": "book.modonomicon.demo.scholarship.first_page_display.intro.title"
+}

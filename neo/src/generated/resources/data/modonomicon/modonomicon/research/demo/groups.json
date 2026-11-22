@@ -1,0 +1,13 @@
+[
+  {
+    "description": {
+      "translate": "modonomicon.demo.group.smithing.description"
+    },
+    "icon": "modonomicon:modonomicon/scholarship/groups/demo_smithing",
+    "id": "modonomicon:demo_smithing",
+    "sort_order": 15,
+    "title": {
+      "translate": "modonomicon.demo.group.smithing.title"
+    }
+  }
+]

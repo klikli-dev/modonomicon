@@ -12,9 +12,9 @@ import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.ModonomiconKeys;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
-import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchCostPresenterRegistry;
-import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchEffectPresenterRegistry;
-import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchTriggerPresenterRegistry;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipCostPresenterRegistry;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipEffectPresenterRegistry;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipTriggerPresenterRegistry;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.client.render.pip.GuiDirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.render.pip.GuiMultiblockRenderer;
@@ -166,7 +166,7 @@ public class ModonomiconForge {
             }
         });
 
-        //Item crafted event handling for research progression
+        //Item crafted event handling for research
         PlayerEvent.ItemCraftedEvent.BUS.addListener((PlayerEvent.ItemCraftedEvent e) -> {
             if (!(e.getEntity() instanceof ServerPlayer player))
                 return;
@@ -272,9 +272,9 @@ public class ModonomiconForge {
 
         public static void onClientSetup(FMLClientSetupEvent event) {
             PageRendererRegistry.registerPageRenderers();
-            ResearchTriggerPresenterRegistry.registerDefaults();
-            ResearchEffectPresenterRegistry.registerDefaults();
-            ResearchCostPresenterRegistry.registerDefaults();
+            ScholarshipTriggerPresenterRegistry.registerDefaults();
+            ScholarshipEffectPresenterRegistry.registerDefaults();
+            ScholarshipCostPresenterRegistry.registerDefaults();
 
             TickEvent.ClientTickEvent.Post.BUS.addListener((TickEvent.ClientTickEvent.Post e) -> {
                 ClientTicks.endClientTick(Minecraft.getInstance());

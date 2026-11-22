@@ -28,7 +28,7 @@ import java.util.Optional;
  * @param toast optional toast display data for stage completion
  * @param display optional display data used in requirement blocks, e.g. the title of the stage
  * @param completion how the stage completes, automatic by default
- * @param rewards rewards granted once to the player when this stage completes
+ * @param effects effects granted once to the player when this stage completes
  */
 public record ResearchStageDefinition(
         Identifier id,
@@ -37,7 +37,7 @@ public record ResearchStageDefinition(
         Optional<ResearchToastDefinition> toast,
         Optional<ResearchDisplay> display,
         ResearchStageCompletion completion,
-        List<ResearchEffect> rewards
+        List<ResearchEffect> effects
 ) {
     public static final StreamCodec<RegistryFriendlyByteBuf, ResearchStageDefinition> STREAM_CODEC =
             StreamCodec.composite(
@@ -54,7 +54,7 @@ public record ResearchStageDefinition(
                     ResearchStageCompletion.STREAM_CODEC,
                     ResearchStageDefinition::completion,
                     ByteBufCodecs.collection(ArrayList::new, ResearchEffectTypeRegistry.STREAM_CODEC),
-                    ResearchStageDefinition::rewards,
+                    ResearchStageDefinition::effects,
                     ResearchStageDefinition::new
             );
 
@@ -73,6 +73,6 @@ public record ResearchStageDefinition(
             ResearchToastDefinition.CODEC.optionalFieldOf("toast").forGetter(ResearchStageDefinition::toastOrEmpty),
             ResearchDisplay.CODEC.optionalFieldOf("display").forGetter(ResearchStageDefinition::displayOrEmpty),
             ResearchStageCompletion.CODEC.optionalFieldOf("completion", ResearchStageCompletion.AUTO).forGetter(ResearchStageDefinition::completion),
-            ResearchEffectTypeRegistry.CODEC.listOf().optionalFieldOf("rewards", List.of()).forGetter(ResearchStageDefinition::rewards)
+            ResearchEffectTypeRegistry.CODEC.listOf().optionalFieldOf("effects", List.of()).forGetter(ResearchStageDefinition::effects)
     ).apply(instance, ResearchStageDefinition::new));
 }

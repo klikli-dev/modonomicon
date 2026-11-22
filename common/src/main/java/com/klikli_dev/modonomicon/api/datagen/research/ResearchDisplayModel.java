@@ -33,7 +33,7 @@ public class ResearchDisplayModel {
     @Nullable
     private Component description;
     @Nullable
-    private Identifier category;
+    private Identifier group;
     @Nullable
     private ResearchActionModel action;
 
@@ -62,7 +62,7 @@ public class ResearchDisplayModel {
         copy.icon = this.icon;
         copy.title = this.title;
         copy.description = this.description;
-        copy.category = this.category;
+        copy.group = this.group;
         copy.action = this.action;
         return copy;
     }
@@ -81,8 +81,8 @@ public class ResearchDisplayModel {
         if (other.description != null) {
             this.description = other.description;
         }
-        if (other.category != null) {
-            this.category = other.category;
+        if (other.group != null) {
+            this.group = other.group;
         }
         if (other.action != null) {
             this.action = other.action;
@@ -144,10 +144,10 @@ public class ResearchDisplayModel {
     }
 
     /**
-     * Groups the element into the requirement category with the given id, e.g. {@code ResearchCategories.ITEMS}.
+     * Groups the element into the requirement group with the given id, e.g. {@code ResearchGroups.ITEMS}.
      */
-    public ResearchDisplayModel withCategory(@Nullable Identifier category) {
-        this.category = category;
+    public ResearchDisplayModel withGroup(@Nullable Identifier group) {
+        this.group = group;
         return this;
     }
 
@@ -164,7 +164,14 @@ public class ResearchDisplayModel {
      */
     public ResearchDisplay toResearchDisplay() {
         return ResearchDisplay.of(this.icon != null ? this.icon.toBookIcon() : null, this.title, this.description)
-                .withCategory(this.category)
+                .withGroup(this.group)
                 .withAction(this.action != null ? this.action.toResearchAction() : null);
     }
-}
+
+    /**
+     * @deprecated Use {@link #withGroup(Identifier)} instead. Will be removed in Minecraft 26.3.
+     */
+    @Deprecated(forRemoval = true)
+    public ResearchDisplayModel withCategory(@Nullable Identifier category) {
+        return this.withGroup(category);
+    }}

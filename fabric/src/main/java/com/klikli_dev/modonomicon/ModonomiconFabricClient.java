@@ -13,9 +13,9 @@ import com.klikli_dev.modonomicon.client.gui.book.associated.AssociatedEntryTool
 import com.klikli_dev.modonomicon.client.gui.book.associated.AssociatedHoverTracker;
 import com.klikli_dev.modonomicon.client.gui.book.associated.AssociatedTooltipHelper;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
-import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchCostPresenterRegistry;
-import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchEffectPresenterRegistry;
-import com.klikli_dev.modonomicon.client.gui.book.entry.requirement.ResearchTriggerPresenterRegistry;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipCostPresenterRegistry;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipEffectPresenterRegistry;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipTriggerPresenterRegistry;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.client.render.pip.GuiDirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.render.pip.GuiMultiblockRenderer;
@@ -54,9 +54,9 @@ public class ModonomiconFabricClient implements ClientModInitializer {
                 data instanceof AssociatedEntryTooltip tooltip ? new AssociatedEntryTooltipRenderer(tooltip) : null);
 
         PageRendererRegistry.registerPageRenderers();
-        ResearchTriggerPresenterRegistry.registerDefaults();
-        ResearchEffectPresenterRegistry.registerDefaults();
-        ResearchCostPresenterRegistry.registerDefaults();
+        ScholarshipTriggerPresenterRegistry.registerDefaults();
+        ScholarshipEffectPresenterRegistry.registerDefaults();
+        ScholarshipCostPresenterRegistry.registerDefaults();
 
         //build books and render markdown when client receives recipes
         //done in MixinClientPacketListener, because we have no event in Fabric

@@ -18,8 +18,8 @@
     "type": "modonomicon:none"
   },
   "name": "book.modonomicon.demo.scholarship.notes.name",
-  "progression": {
-    "node": "modonomicon:generated/demo/nodes/entry_progression/scholarship_notes"
+  "research": {
+    "node": "modonomicon:generated/demo/nodes/entry_research/scholarship_notes"
   },
   "sort_number": 0,
   "x": 0,

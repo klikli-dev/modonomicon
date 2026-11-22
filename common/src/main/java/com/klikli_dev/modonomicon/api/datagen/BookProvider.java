@@ -11,7 +11,7 @@ import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchCache;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.klikli_dev.modonomicon.research.data.ResearchCategoryDefinition;
+import com.klikli_dev.modonomicon.research.data.ResearchGroupDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchFactDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
@@ -249,8 +249,8 @@ public class BookProvider implements DataProvider {
         if (!data.hookDefinitions().isEmpty()) {
             futures.add(this.save(cache, ResearchHookDefinition.CODEC, data.hookDefinitions(), base.resolve("hooks.json")));
         }
-        if (!data.categoryDefinitions().isEmpty()) {
-            futures.add(this.save(cache, ResearchCategoryDefinition.CODEC, data.categoryDefinitions(), base.resolve("categories.json")));
+        if (!data.groupDefinitions().isEmpty()) {
+            futures.add(this.save(cache, ResearchGroupDefinition.CODEC, data.groupDefinitions(), base.resolve("groups.json")));
         }
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }

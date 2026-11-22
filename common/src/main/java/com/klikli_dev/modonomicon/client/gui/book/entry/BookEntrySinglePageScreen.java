@@ -135,7 +135,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
             } else {
                 this.pageRenderer = PageRendererRegistry.getPageRenderer(this.displayPage.page().getType()).create(this.displayPage.page());
             }
-            this.pageRenderer.setReservedBottomHeight(pageIndex == 0 ? this.requirements.getReservedFirstPageHeight() : 0);
+            this.pageRenderer.setReservedBottomHeight(pageIndex == 0 ? this.scholarship.getReservedFirstPageHeight() : 0);
             this.pageRenderer.onBeginDisplayPage(this, SINGLE_PAGE_X, TOP_PADDING);
         } else {
             this.pageRenderer = null;
@@ -145,7 +145,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
     @Override
     public void extractRenderState(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         this.resetTooltip();
-        this.requirements.beginFrame();
+        this.scholarship.beginFrame();
 
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
@@ -156,7 +156,7 @@ public class BookEntrySinglePageScreen extends BookEntryScreen {
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
         this.renderPage(guiGraphics, this.pageRenderer, pMouseX, pMouseY, pPartialTick);
-        this.requirements.renderFirstPage(guiGraphics, pMouseX, pMouseY, true);
+        this.scholarship.renderFirstPage(guiGraphics, pMouseX, pMouseY, true);
         guiGraphics.pose().popMatrix();
         guiGraphics.nextStratum();
 

@@ -97,7 +97,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     protected final BookParentScreen parentScreen;
     protected final BookContentEntry entry;
     protected final EntryTabController entryTabs = new EntryTabController(this);
-    protected final EntryRequirementsController requirements = new EntryRequirementsController(this);
+    protected final EntryScholarshipController scholarship = new EntryScholarshipController(this);
 
     protected int ticksInBook;
     protected List<BookPage> unlockedPages;
@@ -228,7 +228,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
 
         List<DisplayPage> pages = new ArrayList<>();
         //the requirements block sits at the bottom of the first page, so its first fragment must leave room for it
-        int reservedFirst = this.requirements.getReservedFirstPageHeight();
+        int reservedFirst = this.scholarship.getReservedFirstPageHeight();
         for (var page : this.unlockedPages) {
             int reserved = pages.isEmpty() ? reservedFirst : 0;
             var textY = font != null && book != null ? this.getSplitTextY(page) : Integer.MIN_VALUE;
@@ -246,8 +246,8 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
                 pages.add(new DisplayPage(page, 0, null));
             }
         }
-        if (this.requirements.showsTrailingPage()) {
-            pages.add(new DisplayPage(this.requirements.getTrailingPage(), 0, null));
+        if (this.scholarship.showsTrailingPage()) {
+            pages.add(new DisplayPage(this.scholarship.getTrailingPage(), 0, null));
         }
         this.displayPages = List.copyOf(pages);
 
@@ -467,18 +467,18 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
     }
 
     /**
-     * The open pages index to persist. The client-only trailing requirements page is not persisted, the page before it is used instead.
+     * The open pages index to persist. The client-only trailing scholarship page is not persisted, the page before it is used instead.
      */
     private int getPersistableOpenPagesIndex() {
-        if (this.isTrailingRequirementsPageOpen()) {
+        if (this.isTrailingScholarshipPageOpen()) {
             return Math.max(0, this.openPagesIndex - 1);
         }
         return this.openPagesIndex;
     }
 
-    private boolean isTrailingRequirementsPageOpen() {
+    private boolean isTrailingScholarshipPageOpen() {
         return this.openPagesIndex >= 0 && this.openPagesIndex < this.displayPages.size()
-                && this.requirements.isTrailingPage(this.displayPages.get(this.openPagesIndex).page());
+                && this.scholarship.isTrailingPage(this.displayPages.get(this.openPagesIndex).page());
     }
 
     /**
@@ -486,14 +486,14 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
      * as it does not exist in the book's data.
      */
     protected int getAuthoredPageNumber(DisplayPage display) {
-        if (this.requirements.isTrailingPage(display.page())) {
+        if (this.scholarship.isTrailingPage(display.page())) {
             return this.unlockedPages.isEmpty() ? 0 : this.unlockedPages.get(this.unlockedPages.size() - 1).getPageNumber();
         }
         return display.page().getPageNumber();
     }
 
-    public EntryRequirementsController getRequirements() {
-        return this.requirements;
+    public EntryScholarshipController getScholarship() {
+        return this.scholarship;
     }
 
     @Override
@@ -680,7 +680,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
         }
 
         //Requirement icons and the complete button are clickable (e.g. to open a linked entry), not while the tab overlay is open.
-        if (this.requirements.handleMouseClicked(event)) {
+        if (this.scholarship.handleMouseClicked(event)) {
             return true;
         }
 
@@ -744,7 +744,7 @@ public abstract class BookEntryScreen extends BookPaginatedScreen implements Con
      * without closing and reopening the entry.
      */
     public void onSyncResearchStateMessage(SyncResearchStateMessage message) {
-        this.requirements.onResearchStateChanged();
+        this.scholarship.onResearchStateChanged();
         this.unlockedPages = this.entry.getUnlockedPagesFor(this.minecraft.player);
         this.rebuildDisplayPages();
         this.onPageChanged();

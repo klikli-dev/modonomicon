@@ -63,6 +63,6 @@ public record LevelsCostEntry(int amount) implements ResearchCostEntry {
 
     @Override
     public Component describe() {
-        return Component.translatable(Gui.REQUIREMENTS_COST_LEVELS, this.amount);
+        return Component.translatable(Gui.SCHOLARSHIP_COST_LEVELS, this.amount);
     }
 }

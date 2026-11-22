@@ -1,8 +1,8 @@
 [
   {
-    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_trailing_page_progression",
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_trailing_page_progression_hook",
-    "trigger_target": "modonomicon:scholarship/trailing_page_progression",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_trailing_page",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_trailing_page_hook",
+    "trigger_target": "modonomicon:scholarship/trailing_page",
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {
@@ -50,15 +50,15 @@
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {
-    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_first_page_progression",
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_first_page_progression_hook",
-    "trigger_target": "modonomicon:scholarship/first_page_progression",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_first_page_display",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_first_page_display_hook",
+    "trigger_target": "modonomicon:scholarship/first_page_display",
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {
-    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_placed_page_progression",
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_placed_page_progression_hook",
-    "trigger_target": "modonomicon:scholarship/placed_page_progression",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_placed_pages",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_placed_pages_hook",
+    "trigger_target": "modonomicon:scholarship/placed_pages",
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {

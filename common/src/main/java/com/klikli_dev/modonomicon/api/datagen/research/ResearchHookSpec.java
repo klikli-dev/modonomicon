@@ -14,7 +14,7 @@ import net.minecraft.resources.Identifier;
 import javax.annotation.Nullable;
 
 /**
- * Unified authoring-time research ingress declaration.
+ * Unified authoring-time research hook declaration.
  * A hook either grants a fact OR increments a value, never both.
  *
  * @param id the canonical hook id
@@ -86,7 +86,7 @@ public record ResearchHookSpec<TTarget>(
     }
 
     /**
-     * Compiles this ingress declaration into the canonical research hook record.
+     * Compiles this hook declaration into the canonical research hook record.
      */
     public ResearchHookDefinition<TTarget> toDefinition() {
         return new ResearchHookDefinition<>(

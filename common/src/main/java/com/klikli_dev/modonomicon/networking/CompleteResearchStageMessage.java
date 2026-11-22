@@ -8,7 +8,7 @@ package com.klikli_dev.modonomicon.networking;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.bookstate.BookVisualStateManager;
-import com.klikli_dev.modonomicon.research.ResearchFeedback;
+import com.klikli_dev.modonomicon.scholarship.ScholarshipFeedback;
 import com.klikli_dev.modonomicon.research.ResearchServices;
 import com.klikli_dev.modonomicon.research.stage.ResearchStages;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -45,8 +45,8 @@ public class CompleteResearchStageMessage implements Message {
             return;
         }
         ResearchServices.state().readyManualStage(player, this.nodeId)
-                .ifPresentOrElse(rule -> ResearchFeedback.missing(player, rule.completion().cost().missing(player)),
-                        () -> ResearchFeedback.invalid(player));
+                .ifPresentOrElse(rule -> ScholarshipFeedback.missing(player, rule.completion().cost().missing(player)),
+                        () -> ScholarshipFeedback.invalid(player));
     }
 
     @Override
