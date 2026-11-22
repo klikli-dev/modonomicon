@@ -50,18 +50,17 @@ public class LockNodeCommand implements com.mojang.brigadier.Command<CommandSour
         var before = BookDataManager.get().getBooks().values().stream()
                 .collect(java.util.stream.Collectors.toMap(Book::getId, b -> BookVisibilitySnapshots.collect(player, b)));
 
-        var state = ResearchServices.state().getStateFor(player);
-        state.lockNode(nodeId);
+        ResearchServices.state().lockNode(player, nodeId);
         ResearchServices.state().setNodeStage(player, nodeId, 0);
 
         // Revoke required facts and reset values so the node stays locked
         for (var rule : ResearchDataManager.get().data().nodeRules()) {
             if (rule.nodeId().equals(nodeId)) {
                 for (var factId : rule.requiredFactIds()) {
-                    state.revokeFact(factId);
+                    ResearchServices.state().revokeFact(player, factId);
                 }
                 for (var valueReq : rule.requiredValueRequirements()) {
-                    state.setValue(valueReq.valueId(), 0);
+                    ResearchServices.state().setValue(player, valueReq.valueId(), 0);
                 }
             }
         }

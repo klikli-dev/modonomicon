@@ -50,7 +50,7 @@ public class UnlockNodeCommand implements com.mojang.brigadier.Command<CommandSo
         var before = BookDataManager.get().getBooks().values().stream()
                 .collect(java.util.stream.Collectors.toMap(Book::getId, b -> BookVisibilitySnapshots.collect(player, b)));
 
-        ResearchServices.state().getStateFor(player).unlockNode(nodeId);
+        ResearchServices.state().unlockNode(player, nodeId);
 
         for (var book : BookDataManager.get().getBooks().values()) {
             BookVisualStateManager.get().updateVisibilityDrivenUnread(player, book, before.get(book.getId()), BookVisibilitySnapshots.collect(player, book));

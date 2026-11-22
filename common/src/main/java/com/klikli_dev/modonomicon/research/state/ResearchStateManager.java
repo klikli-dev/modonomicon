@@ -98,6 +98,14 @@ public class ResearchStateManager {
         return changed;
     }
 
+    public boolean unlockNode(ServerPlayer player, Identifier nodeId) {
+        boolean changed = this.getStateFor(player).unlockNode(nodeId);
+        if (changed) {
+            this.saveData.setDirty();
+        }
+        return changed;
+    }
+
     /**
      * Sets the raw stage progress for a node (see {@link PlayerResearchState#setNodeStageIndex}). Used by admin commands
      * and resets. Stages that are no longer completed forget their granted effects, so they grant them again when completed anew.
