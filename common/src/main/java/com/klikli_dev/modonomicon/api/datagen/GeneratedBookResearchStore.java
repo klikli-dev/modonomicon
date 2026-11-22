@@ -6,7 +6,7 @@
 
 package com.klikli_dev.modonomicon.api.datagen;
 
-import com.klikli_dev.modonomicon.api.datagen.ProgressionStageBuilder.UsedItem;
+import com.klikli_dev.modonomicon.api.datagen.ResearchStageBuilder.UsedItem;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchDisplayModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchFactRef;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeSpec;
@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A per-book sidecar store that collects generated research requests from book-authored conditions and progressions.
+ * A per-book sidecar store that collects generated research requests from book-authored conditions and researches.
  * <p>
- * The {@link ConditionHelper} and {@link EntryProvider} write into this store during authoring, and the
+ * The {@link ResearchHelper} and {@link EntryProvider} write into this store during authoring, and the
  * {@link BookHierarchyResearchCompiler} reads from it during compilation. Requests are deduplicated by their generated
  * path, so equal requirements share one fact and one node.
  */
@@ -36,7 +36,7 @@ public final class GeneratedBookResearchStore {
     private final Map<String, ItemCraftedRequest> itemCraftedRequests = new LinkedHashMap<>();
     private final Map<String, ItemAcquiredRequest> itemAcquiredRequests = new LinkedHashMap<>();
     private final Map<String, ItemUsedRequest> itemUsedRequests = new LinkedHashMap<>();
-    private final Map<Identifier, StagedProgressionRequest> stagedProgressions = new LinkedHashMap<>();
+    private final Map<Identifier, EntryResearchRequest> entryResearches = new LinkedHashMap<>();
 
     public GeneratedBookResearchStore(String bookNamespace, String bookPath) {
         this.bookNamespace = bookNamespace;
@@ -110,15 +110,15 @@ public final class GeneratedBookResearchStore {
     }
 
     /**
-     * Registers the staged progression of an entry. Each craft, obtain, use and read requirement of its stages is
+     * Registers the staged research of an entry. Each craft, obtain, use and read requirement of its stages is
      * registered as a regular request, so it shares its generated fact with other entries and conditions.
-     * Only one progression per entry is allowed.
+     * Only one research per entry is allowed.
      *
-     * @throws IllegalStateException if the entry already has a progression
+     * @throws IllegalStateException if the entry already has a research
      */
-    public void addStagedProgression(StagedProgressionRequest request) {
-        if (this.stagedProgressions.putIfAbsent(request.entryId(), request) != null) {
-            throw new IllegalStateException("Entry '" + request.entryId() + "' already has a staged progression.");
+    public void addEntryResearch(EntryResearchRequest request) {
+        if (this.entryResearches.putIfAbsent(request.entryId(), request) != null) {
+            throw new IllegalStateException("Entry '" + request.entryId() + "' already has a staged research.");
         }
         for (var stage : request.stages()) {
             stage.crafted().forEach(this::addItemCrafted);
@@ -128,35 +128,35 @@ public final class GeneratedBookResearchStore {
         }
     }
 
-    public Collection<StagedProgressionRequest> getStagedProgressions() {
-        return this.stagedProgressions.values();
+    public Collection<EntryResearchRequest> getEntryResearches() {
+        return this.entryResearches.values();
     }
 
     public boolean isEmpty() {
         return this.entryViewedOnceRequests.isEmpty() && this.itemCraftedRequests.isEmpty() && this.itemAcquiredRequests.isEmpty()
-                && this.itemUsedRequests.isEmpty() && this.stagedProgressions.isEmpty();
+                && this.itemUsedRequests.isEmpty() && this.entryResearches.isEmpty();
     }
 
     /**
-     * Returns the deterministic generated node path of the progression of an entry.
+     * Returns the deterministic generated node path of the research of an entry.
      */
-    public String progressionNodePath(Identifier entryId) {
-        return GeneratedResearchPaths.entryProgressionNode(this.bookPath, entryId);
+    public String researchNodePath(Identifier entryId) {
+        return GeneratedResearchPaths.entryResearchNode(this.bookPath, entryId);
     }
 
     /**
-     * Returns the deterministic generated node id of the progression of an entry.
+     * Returns the deterministic generated node id of the research of an entry.
      */
-    public Identifier progressionNodeId(Identifier entryId) {
-        return Identifier.fromNamespaceAndPath(this.bookNamespace, this.progressionNodePath(entryId));
+    public Identifier researchNodeId(Identifier entryId) {
+        return Identifier.fromNamespaceAndPath(this.bookNamespace, this.researchNodePath(entryId));
     }
 
     /**
-     * Returns the deterministic generated stage ref of a stage of the progression of an entry.
+     * Returns the deterministic generated stage ref of a stage of the research of an entry.
      */
-    public ResearchStageRef progressionStageRef(Identifier entryId, String stageName) {
+    public ResearchStageRef researchStageRef(Identifier entryId, String stageName) {
         return ResearchStageRef.of(Identifier.fromNamespaceAndPath(this.bookNamespace,
-                GeneratedResearchPaths.entryProgressionStage(this.bookPath, entryId, stageName)));
+                GeneratedResearchPaths.entryResearchStage(this.bookPath, entryId, stageName)));
     }
 
     /**
@@ -322,7 +322,7 @@ public final class GeneratedBookResearchStore {
     public record ItemUsedRequest(ResearchItemMatcher target, int consume) {}
 
     /**
-     * A hand-authored fact created by a progression stage, satisfied with an action, see {@link ProgressionStageBuilder#action}.
+     * A hand-authored fact created by a research stage, satisfied with an action, see {@link ResearchStageBuilder#action}.
      *
      * @param id      the id of the fact within its stage
      * @param display the display of the fact, carrying its title and action
@@ -330,15 +330,15 @@ public final class GeneratedBookResearchStore {
     public record ActionFact(String id, ResearchDisplayModel display) {}
 
     /**
-     * A staged progression of an entry, compiled into one research node whose stages are the stages of the entry.
+     * A staged research of an entry, compiled into one research node whose stages are the stages of the entry.
      *
-     * @param entryId the full id of the entry with the progression
+     * @param entryId the full id of the entry with the research
      * @param stages  the stages in declaration order
      */
-    public record StagedProgressionRequest(Identifier entryId, List<StageRequest> stages) {}
+    public record EntryResearchRequest(Identifier entryId, List<StageRequest> stages) {}
 
     /**
-     * One stage of a staged progression, as collected by {@link ProgressionStageBuilder}.
+     * One stage of a staged research, as collected by {@link ResearchStageBuilder}.
      *
      * @param ref        the generated stage ref
      * @param crafted    items that must be crafted
@@ -350,7 +350,7 @@ public final class GeneratedBookResearchStore {
      * @param actionFacts hand-authored facts that the player satisfies with an action, created for this stage
      * @param display    the display of the stage in requirement blocks
      * @param completion how the stage completes, manual with its cost or automatic
-     * @param rewards    rewards granted once when the stage completes
+     * @param effects    effects granted once when the stage completes
      */
     public record StageRequest(
             ResearchStageRef ref,
@@ -363,6 +363,59 @@ public final class GeneratedBookResearchStore {
             List<ActionFact> actionFacts,
             ResearchDisplayModel display,
             ResearchStageCompletion completion,
-            List<ResearchEffectModel> rewards
+            List<ResearchEffectModel> effects
     ) {}
-}
+
+    /**
+     * @deprecated Use {@link #addEntryResearch(EntryResearchRequest)} instead. Will be removed in Minecraft 26.3.
+     */
+    @Deprecated(forRemoval = true)
+    public void addStagedProgression(StagedProgressionRequest request) {
+        this.addEntryResearch(request.toEntryResearch());
+    }
+
+    /**
+     * @deprecated Use {@link #getEntryResearches()} instead. Will be removed in Minecraft 26.3.
+     */
+    @Deprecated(forRemoval = true)
+    public Collection<StagedProgressionRequest> getStagedProgressions() {
+        return this.getEntryResearches().stream().map(StagedProgressionRequest::fromEntryResearch).toList();
+    }
+
+    /**
+     * @deprecated Use {@link #researchNodePath(Identifier)} instead. Will be removed in Minecraft 26.3.
+     */
+    @Deprecated(forRemoval = true)
+    public String progressionNodePath(Identifier entryId) {
+        return this.researchNodePath(entryId);
+    }
+
+    /**
+     * @deprecated Use {@link #researchNodeId(Identifier)} instead. Will be removed in Minecraft 26.3.
+     */
+    @Deprecated(forRemoval = true)
+    public Identifier progressionNodeId(Identifier entryId) {
+        return this.researchNodeId(entryId);
+    }
+
+    /**
+     * @deprecated Use {@link #researchStageRef(Identifier, String)} instead. Will be removed in Minecraft 26.3.
+     */
+    @Deprecated(forRemoval = true)
+    public ResearchStageRef progressionStageRef(Identifier entryId, String stageName) {
+        return this.researchStageRef(entryId, stageName);
+    }
+
+    /**
+     * @deprecated Use {@link EntryResearchRequest} instead. Will be removed in Minecraft 26.3.
+     */
+    @Deprecated(forRemoval = true)
+    public record StagedProgressionRequest(Identifier entryId, List<StageRequest> stages) {
+        EntryResearchRequest toEntryResearch() {
+            return new EntryResearchRequest(this.entryId, this.stages);
+        }
+
+        static StagedProgressionRequest fromEntryResearch(EntryResearchRequest request) {
+            return new StagedProgressionRequest(request.entryId(), request.stages());
+        }
+    }}

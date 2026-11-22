@@ -6,9 +6,14 @@
 
 package com.klikli_dev.modonomicon.gametest;
 
+import com.google.gson.JsonObject;
 import com.klikli_dev.modonomicon.research.state.PlayerResearchState;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.Identifier;
+
+import java.util.Map;
+import java.util.Set;
 
 public class ResearchStateGameTests {
 
@@ -60,4 +65,19 @@ public class ResearchStateGameTests {
         helper.assertTrue(!state.isStageCompleted(NODE, 2), "Third stage should be in progress");
         helper.succeed();
     }
-}
+
+    /**
+     * Saves written before the rename store granted effect stages under the legacy key rewarded_stages. They must still
+     * be read, while newly written saves use granted_effect_stages.
+     */
+    public static void legacyRewardedStagesAreRead(GameTestHelper helper) {
+        var stage = Identifier.fromNamespaceAndPath("modonomicon_gametest", "gametest/legacy_stage");
+        var state = new PlayerResearchState(Set.of(), Set.of(), Map.of(), Map.of(), Set.of(stage));
+        var json = PlayerResearchState.CODEC.encodeStart(JsonOps.INSTANCE, state).getOrThrow().getAsJsonObject();
+        helper.assertTrue(json.has("granted_effect_stages") && !json.has("rewarded_stages"), "New saves should only write granted_effect_stages");
+
+        json.add("rewarded_stages", json.remove("granted_effect_stages"));
+        var parsed = PlayerResearchState.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow();
+        helper.assertTrue(parsed.grantedEffectStageIds().contains(stage), "The legacy rewarded_stages key should still be read");
+        helper.succeed();
+    }}

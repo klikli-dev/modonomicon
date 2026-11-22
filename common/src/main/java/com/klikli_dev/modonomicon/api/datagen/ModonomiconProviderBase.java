@@ -29,6 +29,7 @@ public abstract class ModonomiconProviderBase {
     protected final Map<String, BiConsumer<String, String>> langsAsBiConsumers;
     protected final BookContextHelper context;
     protected ConditionHelper conditionHelper;
+    protected ResearchHelper researchHelper;
     private final Map<String, String> macros = new Object2ObjectOpenHashMap<>();
 
     private HolderLookup.Provider registries;
@@ -42,6 +43,7 @@ public abstract class ModonomiconProviderBase {
         this.langsAsBiConsumers = langs;
         this.context = context;
         this.conditionHelper = conditionHelper;
+        this.researchHelper = new ResearchHelper();
     }
 
     public static Map<String, ModonomiconLanguageProvider> toLanguageProvider(Map<String, BiConsumer<String, String>> translations) {
@@ -93,6 +95,10 @@ public abstract class ModonomiconProviderBase {
 
     protected ConditionHelper condition() {
         return this.conditionHelper;
+    }
+
+    protected ResearchHelper research() {
+        return this.researchHelper;
     }
 
     protected BookContextHelper context() {

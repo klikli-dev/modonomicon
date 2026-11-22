@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.ItemLike;
 
 /**
- * Authoring-time builder for a {@link ResearchEffect}, used as a reward of a stage (see {@link ResearchStageSpec#reward})
+ * Authoring-time builder for a {@link ResearchEffect}, used as an effect of a stage (see {@link ResearchStageSpec#effect})
  * or as an effect of a {@link ResearchActionModel}. Use {@link #of(ResearchEffect)} to author effects of third-party types.
  */
 public final class ResearchEffectModel {
@@ -85,7 +85,7 @@ public final class ResearchEffectModel {
     }
 
     /**
-     * Runs the function as the player, e.g. {@code modonomicon:demo/synthesis_reward} for {@code data/modonomicon/function/demo/synthesis_reward.mcfunction}.
+     * Runs the function as the player, e.g. {@code modonomicon:demo/synthesis_effect} for {@code data/modonomicon/function/demo/synthesis_effect.mcfunction}.
      */
     public static ResearchEffectModel function(Identifier function) {
         return new ResearchEffectModel(new FunctionEffect(function));

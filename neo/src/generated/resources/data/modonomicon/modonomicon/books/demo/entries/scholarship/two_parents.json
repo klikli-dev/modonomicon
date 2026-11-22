@@ -30,14 +30,14 @@
   "name": "book.modonomicon.demo.scholarship.two_parents.name",
   "parents": [
     {
-      "entry": "modonomicon:scholarship/first_page_progression"
+      "entry": "modonomicon:scholarship/first_page_display"
     },
     {
-      "entry": "modonomicon:scholarship/placed_page_progression"
+      "entry": "modonomicon:scholarship/placed_pages"
     }
   ],
-  "progression": {
-    "node": "modonomicon:generated/demo/nodes/entry_progression/scholarship_two_parents"
+  "research": {
+    "node": "modonomicon:generated/demo/nodes/entry_research/scholarship_two_parents"
   },
   "show_when_any_parent_unlocked": true,
   "sort_number": 5,

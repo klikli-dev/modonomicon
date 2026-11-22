@@ -11,13 +11,13 @@ import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import net.minecraft.resources.Identifier;
 
 /**
- * Authoring-time research ingress declaration for advancement completion.
+ * Authoring-time research hook declaration for advancement completion.
  * A hook either grants a fact OR increments a value, never both.
  *
  * @param id the canonical hook id
- * @param advancementId the advancement whose completion acts as ingress into research
- * @param factRef the fact granted when that ingress event occurs (null if incrementing a value)
- * @param valueRef the value incremented when that ingress event occurs (null if granting a fact)
+ * @param advancementId the advancement whose completion acts as hook into research
+ * @param factRef the fact granted when that hook event occurs (null if incrementing a value)
+ * @param valueRef the value incremented when that hook event occurs (null if granting a fact)
  * @param increment the amount to add to the target value (default 1, ignored for fact hooks)
  */
 public record AdvancementHookSpec(
@@ -42,7 +42,7 @@ public record AdvancementHookSpec(
     }
 
     /**
-     * Compiles this ingress declaration into the canonical research hook record.
+     * Compiles this hook declaration into the canonical research hook record.
      */
     public ResearchHookDefinition<Identifier> toDefinition() {
         return new ResearchHookDefinition<>(

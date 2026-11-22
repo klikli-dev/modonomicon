@@ -1,0 +1,11 @@
+{
+  "type": "modonomicon:scholarship",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "id": "scholarship_iron",
+  "sort_number": 1,
+  "stage": "modonomicon:generated/demo/nodes/entry_research/scholarship_placed_pages/stages/iron",
+  "text": "modonomicon.gui.scholarship.page.text",
+  "title": "modonomicon.gui.scholarship.title"
+}

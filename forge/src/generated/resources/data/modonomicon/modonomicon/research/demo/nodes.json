@@ -64,23 +64,23 @@
     ]
   },
   {
-    "id": "modonomicon:demo/requirements_staged",
+    "id": "modonomicon:demo/hand_authored",
     "stages": [
       {
-        "id": "modonomicon:demo/requirements_stage_1",
+        "id": "modonomicon:demo/hand_authored_stage_1",
         "required_facts": [
-          "modonomicon:demo/scholarship/ink_sac_acquired"
+          "modonomicon:demo/research/ink_sac_acquired"
         ]
       },
       {
-        "id": "modonomicon:demo/requirements_stage_2",
+        "id": "modonomicon:demo/hand_authored_stage_2",
         "required_facts": [
-          "modonomicon:demo/requirements_iron_ingot_acquired"
+          "modonomicon:demo/research/iron_ingot_acquired"
         ],
         "required_values": [
           {
             "threshold": 5,
-            "value_id": "modonomicon:demo/scholarship/paper_collected"
+            "value_id": "modonomicon:demo/research/paper_collected"
           }
         ]
       }

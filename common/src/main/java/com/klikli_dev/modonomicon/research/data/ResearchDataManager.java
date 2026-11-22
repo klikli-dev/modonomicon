@@ -46,7 +46,7 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
     private List<ResearchNodeDefinition> nodes = List.of();
     private List<ResearchValueDefinition> values = List.of();
     private List<ResearchHookDefinition<?>> hooks = List.of();
-    private List<ResearchCategoryDefinition> categories = List.of();
+    private List<ResearchGroupDefinition> groups = List.of();
     private HolderLookup.Provider registries;
 
     private ResearchDataManager() {
@@ -74,7 +74,7 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
                 this.nodes,
                 this.values,
                 this.hooks,
-                this.categories,
+                this.groups,
                 this.data.graphFactIds(),
                 this.data.graphNodeIds(),
                 this.data.graphValueIds()
@@ -101,7 +101,7 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
             List<ResearchNodeDefinition> nodes,
             List<ResearchValueDefinition> values,
             List<ResearchHookDefinition<?>> hooks,
-            List<ResearchCategoryDefinition> categories,
+            List<ResearchGroupDefinition> groups,
             Map<Identifier, Set<Identifier>> graphFactIds,
             Map<Identifier, Set<Identifier>> graphNodeIds,
             Map<Identifier, Set<Identifier>> graphValueIds
@@ -110,7 +110,7 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
         var syncedNodes = List.copyOf(nodes);
         var syncedValues = List.copyOf(values);
         var syncedHooks = List.copyOf(hooks);
-        var syncedCategories = List.copyOf(categories);
+        var syncedGroups = List.copyOf(groups);
         var syncedGraphFactIds = copyGraphMap(graphFactIds);
         var syncedGraphNodeIds = copyGraphMap(graphNodeIds);
         var syncedGraphValueIds = copyGraphMap(graphValueIds);
@@ -122,14 +122,14 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
                 syncedGraphFactIds,
                 syncedGraphNodeIds,
                 syncedGraphValueIds,
-                syncedCategories
+                syncedGroups
         );
 
         this.facts = syncedFacts;
         this.nodes = syncedNodes;
         this.values = syncedValues;
         this.hooks = syncedHooks;
-        this.categories = syncedCategories;
+        this.groups = syncedGroups;
         this.data = validated;
     }
 
@@ -139,7 +139,7 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
                 message.nodes,
                 message.values,
                 message.hooks,
-                message.categories,
+                message.groups,
                 message.graphFactIds,
                 message.graphNodeIds,
                 message.graphValueIds
@@ -160,7 +160,7 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
         var nodes = new ArrayList<ResearchNodeDefinition>();
         var values = new ArrayList<ResearchValueDefinition>();
         var hooks = new ArrayList<ResearchHookDefinition<?>>();
-        var categories = new ArrayList<ResearchCategoryDefinition>();
+        var groups = new ArrayList<ResearchGroupDefinition>();
         //registry-aware ops are needed for e.g. item ingredients and data components in research costs and actions
         var ops = this.registries != null ? RegistryOps.create(JsonOps.INSTANCE, this.registries) : JsonOps.INSTANCE;
 
@@ -197,8 +197,8 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
                 graphValues.computeIfAbsent(graphId, k -> new ArrayList<>()).addAll(parsed.stream().map(ResearchValueDefinition::id).toList());
             } else if (fileName.equals("hooks")) {
                 hooks.addAll(ResearchHookDefinition.CODEC.listOf().parse(ops, entry.getValue()).getOrThrow());
-            } else if (fileName.equals("categories")) {
-                categories.addAll(ResearchCategoryDefinition.CODEC.listOf().parse(ops, entry.getValue()).getOrThrow());
+            } else if (fileName.equals("groups")) {
+                groups.addAll(ResearchGroupDefinition.CODEC.listOf().parse(ops, entry.getValue()).getOrThrow());
             }
         }
 
@@ -210,7 +210,7 @@ public class ResearchDataManager extends SimpleJsonResourceReloadListener<JsonEl
         var graphValueIds = new HashMap<Identifier, Set<Identifier>>();
         graphValues.forEach((k, v) -> graphValueIds.put(k, Set.copyOf(v)));
 
-        this.installSyncedData(facts, nodes, values, hooks, categories, graphFactIds, graphNodeIds, graphValueIds);
+        this.installSyncedData(facts, nodes, values, hooks, groups, graphFactIds, graphNodeIds, graphValueIds);
     }
 
     private static Map<Identifier, Set<Identifier>> copyGraphMap(Map<Identifier, Set<Identifier>> source) {
