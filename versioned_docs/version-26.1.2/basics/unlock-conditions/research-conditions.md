@@ -4,7 +4,9 @@ sidebar_position: 10
 
 # Research Conditions
 
-Entries and categories can be gated behind research nodes using condition types. These conditions check the player's research state.
+Research conditions unlock entries, categories and pages. They are book conditions whose state comes from research: they check whether a research node, or a stage of a research node, is completed for the player. The research data behind them is described in [Research](../research/research.md).
+
+See the [Glossary](../research/glossary.md#condition-research-and-scholarship) for how conditions, research and scholarship differ.
 
 ## Research Node Unlocked
 
@@ -79,7 +81,7 @@ public static final ResearchNodeRef MARKER_DONE = node("mymod/marker_done");
 
 @Override
 protected void generateResearch() {
-    var fact = this.ingress()
+    var fact = this.hook()
         .onEntryViewedOnce(this.modLoc("mymod_category/mymod_entry"))
         .declareFact("mymod/marker_done_fact");
 
@@ -93,11 +95,11 @@ entry.withMarker(MyResearch.MARKER_DONE);
 ```
 
 There is no auto-generated advancement shorthand: advancement-backed markers use the same manual pattern
-(hook + fact + node, see [Advancement gating](./scenarios.md#advancement-gating)).
-**Demo:** `MARKER_EXPLICIT` in `DemoResearch.java` with `MarkerExplicitEntry.java` for the book side.
+(hook + fact + node, see [Advancement gating](../research/scenarios.md#advancement-gating)).
+**Demo:** `MARKER_EXPLICIT` in `DemoResearch.java` with `IndexMarkerExplicitEntry.java` in `datagen/book/demo/indexmode` for the book side.
 
 For the common cases, auto-generated shorthands are available instead of manual research
-(see [Research Datagen](./datagen.md#entry-markers)): `markerUntilEntryViewed`, `markerUntilCrafted`, `markerUntilAcquired`.
+(see [Research Datagen](../research/datagen.md#entry-markers)): `markerUntilEntryViewed`, `markerUntilCrafted`, `markerUntilAcquired`.
 
 ## Datagen shortcuts
 
@@ -114,7 +116,7 @@ entry.withCondition(researchNodeRef, researchStageRef);
 category.withCondition(researchNodeRef);
 ```
 
-## Parent-to-child progression
+## Parent-to-child research
 
 When using datagen, `BookModel.withGenerateEntryHierarchyResearch(true)` automatically generates `entry_viewed_once` hooks and research nodes for entries that have parents. This produces the correct `BookResearchNodeUnlockedCondition` on each entry without manual condition work.
 

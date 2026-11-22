@@ -6,7 +6,7 @@ sidebar_position: 55
 
 Conditions can be used to keep pages, entries or whole categories hidden until the condition is met. This is useful to give players a sense of progression.
 
-Most progression is now handled through the [Research System](../research). The condition types below cover the remaining non-research conditions.
+Most unlocking is now handled through the [Research System](../research). See the [Glossary](../research/glossary.md#condition-research-and-scholarship) for how conditions, research and scholarship differ. The condition types below cover the remaining non-research conditions.
 
 Conditions are JSON Objects that can be set as value for the "condition" field on page, entry or category JSONs as follows:
 
@@ -38,8 +38,8 @@ The default is `hidden` for node mode books and `show_as_locked` for index mode 
 
 The following condition types are available:
 
-- [`modonomicon:research_node_unlocked`](../research/conditions#research-node-unlocked) — Gates behind a completed research node
-- [`modonomicon:research_stage_completed`](../research/conditions#research-stage-completed) — Gates behind a specific stage of a research node
+- [`modonomicon:research_node_unlocked`](../unlock-conditions/research-conditions#research-node-unlocked) — Gates behind a completed research node
+- [`modonomicon:research_stage_completed`](../unlock-conditions/research-conditions#research-stage-completed) — Gates behind a specific stage of a research node
 - [`modonomicon:mod_loaded`](./mod-loaded-condition) — Gates behind a loaded mod
 - [`modonomicon:category_has_visible_entries`](./category-has-visible-entries-condition) — Gates behind category visibility
 - [`modonomicon:and`](./logic-conditions#and-condition) / [`modonomicon:or`](./logic-conditions#or-condition) — Combine conditions

@@ -2,10 +2,10 @@
 sidebar_position: 45
 ---
 
-# Custom Research Hooks
+# Custom Research Triggers
 
-Mods can add custom research hook trigger types that fire from arbitrary game events
-and translate them into research progression (fact grants or value increments).
+Mods can add custom research trigger types that fire from arbitrary game events
+and translate them into research progress (fact grants or value increments).
 
 To this end you need to:
 
@@ -15,7 +15,7 @@ To this end you need to:
 4. Register the trigger type via `TriggerTypeRegistry.register()`
 5. Bootstrap from your mod initializer
 6. Wire your platform event to `ResearchServices.hooks().fire()`
-7. Author research hooks via datagen using the generic ingress API
+7. Author research hooks via datagen using the generic hook API
 
 :::tip
 The trigger type ID is used in the `hooks.json` research data file as the
@@ -313,10 +313,10 @@ Listeners only run for hook batches. Changes made directly to the research state
 
 ## Datagen: Authoring Hooks
 
-Use the generic ingress API in your `ResearchSubProvider`:
+Use the generic hook API in your `ResearchSubProvider`:
 
 ```java
-this.ingress().on(MyModTriggerRegistry.ENTITY_KILLED, entityId)
+this.hook().on(MyModTriggerRegistry.ENTITY_KILLED, entityId)
     .declareFact("mymod/entity_killed_hook");
 ```
 
@@ -326,27 +326,27 @@ For built-in trigger types, convenience sugar is available:
 
 ```java
 // Entry viewed once
-this.ingress().onEntryViewedOnce(entryId)
+this.hook().onEntryViewedOnce(entryId)
     .declareFact("mymod/entry_hook");
 
 // Item crafted: an item template, matching its item and the components it lists
-this.ingress().onItemCrafted(new ItemStackTemplate(Items.DIAMOND_SWORD))
+this.hook().onItemCrafted(new ItemStackTemplate(Items.DIAMOND_SWORD))
     .declareFact("mymod/crafting_hook");
 
 // Item crafted: any item of a tag
-this.ingress().onItemCrafted(ItemTags.PLANKS)
+this.hook().onItemCrafted(ItemTags.PLANKS)
     .declareFact("mymod/planks_hook");
 
 // Item acquired
-this.ingress().onItemAcquired(new ItemStackTemplate(Items.NETHER_STAR))
+this.hook().onItemAcquired(new ItemStackTemplate(Items.NETHER_STAR))
     .declareFact("mymod/acquisition_hook");
 
 // Advancement earned
-this.ingress().onAdvancementEarned(advancementId)
+this.hook().onAdvancementEarned(advancementId)
     .declareFact("mymod/advancement_hook");
 
 // Item used in the air, the hook consumes one of the used stack
-this.ingress().onItemUsed(new ItemStackTemplate(Items.PAPER))
+this.hook().onItemUsed(new ItemStackTemplate(Items.PAPER))
     .consume(1)
     .declareFact("mymod/used_hook");
 ```
@@ -391,12 +391,12 @@ Item hooks store their `ResearchItemMatcher` as the target: an item template (`{
   and optionally replay. Complex event filtering belongs in your platform event code.
 - **Use replay only when needed.** If your trigger represents a one-shot event
   (like crafting), the default no-op replay is correct.
-- **Use the generic ingress for custom types.** The convenience sugar is for
-  built-in types only. Third-party types use `this.ingress().on(triggerType, target)`.
+- **Use the generic hook for custom types.** The convenience sugar is for
+  built-in types only. Third-party types use `this.hook().on(triggerType, target)`.
 - **Sync after every fire.** Always check the return value of `fire()` and sync
   both `ResearchStateManager` and `BookVisualStateManager` when true.
 - **Use item templates or tags for item triggers.** A `ResearchItemMatcher` is either an item template, whose components are checked automatically, or an item tag.
 
-See also [Research Conditions](../basics/research/conditions) for how to gate
+See also [Research Conditions](../basics/unlock-conditions/research-conditions) for how to gate
 entries behind research nodes.
 

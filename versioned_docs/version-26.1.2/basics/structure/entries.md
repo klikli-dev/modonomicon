@@ -194,7 +194,7 @@ Once the condition is met the marker disappears without needing to reopen the bo
 
 - The marker only shows on unlocked entries; never on locked or hidden entries.
 - Markers never show tooltips.
-- Any unlock condition type can be used (see **[Research Conditions](../research/conditions.md)**); typically a research-backed condition such as `research_node_unlocked` or `research_stage_completed`.
+- Any unlock condition type can be used (see **[Research Conditions](../unlock-conditions/research-conditions.md)**); typically a research-backed condition such as `research_node_unlocked` or `research_stage_completed`.
 - The marker sprite can be customized per entry with `marker` (see above); otherwise the theme default is used.
 
 ```json
@@ -213,7 +213,7 @@ plus the auto-generated shorthands `#markerUntilEntryViewed(...)`, `#markerUntil
 ### **parents** (Parent[], _optional_)
 
 Entry Parents are JSON Objects that define Entries this Entry should be connected to. See [Parents](#parents) for details.
-A parent connection does not imply an unlock condition or any logical dependency, by default it is just a visual connection. When using datagen, `BookModel.withGenerateEntryHierarchyResearch(true)` automatically generates research nodes and hooks for parent→child entry progression.
+A parent connection does not imply an unlock condition or any logical dependency, by default it is just a visual connection. When using datagen, `BookModel.withGenerateEntryHierarchyResearch(true)` automatically generates research nodes and hooks for parent→child entry research.
 
 ### **pages** (Page[], _optional_)
 

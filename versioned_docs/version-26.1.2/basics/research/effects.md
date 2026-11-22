@@ -2,16 +2,16 @@
 sidebar_position: 14
 ---
 
-# Rewards and Effects
+# Effects
 
-A reward is an effect that is granted once when a stage of an entry progression completes. The same effect types also run as the effects of an action, see [Actions, Costs and Effects](./actions.md). An effect changes the player's research state or inventory, and only runs on the server.
+An effect is something applied to the player on the server: it changes the player's research state or inventory, or gives experience. An effect is granted once when a stage of an entry research completes (a stage effect), or runs as part of an action, see [Actions, Costs and Effects](./actions.md). Effects only run on the server.
 
-Stage rewards are a list of effects:
+Stage effects are a list of effects:
 
 ```json
-"rewards": [
+"effects": [
   { "type": "modonomicon:add_value", "value": "modonomicon:demo/insight", "amount": 1 },
-  { "type": "modonomicon:grant_fact", "fact": "modonomicon:demo/scholarship/notes_read" }
+  { "type": "modonomicon:grant_fact", "fact": "modonomicon:demo/research/notes_read" }
 ]
 ```
 
@@ -35,8 +35,8 @@ A `give_item` with `require_absent` hands out an item once, e.g. a research note
 this.stage("synthesis", s -> s
         .consume(Items.IRON_INGOT, 2)
         .title("Synthesis")
-        .reward(ResearchEffectModel.giveItem(Items.EMERALD))
-        .reward(ResearchEffectModel.function(SYNTHESIS_FUNCTION)));
+        .effect(ResearchEffectModel.giveItem(Items.EMERALD))
+        .effect(ResearchEffectModel.function(SYNTHESIS_FUNCTION)));
 ```
 
 | Factory | Effect |
@@ -48,17 +48,17 @@ this.stage("synthesis", s -> s
 | `function(id)` | `function` |
 | `of(effect)` | Any effect, e.g. one of a third-party type |
 
-`function` runs `data/<namespace>/function/<path>.mcfunction` as the player, e.g. `modonomicon:demo/scholarship_synthesis`.
+`function` runs `data/<namespace>/function/<path>.mcfunction` as the player, e.g. `modonomicon:demo/synthesis_effect`.
 
-Rewards on a stage are granted once, in the order they are declared. Rewards on an action run in the order of the action's `effects`.
+Stage effects are granted once, in the order they are declared. Effects on an action run in the order of the action's `effects`.
 
 ## Changes
 
 Every effect reports whether it changed something: research state, inventory or experience. Actions use this result. If the action grants its fact, it is performed and paid even without effects. An action that grants no fact and whose effects changed nothing is unavailable and costs nothing, see [Consumption order](./actions.md#consumption-order). Built-in effects report it as follows. `grant_fact` and `add_value` report whether the fact was newly granted or the stored value changed. `give_item`, `experience` and `function` always report a change when they run.
 
-## Reward rows
+## Effect rows
 
-A stage shows its rewards as rows of the rewards category. A reward row is met once its stage is complete, and until then it says it is granted when the stage is completed. Each effect type has a presenter that describes it, see [Custom Presenters](../../advanced/custom-presenters.md). Effect types without a presenter show a generic special reward row.
+A stage shows its effects as rows of the effects group, see [Scholarship Groups](../scholarship/groups.md). An effect row is met once its stage is complete, and until then it says it is granted when the stage is completed. Each effect type has a presenter that describes it, see [Custom Presenters](../scholarship/custom-presenters.md). Effect types without a presenter show a generic special effect row.
 
 ## Custom effect types
 

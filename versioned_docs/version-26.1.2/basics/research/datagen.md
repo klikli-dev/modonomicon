@@ -33,7 +33,7 @@ generator.addProvider(true, new EnUsProvider(generator.getPackOutput(), langCach
 | `SingleResearchSubProvider` | Abstract base for authoring one research bundle |
 | `ResearchDataBuilder` | Low-level collector for facts, values, nodes, hooks |
 | `ResearchNodeBuilder` | Fluent builder for complex research nodes |
-| `ResearchIngressHelper` | Fluent helper for research ingress from external events |
+| `ResearchHookHelper` | Fluent helper for research hook from external events |
 | `ResearchCache` | Shared cache for merging book-generated and authored research |
 
 ## Declaring facts and values
@@ -56,9 +56,9 @@ this.nodeBuilder(this.node("mymod/my_node"))
     .build();
 ```
 
-## Research ingress
+## Research hook
 
-`this.ingress()` returns a `ResearchIngressHelper`. Each trigger it starts is a `ResearchIngress<T>`, bound to one trigger type and one target, such as an entry id, an advancement id or an item matcher. All of them share the same methods:
+`this.hook()` returns a `ResearchHookHelper`. Each hook it starts is a `ResearchHookBuilder<T>`, bound to one trigger type and one target, such as an entry id, an advancement id or an item matcher. All of them share the same methods:
 
 | Method | Effect |
 |--------|--------|
@@ -77,14 +77,14 @@ var fact = this.fact("mymod/my_fact");
 var value = this.value("mymod/my_counter");
 
 // When an entry is viewed, grant an already declared fact
-this.ingress().onEntryViewedOnce(entryId).grant(fact);
+this.hook().onEntryViewedOnce(entryId).grant(fact);
 
 // When an item is crafted, increment a value with an explicit hook id
-this.ingress().onItemCrafted(stackTemplate)
+this.hook().onItemCrafted(stackTemplate)
     .incrementValue("mymod/my_hook", value, 1);
 
 // When an advancement is earned, declare a fact and grant it in one step
-this.ingress().onAdvancementEarned(advancementId)
+this.hook().onAdvancementEarned(advancementId)
     .declareFact("mymod/advancement_fact");
 ```
 
@@ -108,22 +108,22 @@ The following methods still compile, but are marked `@Deprecated(forRemoval = tr
 
 | Deprecated | Replacement |
 |------------|-------------|
-| `grantFactOnEntryViewedOnce(path, entryId, ref)` | `this.ingress().onEntryViewedOnce(entryId).grantFact(path, ref)` |
-| `incrementValueOnEntryViewedOnce(path, entryId, ref, n)` | `this.ingress().onEntryViewedOnce(entryId).incrementValue(path, ref, n)` |
-| `grantFactOnAdvancementEarned(path, advancementId, ref)` | `this.ingress().onAdvancementEarned(advancementId).grantFact(path, ref)` |
-| `incrementValueOnAdvancementEarned(path, advancementId, ref, n)` | `this.ingress().onAdvancementEarned(advancementId).incrementValue(path, ref, n)` |
-| `grantFactOnItemCrafted(path, template, ref)` | `this.ingress().onItemCrafted(template).grantFact(path, ref)` |
-| `incrementValueOnItemCrafted(path, template, ref, n)` | `this.ingress().onItemCrafted(template).incrementValue(path, ref, n)` |
-| `grantFactOnItemAcquired(path, template, ref)` | `this.ingress().onItemAcquired(template).grantFact(path, ref)` |
-| `incrementValueOnItemAcquired(path, template, ref, n)` | `this.ingress().onItemAcquired(template).incrementValue(path, ref, n)` |
+| `grantFactOnEntryViewedOnce(path, entryId, ref)` | `this.hook().onEntryViewedOnce(entryId).grantFact(path, ref)` |
+| `incrementValueOnEntryViewedOnce(path, entryId, ref, n)` | `this.hook().onEntryViewedOnce(entryId).incrementValue(path, ref, n)` |
+| `grantFactOnAdvancementEarned(path, advancementId, ref)` | `this.hook().onAdvancementEarned(advancementId).grantFact(path, ref)` |
+| `incrementValueOnAdvancementEarned(path, advancementId, ref, n)` | `this.hook().onAdvancementEarned(advancementId).incrementValue(path, ref, n)` |
+| `grantFactOnItemCrafted(path, template, ref)` | `this.hook().onItemCrafted(template).grantFact(path, ref)` |
+| `incrementValueOnItemCrafted(path, template, ref, n)` | `this.hook().onItemCrafted(template).incrementValue(path, ref, n)` |
+| `grantFactOnItemAcquired(path, template, ref)` | `this.hook().onItemAcquired(template).grantFact(path, ref)` |
+| `incrementValueOnItemAcquired(path, template, ref, n)` | `this.hook().onItemAcquired(template).incrementValue(path, ref, n)` |
 | `node(ref, List, List, List, List[, toast])` | `this.nodeBuilder(ref)` with `withFact`, `withValue`, `withStage` and `withToast` |
 
-### Generic Ingress
+### Generic Hook
 
-For custom trigger types, use the generic ingress entry point with typed targets:
+For custom trigger types, use the generic hook entry point with typed targets:
 
 ```java
-this.ingress().on(myTriggerType, target)
+this.hook().on(myTriggerType, target)
     .declareFact("mymod/my_hook");
 ```
 
@@ -135,14 +135,14 @@ The target type must match the trigger type's target type (e.g. `Identifier` for
 
 ```java
 // Exact item, the components of the template are checked too
-this.ingress().onItemCrafted(new ItemStackTemplate(Items.DIAMOND_SWORD))
+this.hook().onItemCrafted(new ItemStackTemplate(Items.DIAMOND_SWORD))
     .declareFact("mymod/sword_crafted");
 
 // Any item of a tag
-this.ingress().onItemCrafted(ItemTags.PLANKS)
+this.hook().onItemCrafted(ItemTags.PLANKS)
     .declareFact("mymod/planks_crafted");
 
-this.ingress().onItemAcquired(ResearchItemMatcher.tag(itemTag))
+this.hook().onItemAcquired(ResearchItemMatcher.tag(itemTag))
     .declareFact("mymod/ingot_acquired");
 ```
 
@@ -154,13 +154,13 @@ In JSON, a plain item template is written as `{"id": "minecraft:stick"}`, and a 
 
 Tag hooks have no item index key, so they are checked on every event of their trigger type, not only on events for one item.
 
-See [Custom Research Hooks](../../advanced/custom-hooks) for details.
+See [Custom Research Triggers](../../advanced/custom-hooks) for details.
 
 ## Entry markers
 
 Entries can show an attention dot until a condition completes (see `marker_condition` in [Entries](../structure/entries.md#marker_condition-condition-optional)).
 For the common cases the backing hook + fact + node research is generated automatically during book compilation,
-either on the entry model or through the `ConditionHelper`:
+either on the entry model or through the research helper, `this.research()` in a book provider:
 
 ```java
 // In your CategoryProvider — model-based, research generated at compile time:
@@ -177,13 +177,13 @@ this.add(new MyAcquiringEntry(this).generate()
 
 ```java
 // ... or helper-based, combined with an explicit marker condition:
-entry.withMarkerCondition(this.condition().markerUntilAcquired(Items.NETHER_STAR));
+entry.withMarkerCondition(this.research().markerUntilAcquired(Items.NETHER_STAR));
 ```
 
 `markerUntilCrafted` / `markerUntilAcquired` accept `ItemStackTemplate`, `Item` or `ItemLike`.
 Matching follows the item trigger semantics: the template's item must match, and every component defined
 on the template must be present on the crafted/acquired stack. There is no `markerUntilAdvancement` shorthand;
-advancement-backed markers use the manual hook + fact + node pattern (see [Research Conditions](./conditions.md#entry-markers)).
+advancement-backed markers use the manual hook + fact + node pattern (see [Research Conditions](../unlock-conditions/research-conditions.md#entry-markers)).
 
 Generated research lands in the book's `generated/<book_id>` bundle alongside the hierarchy research:
 
@@ -196,7 +196,7 @@ All generated paths are built by `GeneratedResearchPaths`. Fact and node ids are
 An explicit marker condition (`withMarkerCondition` / `withMarker`) combined with `markerUntil*` intents on the same entry
 is merged with `and`.
 
-**Demo:** [`MarkersCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/MarkersCategory.java) exercises the explicit, entry-viewed, crafted and acquired variants; [`IndexMarkersCategory.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/IndexMarkersCategory.java) covers markers in the index mode book.
+**Demo:** the markers of the demo book are in [`datagen/book/demo/indexmode`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/book/demo/indexmode), e.g. `IndexMarkerExplicitEntry.java` and `IndexMarkerCraftedEntry.java`, and their research is declared in [`DemoResearch.java`](https://github.com/klikli-dev/modonomicon/blob/-/common/src/main/java/com/klikli_dev/modonomicon/datagen/research/DemoResearch.java).
 
 ## Multi-stage nodes
 
