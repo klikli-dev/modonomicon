@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.client.gui.book.button;
 
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiSprite;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.util.Mth;
 
 public final class BookSideButtonRenderer {
 
@@ -21,12 +22,27 @@ public final class BookSideButtonRenderer {
     public static void renderSlidingButton(GuiGraphicsExtractor guiGraphics, int xOffset, int widgetX, int widgetY, int widgetWidth,
                                            int widgetHeight, int scissorX, int screenHeight, boolean hovered,
                                            GuiSprite background, GuiSprite icon) {
+        renderSlidingButton(guiGraphics, xOffset, widgetX, widgetY, widgetWidth, widgetHeight, scissorX, screenHeight, hovered,
+                background, icon, 0);
+    }
+
+    /**
+     * Renders a sliding side button whose inner end may extend under the book frame.
+     *
+     * @param frameOverlap how many pixels the sprite may show left of the frame edge (scissorX).
+     *                     Clamped to {@link #BUTTON_SLIDE_OFFSET}, which is how far the sprite starts inside the button.
+     */
+    public static void renderSlidingButton(GuiGraphicsExtractor guiGraphics, int xOffset, int widgetX, int widgetY, int widgetWidth,
+                                           int widgetHeight, int scissorX, int screenHeight, boolean hovered,
+                                           GuiSprite background, GuiSprite icon, int frameOverlap) {
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(xOffset, 0);
 
-        int absoluteScissorX = scissorX + xOffset;
+        int overlap = clampFrameOverlap(frameOverlap);
+        int absoluteScissorX = scissorX + xOffset - overlap;
         int renderX = widgetX - BUTTON_SLIDE_OFFSET;
-        int scissorWidth = widgetWidth + (widgetX - scissorX);
+        //the scissor's right edge stays where it is, only its left edge moves inwards by the overlap
+        int scissorWidth = widgetWidth + (widgetX - scissorX) + overlap;
         int scissorY = widgetY;
         int scissorHeight = widgetHeight;
 
@@ -76,6 +92,13 @@ public final class BookSideButtonRenderer {
 
     public static int anchoredButtonX(int scissorX) {
         return scissorX;
+    }
+
+    /**
+     * Side button sprites start {@link #BUTTON_SLIDE_OFFSET} pixels inside the button, so they can not show more than that under the frame.
+     */
+    public static int clampFrameOverlap(int frameOverlap) {
+        return Mth.clamp(frameOverlap, 0, BUTTON_SLIDE_OFFSET);
     }
 
     public static void renderRightIcon(GuiGraphicsExtractor guiGraphics, GuiSprite icon, int buttonX, int buttonY, int buttonWidth) {

@@ -31,6 +31,7 @@ public class ResearchProgressButton extends Button {
 
     private final BookParentScreen parent;
     private final int scissorX;
+    private int frameOverlap;
     private final MutableComponent tooltipVisible;
     private final MutableComponent tooltipAll;
     private final MutableComponent tooltipNone;
@@ -63,6 +64,14 @@ public class ResearchProgressButton extends Button {
         this.hasAnyResearchProgress = hasAnyResearchProgress;
         this.onProgressVisible = onProgressVisible;
         this.onProgressAll = onProgressAll;
+    }
+
+    /**
+     * Sets how many pixels the button extends under the book frame, see {@link BookSideButtonRenderer#renderSlidingButton}.
+     */
+    public ResearchProgressButton withFrameOverlap(int frameOverlap) {
+        this.frameOverlap = frameOverlap;
+        return this;
     }
 
     private static void onPress(Button button) {
@@ -101,7 +110,7 @@ public class ResearchProgressButton extends Button {
                 this.getX(), this.getY(), this.width, this.height, this.scissorX,
                 ((Screen) this.parent).height, hovered,
                 background,
-                GuiSprite.EMPTY);
+                GuiSprite.EMPTY, this.frameOverlap);
 
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(this.parent.getBook().theme().layout().searchButtonXOffset(), 0);

@@ -18,6 +18,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookParentScreen;
 import com.klikli_dev.modonomicon.client.gui.book.BookScreenWithButtons;
 import com.klikli_dev.modonomicon.client.gui.book.bookmarks.BookBookmarksScreen;
 import com.klikli_dev.modonomicon.client.gui.book.button.*;
+import com.klikli_dev.modonomicon.client.gui.book.theme.BookLayoutTheme;
 import com.klikli_dev.modonomicon.client.gui.book.theme.GuiFrameOverlay;
 import com.klikli_dev.modonomicon.client.gui.book.recentlyunlocked.BookRecentlyUnlockedScreen;
 import com.klikli_dev.modonomicon.client.gui.book.search.BookSearchScreen;
@@ -28,6 +29,7 @@ import com.klikli_dev.modonomicon.platform.Services;
 import com.klikli_dev.modonomicon.research.ResearchServices;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
@@ -266,7 +268,21 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
             currentCategoryScreen.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
         }
 
+        //category and side buttons are drawn behind the frame, so the frame covers the part of them that extends under it
+        for (var renderable : this.renderables) {
+            if (isDrawnBehindFrame(renderable)) {
+                renderable.extractRenderState(guiGraphics, pMouseX, pMouseY, pPartialTick);
+            }
+        }
+
         this.renderFrame(guiGraphics);
+
+        //unread indicators overhang the category buttons into the frame, so they are drawn on top of it
+        for (var renderable : this.renderables) {
+            if (renderable instanceof CategoryButton categoryButton) {
+                categoryButton.extractUnreadIndicator(guiGraphics);
+            }
+        }
 
         if (currentCategoryScreen != null) {
             currentCategoryScreen.renderEntryTooltips(guiGraphics, pMouseX, pMouseY, pPartialTick);
@@ -274,11 +290,25 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff
         for (var renderable : this.renderables) {
-            renderable.extractRenderState(guiGraphics, pMouseX, pMouseY, pPartialTick);
+            if (!isDrawnBehindFrame(renderable)) {
+                renderable.extractRenderState(guiGraphics, pMouseX, pMouseY, pPartialTick);
+            }
         }
 
         this.renderMouseXOverride = -1;
         this.renderMouseYOverride = -1;
+    }
+
+    /**
+     * Category buttons and the right side buttons (search, bookmarks, recently unlocked, read all) are drawn before the frame,
+     * so that the frame covers the parts that extend under it, see {@link BookLayoutTheme#sideButtonFrameOverlap()}.
+     */
+    private static boolean isDrawnBehindFrame(Renderable renderable) {
+        return renderable instanceof CategoryButton
+                || renderable instanceof SearchButton
+                || renderable instanceof ShowBookmarksButton
+                || renderable instanceof ShowRecentlyUnlockedButton
+                || renderable instanceof ResearchProgressButton;
     }
 
     @Override
@@ -339,6 +369,7 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
 
         int scissorX = this.getFrameWidth() + this.getFrameThicknessW() * 2 + 2; //this is the render location of our frame so our search button never overlaps
         int rightButtonX = BookSideButtonRenderer.anchoredButtonX(scissorX);
+        int frameOverlap = this.getBook().theme().layout().sideButtonFrameOverlap();
 
         int searchButtonYOffset = -30 + this.getBook().theme().layout().searchButtonYOffset();
         int searchButtonX = rightButtonX;
@@ -350,7 +381,8 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
                 scissorX,
                 searchButtonWidth, buttonHeight,
                 (b) -> this.onSearchButtonClick((SearchButton) b),
-                Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_SEARCH)));
+                Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_SEARCH)))
+                .withFrameOverlap(frameOverlap);
         this.addRenderableWidget(searchButton);
 
         searchButtonY -= buttonHeight + 2;
@@ -359,7 +391,8 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
                 scissorX,
                 searchButtonWidth, buttonHeight,
                 (b) -> this.onShowBookmarksButtonClick((ShowBookmarksButton) b),
-                Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_BOOKMARKS)));
+                Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_BOOKMARKS)))
+                .withFrameOverlap(frameOverlap);
         this.addRenderableWidget(showBookmarksButton);
 
         if (this.book.showRecentlyUnlocked()) {
@@ -369,7 +402,8 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
                     scissorX,
                     searchButtonWidth, buttonHeight,
                     (b) -> this.onShowRecentlyUnlockedButtonClick((ShowRecentlyUnlockedButton) b),
-                    Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_RECENTLY_UNLOCKED)));
+                    Tooltip.create(Component.translatable(ModonomiconConstants.I18n.Gui.OPEN_RECENTLY_UNLOCKED)))
+                    .withFrameOverlap(frameOverlap);
             this.addRenderableWidget(showRecentlyUnlockedButton);
         }
 
@@ -378,7 +412,8 @@ public class BookParentNodeScreen extends Screen implements BookParentScreen, Bo
                 this::hasVisibleResearchProgress,
                 this::hasAnyResearchProgress,
                 () -> {},
-                () -> {});
+                () -> {})
+                .withFrameOverlap(frameOverlap);
 
         this.addRenderableWidget(researchProgressButton);
     }
