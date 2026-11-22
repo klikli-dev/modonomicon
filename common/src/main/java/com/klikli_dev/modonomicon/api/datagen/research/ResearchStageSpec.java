@@ -56,14 +56,6 @@ public record ResearchStageSpec(
     }
 
     /**
-     * @deprecated use {@link #withToast(ResearchToastDefinition)}.
-     */
-    @Deprecated(forRemoval = true)
-    public ResearchStageSpec toast(ResearchToastDefinition toast) {
-        return this.withToast(toast);
-    }
-
-    /**
      * The stage is completed by hand: once its requirements are met it waits for the player to complete it, see {@code ResearchStages.completeManual}.
      */
     public ResearchStageSpec withManual() {
@@ -121,11 +113,4 @@ public record ResearchStageSpec(
                 this.effects.stream().map(ResearchEffectModel::toResearchEffect).toList()
         );
     }
-
-    /**
-     * @deprecated Use {@link #withEffect(ResearchEffectModel)} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-    public ResearchStageSpec withReward(ResearchEffectModel reward) {
-        return this.withEffect(reward);
-    }}
+}

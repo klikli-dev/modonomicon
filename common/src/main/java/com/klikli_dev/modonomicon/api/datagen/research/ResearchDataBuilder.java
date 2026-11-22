@@ -7,7 +7,6 @@
 package com.klikli_dev.modonomicon.api.datagen.research;
 
 import com.klikli_dev.modonomicon.data.TriggerType;
-import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
 import com.klikli_dev.modonomicon.research.data.ResearchGroups;
 import com.klikli_dev.modonomicon.research.data.ResearchGroupDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchFactDefinition;
@@ -16,9 +15,7 @@ import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchToastDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchValueDefinition;
 import com.klikli_dev.modonomicon.research.hook.NoTriggerTarget;
-import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStackTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,41 +157,6 @@ public final class ResearchDataBuilder {
      */
     public ResearchStageRef stageRef(String path) {
         return ResearchStageRef.of(Identifier.fromNamespaceAndPath(this.namespace, path));
-    }
-
-    /**
-     * Declares a research node with stages and stage dependencies.
-     *
-     * @deprecated use {@link #nodeBuilder(ResearchNodeRef)} which covers stages, stage dependencies, values and toast.
-     */
-    @Deprecated(forRemoval = true)
-    public ResearchNodeRef node(
-            ResearchNodeRef ref,
-            List<ResearchFactRef> requiredFacts,
-            List<ResearchNodeSpec.ValueRequirement> requiredValues,
-            List<ResearchStageSpec> stages,
-            List<ResearchNodeSpec.StageDependencySpec> requiredStages
-    ) {
-        this.addNode(ResearchNodeSpec.of(ref, requiredFacts, requiredValues, stages, requiredStages, Optional.empty()));
-        return ref;
-    }
-
-    /**
-     * Declares a research node with stages, stage dependencies, and optional toast.
-     *
-     * @deprecated use {@link #nodeBuilder(ResearchNodeRef)} which covers stages, stage dependencies, values and toast.
-     */
-    @Deprecated(forRemoval = true)
-    public ResearchNodeRef node(
-            ResearchNodeRef ref,
-            List<ResearchFactRef> requiredFacts,
-            List<ResearchNodeSpec.ValueRequirement> requiredValues,
-            List<ResearchStageSpec> stages,
-            List<ResearchNodeSpec.StageDependencySpec> requiredStages,
-            ResearchToastDefinition toast
-    ) {
-        this.addNode(ResearchNodeSpec.of(ref, requiredFacts, requiredValues, stages, requiredStages, Optional.ofNullable(toast)));
-        return ref;
     }
 
     /**
@@ -442,86 +404,6 @@ public final class ResearchDataBuilder {
 
     // --- Convenience sugar (deprecated, delegates to generic) ---
 
-    /**
-     * Declares an explicit {@code entry_viewed_once} research hook that grants a fact.
-     *
-     * @deprecated use {@link ResearchHookHelper#onEntryViewedOnce(Identifier)} or {@link #grantFact(String, TriggerType, Object, ResearchFactRef)}.
-     */
-    @Deprecated(forRemoval = true)
-    public void grantFactOnEntryViewedOnce(String path, Identifier entryId, ResearchFactRef factRef) {
-        this.grantFact(path, TriggerTypeRegistry.ENTRY_VIEWED_ONCE, entryId, factRef);
-    }
-
-    /**
-     * Declares an explicit {@code entry_viewed_once} research hook that increments a value.
-     *
-     * @deprecated use {@link ResearchHookHelper#onEntryViewedOnce(Identifier)} or {@link #incrementValue(String, TriggerType, Object, ResearchValueRef, int)}.
-     */
-    @Deprecated(forRemoval = true)
-    public void incrementValueOnEntryViewedOnce(String path, Identifier entryId, ResearchValueRef valueRef, int increment) {
-        this.incrementValue(path, TriggerTypeRegistry.ENTRY_VIEWED_ONCE, entryId, valueRef, increment);
-    }
-
-    /**
-     * Declares an explicit advancement-earned research hook that grants a fact.
-     *
-     * @deprecated use {@link ResearchHookHelper#onAdvancementEarned(Identifier)} or {@link #grantFact(String, TriggerType, Object, ResearchFactRef)}.
-     */
-    @Deprecated(forRemoval = true)
-    public void grantFactOnAdvancementEarned(String path, Identifier advancementId, ResearchFactRef factRef) {
-        this.grantFact(path, TriggerTypeRegistry.ADVANCEMENT, advancementId, factRef);
-    }
-
-    /**
-     * Declares an explicit advancement-earned research hook that increments a value.
-     *
-     * @deprecated use {@link ResearchHookHelper#onAdvancementEarned(Identifier)} or {@link #incrementValue(String, TriggerType, Object, ResearchValueRef, int)}.
-     */
-    @Deprecated(forRemoval = true)
-    public void incrementValueOnAdvancementEarned(String path, Identifier advancementId, ResearchValueRef valueRef, int increment) {
-        this.incrementValue(path, TriggerTypeRegistry.ADVANCEMENT, advancementId, valueRef, increment);
-    }
-
-    /**
-     * Declares an explicit {@code item_crafted} research hook that grants a fact.
-     *
-     * @deprecated use {@link ResearchHookHelper#onItemCrafted(ItemStackTemplate)} or {@link #grantFact(String, TriggerType, Object, ResearchFactRef)}.
-     */
-    @Deprecated(forRemoval = true)
-    public void grantFactOnItemCrafted(String path, ItemStackTemplate targetItem, ResearchFactRef factRef) {
-        this.grantFact(path, TriggerTypeRegistry.ITEM_CRAFTED, ResearchItemMatcher.of(targetItem), factRef);
-    }
-
-    /**
-     * Declares an explicit {@code item_crafted} research hook that increments a value.
-     *
-     * @deprecated use {@link ResearchHookHelper#onItemCrafted(ItemStackTemplate)} or {@link #incrementValue(String, TriggerType, Object, ResearchValueRef, int)}.
-     */
-    @Deprecated(forRemoval = true)
-    public void incrementValueOnItemCrafted(String path, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment) {
-        this.incrementValue(path, TriggerTypeRegistry.ITEM_CRAFTED, ResearchItemMatcher.of(targetItem), valueRef, increment);
-    }
-
-    /**
-     * Declares an explicit {@code item_acquired} research hook that grants a fact.
-     *
-     * @deprecated use {@link ResearchHookHelper#onItemAcquired(ItemStackTemplate)} or {@link #grantFact(String, TriggerType, Object, ResearchFactRef)}.
-     */
-    @Deprecated(forRemoval = true)
-    public void grantFactOnItemAcquired(String path, ItemStackTemplate targetItem, ResearchFactRef factRef) {
-        this.grantFact(path, TriggerTypeRegistry.ITEM_ACQUIRED, ResearchItemMatcher.of(targetItem), factRef);
-    }
-
-    /**
-     * Declares an explicit {@code item_acquired} research hook that increments a value.
-     *
-     * @deprecated use {@link ResearchHookHelper#onItemAcquired(ItemStackTemplate)} or {@link #incrementValue(String, TriggerType, Object, ResearchValueRef, int)}.
-     */
-    @Deprecated(forRemoval = true)
-    public void incrementValueOnItemAcquired(String path, ItemStackTemplate targetItem, ResearchValueRef valueRef, int increment) {
-        this.incrementValue(path, TriggerTypeRegistry.ITEM_ACQUIRED, ResearchItemMatcher.of(targetItem), valueRef, increment);
-    }
-
     // --- Definition compilation ---
 
     /**
@@ -559,19 +441,4 @@ public final class ResearchDataBuilder {
     public List<ResearchHookDefinition<?>> hookDefinitions() {
         return (List<ResearchHookDefinition<?>>) (List<?>) this.hooks.stream().map(ResearchHookSpec::toDefinition).toList();
     }
-
-    /**
-     * @deprecated Use {@link #group(ResearchGroupModel)} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-    public Identifier category(ResearchCategoryModel category) {
-        return this.group(category);
-    }
-
-    /**
-     * @deprecated Use {@link #groupDefinitions()} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-    public List<ResearchGroupDefinition> categoryDefinitions() {
-        return this.groupDefinitions();
-    }}
+}

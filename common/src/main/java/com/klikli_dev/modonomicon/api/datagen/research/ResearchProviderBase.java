@@ -129,23 +129,6 @@ public abstract class ResearchProviderBase {
     }
 
     /**
-     * Declares a research node with stages and stage dependencies.
-     *
-     * @deprecated use {@link #nodeBuilder(ResearchNodeRef)} which covers stages, stage dependencies, values and toast.
-     */
-    @Deprecated(forRemoval = true)
-    @SuppressWarnings("removal")
-    protected ResearchNodeRef node(
-            ResearchNodeRef ref,
-            List<ResearchFactRef> requiredFacts,
-            List<ResearchNodeSpec.ValueRequirement> requiredValues,
-            List<ResearchStageSpec> stages,
-            List<ResearchNodeSpec.StageDependencySpec> requiredStages
-    ) {
-        return this.research.node(ref, requiredFacts, requiredValues, stages, requiredStages);
-    }
-
-    /**
      * Creates a fluent builder for authoring a complex research node with stages, stage dependencies,
      * and optional toast. Call {@link ResearchNodeBuilder#build()} to register the node.
      *
@@ -168,14 +151,6 @@ public abstract class ResearchProviderBase {
      */
     protected ResearchHookHelper hook() {
         return new ResearchHookHelper(this.research);
-    }
-
-    /**
-     * @deprecated Use {@link #hook()} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-    protected ResearchIngressHelper ingress() {
-        return new ResearchIngressHelper(this.research);
     }
 
     /**

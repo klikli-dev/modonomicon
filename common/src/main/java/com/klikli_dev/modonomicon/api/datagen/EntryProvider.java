@@ -17,7 +17,6 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookNoneConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookScholarshipPageModel;
-import com.klikli_dev.modonomicon.api.datagen.book.page.BookStageRequirementsPageModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchDisplayModel;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
 import com.klikli_dev.modonomicon.book.ScholarshipDisplay;
@@ -334,22 +333,6 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
         return this.addScholarshipPage(page);
     }
 
-    /**
-     * @deprecated Use {@link #scholarshipPage(String)} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-    protected BookStageRequirementsPageModel requirementsPage(String id) {
-        return this.scholarshipPage(id, BookStageRequirementsPageModel::create);
-    }
-
-    /**
-     * @deprecated Use {@link #scholarshipPage(String, String, String)} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-    protected BookStageRequirementsPageModel requirementsPage(String id, String title, String text) {
-        return this.scholarshipPage(id, title, text, BookStageRequirementsPageModel::create);
-    }
-
     private <T extends BookScholarshipPageModel> T addScholarshipPage(T page) {
         this.scholarshipPages.add(new PendingScholarshipPage(page, this.researchStages.size()));
         this.scholarshipPageUsed = true;
@@ -362,14 +345,6 @@ public abstract class EntryProvider extends ModonomiconProviderBase {
      */
     protected void scholarshipDisplay(ScholarshipDisplay scholarshipDisplay) {
         this.entry.withScholarshipDisplay(scholarshipDisplay);
-    }
-
-    /**
-     * @deprecated Use {@link #scholarshipDisplay(ScholarshipDisplay)} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-    protected void requirementsDisplay(ScholarshipDisplay requirementsDisplay) {
-        this.scholarshipDisplay(requirementsDisplay);
     }
 
     private BookConditionModel<?> stageGate(BookConditionModel<?> condition) {

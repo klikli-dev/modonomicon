@@ -39,14 +39,6 @@ public record ResearchFactSpec(
     }
 
     /**
-     * @deprecated use {@link #withToast(ResearchToastDefinition)}.
-     */
-    @Deprecated(forRemoval = true)
-    public ResearchFactSpec toast(ResearchToastDefinition toast) {
-        return this.withToast(toast);
-    }
-
-    /**
      * Merges display data into this fact spec, see {@link ResearchDisplayModel#merge(ResearchDisplayModel)}.
      */
     public ResearchFactSpec withDisplay(ResearchDisplayModel display) {

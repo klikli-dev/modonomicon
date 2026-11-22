@@ -33,12 +33,6 @@ public final class GeneratedResearchPaths {
     public static final String ITEM_USED = "item_used";
     public static final String ENTRY_RESEARCH = "entry_research";
 
-    /**
-     * @deprecated Use {@link #ENTRY_RESEARCH} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-public static final String ENTRY_PROGRESSION = ENTRY_RESEARCH;
-
     private static final String ROOT = "generated/";
 
     private GeneratedResearchPaths() {
@@ -121,19 +115,4 @@ public static final String ENTRY_PROGRESSION = ENTRY_RESEARCH;
     private static String entryKey(Identifier entryId) {
         return entryId.getPath().replace('/', '_');
     }
-
-    /**
-     * @deprecated Use {@link #entryResearchNode(String, Identifier)} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-    public static String entryProgressionNode(String bookPath, Identifier entryId) {
-        return entryResearchNode(bookPath, entryId);
-    }
-
-    /**
-     * @deprecated Use {@link #entryResearchStage(String, Identifier, String)} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-    public static String entryProgressionStage(String bookPath, Identifier entryId, String stageName) {
-        return entryResearchStage(bookPath, entryId, stageName);
-    }}
+}

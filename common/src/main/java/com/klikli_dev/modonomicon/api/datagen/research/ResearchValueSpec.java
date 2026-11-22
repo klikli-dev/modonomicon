@@ -39,14 +39,6 @@ public record ResearchValueSpec(
     }
 
     /**
-     * @deprecated use {@link #withToast(ResearchToastDefinition)}.
-     */
-    @Deprecated(forRemoval = true)
-    public ResearchValueSpec toast(ResearchToastDefinition toast) {
-        return this.withToast(toast);
-    }
-
-    /**
      * Merges display data into this value spec, see {@link ResearchDisplayModel#merge(ResearchDisplayModel)}.
      */
     public ResearchValueSpec withDisplay(ResearchDisplayModel display) {

@@ -77,14 +77,6 @@ public record ResearchNodeSpec(
     }
 
     /**
-     * @deprecated use {@link #withToast(ResearchToastDefinition)}.
-     */
-    @Deprecated(forRemoval = true)
-    public ResearchNodeSpec toast(ResearchToastDefinition toast) {
-        return this.withToast(toast);
-    }
-
-    /**
      * Merges display data into this node spec, see {@link ResearchDisplayModel#merge(ResearchDisplayModel)}.
      */
     public ResearchNodeSpec withDisplay(ResearchDisplayModel display) {
