@@ -165,14 +165,19 @@ public final class ScholarshipRows {
         for (var dependency : node.requiredStages()) {
             stageDependency(dependency, context, leading::add);
         }
-
-        if (total == 0) {
-            for (var factId : node.requiredFacts()) {
+        //a node with stages only lists its unmet requirements, so the player sees why the node is locked
+        for (var factId : node.requiredFacts()) {
+            if (total == 0 || !state.hasFact(factId)) {
                 leading.add(fact(factId, context, false));
             }
-            for (var requirement : node.requiredValues()) {
+        }
+        for (var requirement : node.requiredValues()) {
+            if (total == 0 || state.getValue(requirement.valueId()) < requirement.threshold()) {
                 leading.add(value(requirement, context, false));
             }
+        }
+
+        if (total == 0) {
             return new ScholarshipBlock(Component.translatable(Gui.SCHOLARSHIP_TITLE), leading, false);
         }
 
