@@ -99,11 +99,19 @@ public class ResearchStateManager {
     }
 
     /**
-     * Sets the raw stage progress for a node (see {@link PlayerResearchState#setNodeStageIndex}). Used by admin commands.
+     * Sets the raw stage progress for a node (see {@link PlayerResearchState#setNodeStageIndex}). Used by admin commands
+     * and resets. Stages that are no longer completed forget their granted effects, so they grant them again when completed anew.
      */
     public void setNodeStage(ServerPlayer player, Identifier nodeId, int stageIndex) {
         var state = this.getStateFor(player);
         state.setNodeStageIndex(nodeId, stageIndex);
+
+        var node = ResearchDataManager.get().data().nodeDefinitions().get(nodeId);
+        if (node != null) {
+            for (int i = state.completedStageCount(nodeId); i < node.stages().size(); i++) {
+                state.forgetEffectsGranted(node.stages().get(i).id());
+            }
+        }
         this.saveData.setDirty();
     }
 
