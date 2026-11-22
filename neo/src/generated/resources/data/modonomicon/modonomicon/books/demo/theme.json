@@ -7,6 +7,8 @@
     "book_text_offset_x": 5,
     "book_text_offset_y": 0,
     "category_button_icon_scale": 1.0,
+    "category_button_icon_x_offset": 0,
+    "category_button_icon_y_offset": 0,
     "category_button_x_offset": 0,
     "category_button_y_offset": 2,
     "index_text_offset_height": 0,
