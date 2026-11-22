@@ -24,6 +24,7 @@ public class BookThemeLayoutModel {
     protected int searchButtonYOffset = 0;
     protected int readAllButtonYOffset = 0;
     protected float categoryButtonIconScale = 1.0f;
+    protected int sideButtonFrameOverlap = 0;
 
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
@@ -41,6 +42,7 @@ public class BookThemeLayoutModel {
         json.addProperty("search_button_y_offset", this.searchButtonYOffset);
         json.addProperty("read_all_button_y_offset", this.readAllButtonYOffset);
         json.addProperty("category_button_icon_scale", this.categoryButtonIconScale);
+        json.addProperty("side_button_frame_overlap", this.sideButtonFrameOverlap);
         return json;
     }
 
@@ -153,6 +155,16 @@ public class BookThemeLayoutModel {
      */
     public BookThemeLayoutModel withCategoryButtonIconScale(float value) {
         this.categoryButtonIconScale = value;
+        return this;
+    }
+
+    /**
+     * Sets how many pixels the category and side buttons extend under the book frame.
+     * Buttons are drawn behind the frame, so the frame covers the extended part.
+     * Side buttons are limited to 16 pixels.
+     */
+    public BookThemeLayoutModel withSideButtonFrameOverlap(int value) {
+        this.sideButtonFrameOverlap = value;
         return this;
     }
 }

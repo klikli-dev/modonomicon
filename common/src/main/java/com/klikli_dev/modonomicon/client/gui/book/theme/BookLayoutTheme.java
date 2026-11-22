@@ -35,4 +35,10 @@ public interface BookLayoutTheme {
     int readAllButtonYOffset();
 
     float categoryButtonIconScale();
+
+    /**
+     * Number of pixels the category and side buttons extend under the book frame.
+     * The buttons are drawn behind the frame, so the frame covers their inner end.
+     */
+    int sideButtonFrameOverlap();
 }
