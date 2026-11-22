@@ -42,29 +42,24 @@ public class CategoryButton extends Button {
             int xOffset = this.getCategory().getBook().theme().layout().categoryButtonXOffset();
             guiGraphics.pose().translate(xOffset, 0);
 
-            int renderX = this.getX();
-            int renderWidth = this.width;
-            boolean selected = BookGuiManager.get().openBookCategoryScreen != null && this.category == BookGuiManager.get().openBookCategoryScreen.getCategory();
+            boolean selected = this.isSelected();
+            int grow = this.getHighlightGrow(selected);
+            int renderX = this.getX() - grow;
+            int renderWidth = this.width + grow;
             var sprites = this.getCategory().getCategoryButtonSprites() != null
                     ? this.getCategory().getCategoryButtonSprites()
                     : this.parent.getBook().theme().content().categoryButton();
             var sprite = sprites.state(this.isHovered(), selected);
 
             int color;
-            if (selected) {
-                renderX -= 3;
-                renderWidth += 3;
-                color = ARGB.colorFromFloat(1.0f, 1.0F, 1.0F, 1.0F);
-            } else if (this.isHovered()) {
-                renderX -= 1;
-                renderWidth += 1;
+            if (selected || this.isHovered()) {
                 color = ARGB.colorFromFloat(1.0f, 1.0F, 1.0F, 1.0F);
             } else {
                 color = ARGB.colorFromFloat(1.0f, 0.8F, 0.8F, 0.8F);
             }
 
-            //draw category button background
-            sprite.extractRenderState(guiGraphics, renderX, this.getY(), renderWidth, this.height, color);
+            //draw category button background, extended under the frame by the theme's overlap
+            sprite.extractRenderState(guiGraphics, renderX, this.getY(), renderWidth + this.getFrameOverlap(), this.height, color);
 
             //then draw icon
             int iconSize = 16;
@@ -96,15 +91,48 @@ public class CategoryButton extends Button {
             guiGraphics.pose().popMatrix();
             guiGraphics.pose().popMatrix();
 
-            //render unread category indicator
-            if (BookServices.visibility().isVisible(Minecraft.getInstance().player, this.category)
-                    && BookServices.interaction().isCategoryUnread(Minecraft.getInstance().player, this.category)) {
-                BookContentRenderer.drawUnreadIndicator(guiGraphics, this.category.getBook(),
-                        renderX + renderWidth - 11 + 2, this.getY() - 2, this.isHovered());
-            }
+            guiGraphics.pose().popMatrix();
+        }
+    }
+
+    /**
+     * Draws the unread indicator of this category button.
+     * This is drawn separately, after the book frame, as the indicator overhangs the right edge of the button into the frame.
+     */
+    public void extractUnreadIndicator(GuiGraphicsExtractor guiGraphics) {
+        if (this.visible
+                && BookServices.visibility().isVisible(Minecraft.getInstance().player, this.category)
+                && BookServices.interaction().isCategoryUnread(Minecraft.getInstance().player, this.category)) {
+            guiGraphics.pose().pushMatrix();
+            int xOffset = this.getCategory().getBook().theme().layout().categoryButtonXOffset();
+            guiGraphics.pose().translate(xOffset, 0);
+
+            //the indicator is anchored to the visible part of the button, so the frame overlap is not included
+            int grow = this.getHighlightGrow(this.isSelected());
+            int renderX = this.getX() - grow;
+            int renderWidth = this.width + grow;
+            BookContentRenderer.drawUnreadIndicator(guiGraphics, this.category.getBook(),
+                    renderX + renderWidth - 11 + 2, this.getY() - 2, this.isHovered());
 
             guiGraphics.pose().popMatrix();
         }
     }
-}
 
+    private boolean isSelected() {
+        return BookGuiManager.get().openBookCategoryScreen != null && this.category == BookGuiManager.get().openBookCategoryScreen.getCategory();
+    }
+
+    /**
+     * How much the button grows to the left (and right) when selected or hovered.
+     */
+    private int getHighlightGrow(boolean selected) {
+        if (selected) {
+            return 3;
+        }
+        return this.isHovered() ? 1 : 0;
+    }
+
+    private int getFrameOverlap() {
+        return Math.max(0, this.getCategory().getBook().theme().layout().sideButtonFrameOverlap());
+    }
+}
