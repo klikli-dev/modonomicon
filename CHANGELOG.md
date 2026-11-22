@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release/v26.1.2-2.23.0] - 2026-11-22
+### :sparkles: New Features
+- [`5310291`](https://github.com/klikli-dev/modonomicon/commit/5310291b7cfcad4bd8c1a50b304f97cc921b3ffd) - **book**: improve frame and category button configurability*(PR [#438](https://github.com/klikli-dev/modonomicon/pull/438) by [@klikli-dev](https://github.com/klikli-dev))*
+
+
 ## [release/v26.1.2-2.22.1] - 2026-11-22
 ### :bug: Bug Fixes
 - [`1879daa`](https://github.com/klikli-dev/modonomicon/commit/1879daa59f78b4aed086d4ce88f3305d1b3776ba) - reset effect history on stage reset and show unmet node requirements *(PR [#437](https://github.com/klikli-dev/modonomicon/pull/437) by [@klikli-dev](https://github.com/klikli-dev))*
@@ -2513,3 +2518,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [release/v26.1.2-2.20.2]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.20.1...release/v26.1.2-2.20.2
 [release/v26.1.2-2.21.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.20.2...release/v26.1.2-2.21.0
 [release/v26.1.2-2.22.1]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.22.0...release/v26.1.2-2.22.1
+[release/v26.1.2-2.23.0]: https://github.com/klikli-dev/modonomicon/compare/release/v26.1.2-2.22.1...release/v26.1.2-2.23.0
