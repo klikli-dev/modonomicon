@@ -23,7 +23,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -267,7 +267,7 @@ public class EntryTabController {
             return false;
         }
 
-        if (event.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT && !this.screen.canLookupTooltipStack()) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT && !this.screen.canLookupTooltipStack()) {
             //let the tab page handle non-item ingredients (e.g. fluids) before right-click closes the overlay
             if (this.isInOverlayPage(event.x(), event.y()) && this.screen.mouseClickedPageIngredient(event, isDoubleClick)) {
                 return true;
@@ -276,7 +276,7 @@ public class EntryTabController {
             return true;
         }
 
-        if (event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT && !this.isInOverlayPage(event.x(), event.y())) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && !this.isInOverlayPage(event.x(), event.y())) {
             //widgets (e.g. other tabs, the close button) keep working.
             //Any other click only closes the overlay and is consumed, so it does not also close the entry or book.
             if (this.clickWidgets(event, isDoubleClick)) {
@@ -305,7 +305,7 @@ public class EntryTabController {
      * @return true if the key was consumed.
      */
     public boolean handleKeyPressed(KeyEvent event) {
-        if (this.openTab != null && (event.key() == GLFW.GLFW_KEY_ESCAPE || event.key() == GLFW.GLFW_KEY_BACKSPACE)) {
+        if (this.openTab != null && (event.isEscape() || event.key() == InputConstants.KEY_BACKSPACE)) {
             this.close();
             return true;
         }

@@ -14,6 +14,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 
@@ -58,7 +59,7 @@ public record GiveItemEffect(ItemStackTemplate stack, boolean requireAbsent) imp
 
     @Override
     public boolean apply(ServerPlayer player, ResearchEffectContext context) {
-        player.getInventory().placeItemBackInInventory(this.stack.create());
+        player.getInventory().placeItemBackInInventory(this.stack.create(), Prediction.SERVER_ONLY);
         return true;
     }
 }

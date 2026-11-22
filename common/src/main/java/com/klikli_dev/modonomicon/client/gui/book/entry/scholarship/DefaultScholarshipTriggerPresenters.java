@@ -75,7 +75,7 @@ final class DefaultScholarshipTriggerPresenters {
         var holder = connection != null ? connection.getAdvancements().get(advancementId) : null;
         Optional<DisplayInfo> display = holder != null ? holder.value().display() : Optional.empty();
         if (display.isPresent()) {
-            return ScholarshipRow.of(List.of(ScholarshipIcon.of(display.get().getIcon().create())), display.get().getTitle());
+            return ScholarshipRow.of(List.of(ScholarshipIcon.of(display.get().icon().create())), display.get().title());
         }
         return ScholarshipRow.of(List.of(ScholarshipIcons.icon(ScholarshipIcons.TRIGGER_ADVANCEMENT)), Component.literal(advancementId.toString()));
     }
