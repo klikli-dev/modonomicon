@@ -52,22 +52,20 @@ public class ResetGraphResearchCommand implements com.mojang.brigadier.Command<C
         var before = BookDataManager.get().getBooks().values().stream()
                 .collect(java.util.stream.Collectors.toMap(Book::getId, b -> BookVisibilitySnapshots.collect(player, b)));
 
-        var state = ResearchServices.state().getStateFor(player);
-
         // Lock all nodes in this graph
         for (var nodeId : data.graphNodeIds().getOrDefault(graphId, java.util.Set.of())) {
-            state.lockNode(nodeId);
-            state.setNodeStageIndex(nodeId, 0);
+            ResearchServices.state().lockNode(player, nodeId);
+            ResearchServices.state().setNodeStage(player, nodeId, 0);
         }
 
         // Revoke all facts in this graph
         for (var factId : data.graphFactIds().getOrDefault(graphId, java.util.Set.of())) {
-            state.revokeFact(factId);
+            ResearchServices.state().revokeFact(player, factId);
         }
 
         // Reset all values in this graph
         for (var valueId : data.graphValueIds().getOrDefault(graphId, java.util.Set.of())) {
-            state.setValue(valueId, 0);
+            ResearchServices.state().setValue(player, valueId, 0);
         }
 
         Modonomicon.LOG.info(

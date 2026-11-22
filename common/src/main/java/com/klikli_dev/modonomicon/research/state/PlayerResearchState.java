@@ -217,6 +217,14 @@ public class PlayerResearchState {
         return this.grantedEffectStageIds.add(stageId);
     }
 
+    /**
+     * Forgets that the effects of a stage were granted, so completing the stage again grants them again.
+     * Used when the stage progress is reset.
+     */
+    public void forgetEffectsGranted(Identifier stageId) {
+        this.grantedEffectStageIds.remove(stageId);
+    }
+
     public Set<Identifier> grantedEffectStageIds() {
         return Set.copyOf(this.grantedEffectStageIds);
     }
