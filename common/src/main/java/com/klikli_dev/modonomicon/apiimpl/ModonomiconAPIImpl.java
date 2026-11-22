@@ -8,8 +8,6 @@ package com.klikli_dev.modonomicon.apiimpl;
 
 import com.klikli_dev.modonomicon.api.ModonomiconAPI;
 import com.klikli_dev.modonomicon.api.book.runtime.RuntimeBookContentBatch;
-import com.klikli_dev.modonomicon.api.datagen.BookContextHelper;
-import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.MultiblockPreviewData;
 import com.klikli_dev.modonomicon.book.runtime.RuntimeBookContentBatchImpl;
@@ -21,18 +19,6 @@ import org.jetbrains.annotations.Nullable;
 public class ModonomiconAPIImpl implements ModonomiconAPI {
     public boolean isStub() {
         return false;
-    }
-
-    @Override
-    @Deprecated
-    public BookContextHelper getContextHelper(String modid) {
-        return new BookContextHelper(modid);
-    }
-
-    @Override
-    @Deprecated
-    public CategoryEntryMap getEntryMap() {
-        return new CategoryEntryMap();
     }
 
     @Override

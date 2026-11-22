@@ -8,8 +8,6 @@ package com.klikli_dev.modonomicon.api;
 
 import com.google.common.base.Suppliers;
 import com.klikli_dev.modonomicon.api.book.runtime.RuntimeBookContentBatch;
-import com.klikli_dev.modonomicon.api.datagen.BookContextHelper;
-import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.MultiblockPreviewData;
 import com.klikli_dev.modonomicon.api.stub.ModonomiconAPIStub;
@@ -35,18 +33,6 @@ public interface ModonomiconAPI {
      * False if a real API instance is provided
      */
     boolean isStub();
-
-    /**
-     * You should use .context() in the CategoryProvider instead.
-     */
-    @Deprecated
-    BookContextHelper getContextHelper(String modid);
-
-    /**
-     * You should use .entryMap() in the CategoryProvider instead.
-     */
-    @Deprecated
-    CategoryEntryMap getEntryMap();
 
     Multiblock getMultiblock(Identifier id);
 

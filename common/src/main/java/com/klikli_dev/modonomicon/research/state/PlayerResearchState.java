@@ -66,22 +66,6 @@ public class PlayerResearchState {
         this(Set.of(), Set.of(), Map.of(), Map.of(), Set.of());
     }
 
-    /**
-     * @deprecated use {@link #PlayerResearchState(Set, Set, Map, Map, Set)}
-     */
-    @Deprecated
-    public PlayerResearchState(Set<Identifier> factIds, Set<Identifier> unlockedNodeIds) {
-        this(factIds, unlockedNodeIds, Map.of(), Map.of(), Set.of());
-    }
-
-    /**
-     * @deprecated use {@link #PlayerResearchState(Set, Set, Map, Map, Set)}
-     */
-    @Deprecated
-    public PlayerResearchState(Set<Identifier> factIds, Set<Identifier> unlockedNodeIds, Map<Identifier, Integer> values) {
-        this(factIds, unlockedNodeIds, values, Map.of(), Set.of());
-    }
-
     public PlayerResearchState(Set<Identifier> factIds, Set<Identifier> unlockedNodeIds, Map<Identifier, Integer> values, Map<Identifier, Integer> nodeStages) {
         this(factIds, unlockedNodeIds, values, nodeStages, Set.of());
     }

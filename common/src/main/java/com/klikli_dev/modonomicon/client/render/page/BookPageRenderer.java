@@ -212,21 +212,6 @@ public abstract class BookPageRenderer<T extends BookPage> {
 
     /**
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
-     *
-     * @deprecated use {@link #renderBookTextHolder(GuiGraphicsExtractor, BookTextHolder, Font, int, int, int, int)} instead and provide the desired height.
-     * This exists only for backwards compatibility of custom pages and may estimate the wrong height.
-     */
-    @Deprecated
-    public void renderBookTextHolder(GuiGraphicsExtractor guiGraphics, BookTextHolder text, int x, int y, int width) {
-        var textY = 0;
-        if (this instanceof PageWithTextRenderer pageWithTextRenderer)
-            textY = pageWithTextRenderer.getTextY();
-
-        renderBookTextHolder(guiGraphics, text, this.font, x, y, width, this.getAvailablePageHeight() - textY, this.parentScreen.getBook().theme().palette().defaultTextColor());
-    }
-
-    /**
-     * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
      * Applies the page's split/auto-scale configuration: split pages render only the first
      * fragment at scale 1.0, pages with auto-scaling disabled render unscaled without splitting.
      */
@@ -382,19 +367,6 @@ public abstract class BookPageRenderer<T extends BookPage> {
 
     protected Style getClickedComponentStyleAtForTitle(BookTextHolder title, int x, int y, double pMouseX, double pMouseY) {
         return BookTextInteraction.hitTestTitle(this.font, this.page.getBook(), title, x, y, pMouseX, pMouseY);
-    }
-
-    /**
-     * @deprecated use {@link #getClickedComponentStyleAtForTextHolder(BookTextHolder, int, int, int, int, double, double)} and provide the desired height.
-     * This exists only for backwards compatibility of custom pages and may estimate the wrong height.
-     */
-    @Nullable
-    @Deprecated
-    protected Style getClickedComponentStyleAtForTextHolder(BookTextHolder text, int x, int y, int width, double pMouseX, double pMouseY) {
-        var textY = 0;
-        if (this instanceof PageWithTextRenderer pageWithTextRenderer)
-            textY = pageWithTextRenderer.getTextY();
-        return this.getClickedComponentStyleAtForTextHolder(text, x, y, width, this.getAvailablePageHeight() - textY, pMouseX, pMouseY);
     }
 
     @Nullable

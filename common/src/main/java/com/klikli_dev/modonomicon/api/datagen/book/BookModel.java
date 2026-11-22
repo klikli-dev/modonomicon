@@ -511,11 +511,4 @@ public class BookModel {
         this.generateEntryHierarchyResearch = value;
         return this;
     }
-
-    /**
-     * @deprecated Use {@link #withDefaultScholarshipDisplay(ScholarshipDisplay)} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-    public BookModel withDefaultRequirementsDisplay(@Nullable ScholarshipDisplay defaultRequirementsDisplay) {
-        return this.withDefaultScholarshipDisplay(defaultRequirementsDisplay);
-    }}
+}

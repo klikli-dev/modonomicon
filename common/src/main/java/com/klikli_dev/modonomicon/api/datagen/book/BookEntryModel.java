@@ -20,7 +20,6 @@ import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
 import com.klikli_dev.modonomicon.book.ScholarshipDisplay;
 import com.klikli_dev.modonomicon.book.entries.BookEntryResearch;
-import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntryNameStyle;
@@ -949,59 +948,4 @@ public class BookEntryModel {
         this.entryToOpen = entryToOpen;
         return this;
     }
-
-    /**
-     * @deprecated Use {@link #withResearch(ResearchNodeRef)} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-    public BookEntryModel withProgression(ResearchNodeRef node) {
-        return this.withResearch(node);
-    }
-
-    /**
-     * @deprecated Use {@link #withResearch(ResearchNodeRef, ResearchStageRef)} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-    public BookEntryModel withProgression(ResearchNodeRef node, ResearchStageRef completionStage) {
-        return this.withResearch(node, completionStage);
-    }
-
-    /**
-     * @deprecated Use {@link #hasResearch()} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-    public boolean hasProgression() {
-        return this.hasResearch();
-    }
-
-    /**
-     * @deprecated Use {@link #getResearchNode()} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-    public Identifier getProgressionNode() {
-        return this.getResearchNode();
-    }
-
-    /**
-     * @deprecated Use {@link #getResearchCompletionStage()} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-    public ResearchStageRef getProgressionCompletionStage() {
-        return this.getResearchCompletionStage();
-    }
-
-    /**
-     * @deprecated Use {@link #withScholarshipDisplay(ScholarshipDisplay)} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-    public BookEntryModel withRequirementsDisplay(ScholarshipDisplay requirementsDisplay) {
-        return this.withScholarshipDisplay(requirementsDisplay);
-    }
-
-    /**
-     * @deprecated Use {@link #getScholarshipDisplay()} instead. Will be removed in Minecraft 26.3.
-     */
-    @Deprecated(forRemoval = true)
-    public ScholarshipDisplay getRequirementsDisplay() {
-        return this.getScholarshipDisplay();
-    }}
+}

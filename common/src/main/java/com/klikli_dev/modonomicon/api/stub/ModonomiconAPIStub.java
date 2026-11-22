@@ -12,8 +12,6 @@ import com.klikli_dev.modonomicon.api.book.runtime.RuntimeBookContentBatch;
 import com.klikli_dev.modonomicon.api.book.runtime.RuntimeBookSelection;
 import com.klikli_dev.modonomicon.api.book.runtime.RuntimeCategorySelection;
 import com.klikli_dev.modonomicon.api.book.runtime.RuntimeEntrySelection;
-import com.klikli_dev.modonomicon.api.datagen.BookContextHelper;
-import com.klikli_dev.modonomicon.api.datagen.CategoryEntryMap;
 import com.klikli_dev.modonomicon.api.multiblock.Multiblock;
 import com.klikli_dev.modonomicon.api.multiblock.MultiblockPreviewData;
 import com.klikli_dev.modonomicon.book.BookCategory;
@@ -36,18 +34,6 @@ public class ModonomiconAPIStub implements ModonomiconAPI {
     @Override
     public boolean isStub() {
         return true;
-    }
-
-    @Override
-    @Deprecated
-    public BookContextHelper getContextHelper(String modid) {
-        return null;
-    }
-
-    @Override
-    @Deprecated
-    public CategoryEntryMap getEntryMap() {
-        return null;
     }
 
     @Override
