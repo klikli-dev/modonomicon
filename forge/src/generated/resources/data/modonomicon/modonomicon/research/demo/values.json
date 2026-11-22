@@ -1,8 +1,46 @@
 [
   {
-    "id": "modonomicon:demo/collector_count"
+    "display": {
+      "icon": {
+        "id": "minecraft:bookshelf"
+      },
+      "title": {
+        "translate": "modonomicon.demo.research.sources_consulted.title"
+      }
+    },
+    "id": "modonomicon:demo/research/sources_consulted"
   },
   {
-    "id": "modonomicon:demo/stages_planks_crafted"
+    "display": {
+      "icon": {
+        "id": "minecraft:enchanted_book"
+      },
+      "title": {
+        "translate": "modonomicon.demo.research.insight.title"
+      }
+    },
+    "id": "modonomicon:demo/insight"
+  },
+  {
+    "display": {
+      "icon": {
+        "id": "minecraft:writable_book"
+      },
+      "title": {
+        "translate": "modonomicon.demo.research.writable_books_crafted.title"
+      }
+    },
+    "id": "modonomicon:demo/writable_books_crafted"
+  },
+  {
+    "display": {
+      "icon": {
+        "id": "minecraft:paper"
+      },
+      "title": {
+        "translate": "modonomicon.demo.research.paper_collected.title"
+      }
+    },
+    "id": "modonomicon:demo/research/paper_collected"
   }
 ]

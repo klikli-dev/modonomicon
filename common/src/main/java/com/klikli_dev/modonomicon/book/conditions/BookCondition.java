@@ -54,13 +54,13 @@ public abstract class BookCondition {
         if (json.has("type")) {
             var type = Identifier.parse(json.get("type").getAsString());
             if (type.equals(REMOVED_ENTRY_READ)) {
-                throw new IllegalArgumentException("Book condition type 'modonomicon:entry_read' is no longer supported. Model this progression through explicit research hooks and research nodes instead.");
+                throw new IllegalArgumentException("Book condition type 'modonomicon:entry_read' is no longer supported. Model this research through explicit research hooks and research nodes instead.");
             }
             if (type.equals(REMOVED_ENTRY_UNLOCKED)) {
-                throw new IllegalArgumentException("Book condition type 'modonomicon:entry_unlocked' is no longer supported. Replace it with the authoritative research node for the referenced progression milestone.");
+                throw new IllegalArgumentException("Book condition type 'modonomicon:entry_unlocked' is no longer supported. Replace it with the authoritative research node for the referenced research milestone.");
             }
             if (type.equals(REMOVED_ADVANCEMENT)) {
-                throw new IllegalArgumentException("Book condition type 'modonomicon:advancement' is no longer supported. Model this progression through explicit research hooks and research nodes instead.");
+                throw new IllegalArgumentException("Book condition type 'modonomicon:advancement' is no longer supported. Model this research through explicit research hooks and research nodes instead.");
             }
         }
         return CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), json)

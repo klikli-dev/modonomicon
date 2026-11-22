@@ -6,10 +6,10 @@
 
 package com.klikli_dev.modonomicon.api.datagen.research;
 
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Research;
 import com.klikli_dev.modonomicon.api.datagen.ModonomiconLanguageProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Util;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
  * Shared base for research-side datagen authoring helpers.
  *
  * This base intentionally stays narrower than the book datagen base. It provides only registry
- * access, namespace/id helpers, primitive research declarations, and research-ingress helpers.
+ * access, namespace/id helpers, primitive research declarations, and research-hook helpers.
  */
 public abstract class ResearchProviderBase {
     protected final String modId;
@@ -81,7 +81,7 @@ public abstract class ResearchProviderBase {
     /**
      * Declares a research fact in the active research bundle and returns a typed ref to it.
      *
-     * Facts are primitive durable research inputs. They are granted by explicit research ingress
+     * Facts are primitive durable research inputs. They are granted by explicit research hook
      * such as hooks, then referenced by research nodes as unlock requirements.
      */
     protected ResearchFactRef fact(String path) {
@@ -129,19 +129,6 @@ public abstract class ResearchProviderBase {
     }
 
     /**
-     * Declares a research node with stages and stage dependencies.
-     */
-    protected ResearchNodeRef node(
-            ResearchNodeRef ref,
-            List<ResearchFactRef> requiredFacts,
-            List<ResearchNodeSpec.ValueRequirement> requiredValues,
-            List<ResearchStageSpec> stages,
-            List<ResearchNodeSpec.StageDependencySpec> requiredStages
-    ) {
-        return this.research.node(ref, requiredFacts, requiredValues, stages, requiredStages);
-    }
-
-    /**
      * Creates a fluent builder for authoring a complex research node with stages, stage dependencies,
      * and optional toast. Call {@link ResearchNodeBuilder#build()} to register the node.
      *
@@ -159,11 +146,11 @@ public abstract class ResearchProviderBase {
     }
 
     /**
-     * Returns a fluent helper for authoring research ingress from external events into primitive
+     * Returns a fluent helper for authoring research hook from external events into primitive
      * research fact grants.
      */
-    protected ResearchIngressHelper ingress() {
-        return new ResearchIngressHelper(this.research);
+    protected ResearchHookHelper hook() {
+        return new ResearchHookHelper(this.research);
     }
 
     /**
@@ -190,15 +177,15 @@ public abstract class ResearchProviderBase {
     /**
      * Returns the description id for a research node, suitable for use as a translation key.
      * <p>
-     * The resulting key follows the pattern {@code block.<namespace>.<path>.description}, e.g.
-     * {@code block.mymod.demo/crafting_stick.description}. Use this to add a human-readable name
-     * for the node that will appear in condition tooltips:
+     * The resulting key follows the pattern {@code research_node.<namespace>.<path>}, where {@code /} in the
+     * path is replaced by {@code .}, e.g. {@code research_node.mymod.demo.crafting_stick}. Use this to add a
+     * human-readable name for the node that will appear in condition tooltips:
      * <pre>{@code
      * this.add(this.researchNodeDescriptionId(myNode), "Crafting Stick");
      * }</pre>
      */
     protected String researchNodeDescriptionId(Identifier nodeId) {
-        return Util.makeDescriptionId("research_node", nodeId);
+        return Research.nodeKey(nodeId);
     }
 
     /**
@@ -211,14 +198,15 @@ public abstract class ResearchProviderBase {
     /**
      * Returns the description id for a research stage, suitable for use as a translation key.
      * <p>
-     * The resulting key follows the pattern {@code block.<namespace>.<path>.description}. Use this
-     * to add a human-readable name for the stage that will appear in condition tooltips:
+     * The resulting key follows the pattern {@code research_stage.<namespace>.<path>}, where {@code /} in the
+     * path is replaced by {@code .}. Use this to add a human-readable name for the stage that will appear in
+     * condition tooltips:
      * <pre>{@code
      * this.add(this.researchStageDescriptionId(myStage), "First Planks Crafted");
      * }</pre>
      */
     protected String researchStageDescriptionId(Identifier stageId) {
-        return Util.makeDescriptionId("research_stage", stageId);
+        return Research.stageKey(stageId);
     }
 
     /**

@@ -43,6 +43,33 @@ public final class BookSideButtonRenderer {
         guiGraphics.pose().popMatrix();
     }
 
+    public static void renderSlidingButtonLeft(GuiGraphicsExtractor guiGraphics, int xOffset, int widgetX, int widgetY, int widgetWidth,
+                                               int widgetHeight, int scissorX, int screenHeight, boolean hovered,
+                                               GuiSprite background, GuiSprite icon) {
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(-xOffset, 0);
+
+        int scissorLeft = scissorX - widgetWidth;
+        int absoluteScissorLeft = scissorLeft - xOffset;
+        int renderX = widgetX;
+        int scissorWidth = widgetWidth;
+        int scissorY = widgetY;
+        int scissorHeight = widgetHeight;
+
+        if (hovered) {
+            renderX -= 1;
+            absoluteScissorLeft += 1;
+            scissorWidth -= 1;
+        }
+
+        guiGraphics.enableScissor(absoluteScissorLeft, scissorY, absoluteScissorLeft + scissorWidth - 1, scissorY + scissorHeight - 1);
+        background.extractRenderState(guiGraphics, renderX, widgetY, widgetWidth, widgetHeight);
+        renderLeftIcon(guiGraphics, icon, renderX, widgetY);
+        guiGraphics.disableScissor();
+
+        guiGraphics.pose().popMatrix();
+    }
+
     public static GuiSprite collectionIconOrEmpty(GuiSprite background, GuiSprite expectedCollectionBackground, GuiSprite icon) {
         return background.sprite().equals(expectedCollectionBackground.sprite()) ? icon : GuiSprite.EMPTY;
     }

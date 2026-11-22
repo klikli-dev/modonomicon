@@ -13,6 +13,9 @@ import com.klikli_dev.modonomicon.client.BookModel;
 import com.klikli_dev.modonomicon.client.ClientTicks;
 import com.klikli_dev.modonomicon.client.ModonomiconKeys;
 import com.klikli_dev.modonomicon.client.render.MultiblockPreviewRenderer;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipCostPresenterRegistry;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipEffectPresenterRegistry;
+import com.klikli_dev.modonomicon.client.gui.book.entry.scholarship.ScholarshipTriggerPresenterRegistry;
 import com.klikli_dev.modonomicon.client.render.page.PageRendererRegistry;
 import com.klikli_dev.modonomicon.client.render.pip.GuiDirectEntryConnectionRenderer;
 import com.klikli_dev.modonomicon.client.render.pip.GuiMultiblockRenderer;
@@ -23,6 +26,7 @@ import com.klikli_dev.modonomicon.config.ServerConfig;
 import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.data.MultiblockDataManager;
 import com.klikli_dev.modonomicon.datagen.DataGenerators;
+import com.klikli_dev.modonomicon.gametest.GameTestRegistry;
 import com.klikli_dev.modonomicon.integration.LecternIntegration;
 import com.klikli_dev.modonomicon.item.IsBookOpen;
 import com.klikli_dev.modonomicon.network.Networking;
@@ -84,6 +88,9 @@ public class ModonomiconNeo {
         //Most registries are handled by common, but creative tabs are easier per loader
         CreativeModeTabRegistry.CREATIVE_MODE_TABS.register(modEventBus);
 
+        //gametests only run for the namespaces in neoforge.enabledGameTestNamespaces, see the gameTestServer run
+        GameTestRegistry.register(modEventBus);
+
         //directly register event handlers
         modEventBus.addListener(this::onCommonSetup);
         modEventBus.addListener(Networking::register);
@@ -107,7 +114,14 @@ public class ModonomiconNeo {
                 }
             });
 
-            e.addListener(Modonomicon.loc("research_data_manager"), ResearchDataManager.get());
+            //research uses the same ContextAwareReloadListener shape as book and multiblock, NeoForge only provides the registry lookup there
+            e.addListener(Modonomicon.loc("research_data_manager"), new ContextAwareReloadListener() {
+                @Override
+                public CompletableFuture<Void> reload(PreparableReloadListener.SharedState currentReload, Executor taskExecutor, PreparableReloadListener.PreparationBarrier preparationBarrier, Executor reloadExecutor) {
+                    ResearchDataManager.get().registries(this.getRegistryLookup());
+                    return ResearchDataManager.get().reload(currentReload, taskExecutor, preparationBarrier, reloadExecutor);
+                }
+            });
         });
 
         //register commands
@@ -175,7 +189,7 @@ public class ModonomiconNeo {
             }
         });
 
-        //Item crafted event handling for research progression
+        //Item crafted event handling for research
         NeoForge.EVENT_BUS.addListener((PlayerEvent.ItemCraftedEvent e) -> {
             if(!(e.getEntity() instanceof ServerPlayer player))
                 return;
@@ -234,6 +248,9 @@ public class ModonomiconNeo {
     public static class Client {
         public static void onClientSetup(FMLClientSetupEvent event) {
             PageRendererRegistry.registerPageRenderers();
+            ScholarshipTriggerPresenterRegistry.registerDefaults();
+            ScholarshipEffectPresenterRegistry.registerDefaults();
+            ScholarshipCostPresenterRegistry.registerDefaults();
 
             NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post e) -> {
                 ClientTicks.endClientTick(Minecraft.getInstance());

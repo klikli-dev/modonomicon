@@ -13,6 +13,7 @@ import com.klikli_dev.modonomicon.api.datagen.AbstractModonomiconLanguageProvide
 import com.klikli_dev.modonomicon.api.datagen.BookContextHelper;
 import com.klikli_dev.modonomicon.api.datagen.ModonomiconLanguageProvider;
 import com.klikli_dev.modonomicon.registry.ItemRegistry;
+import com.klikli_dev.modonomicon.research.data.ResearchGroups;
 import net.minecraft.data.PackOutput;
 
 public class EnUsProvider extends AbstractModonomiconLanguageProvider {
@@ -33,6 +34,7 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.BUTTON_BACK, "Back");
         this.add(Gui.BUTTON_BACK_TOOLTIP, "Go back to the last page you visited");
         this.add(Gui.BUTTON_EXIT, "Exit");
+        this.add(Gui.BUTTON_CLOSE_TAB, "Close Tab");
         this.add(Gui.BUTTON_VISUALIZE, "Show Multiblock Preview");
         this.add(Gui.BUTTON_VISUALIZE_TOOLTIP, "Show Multiblock Preview");
         this.add(Gui.BUTTON_VISUALIZE_LAYERS, "Show Layer-by-Layer Multiblock Preview");
@@ -113,6 +115,8 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Tooltips.CONDITION_RESEARCH_NODE_UNLOCKED, "Requires research node %s to be unlocked");
         this.add(Tooltips.CONDITION_RESEARCH_STAGE_COMPLETED, "Requires research node %s stage %s to be completed");
         this.add(Tooltips.CONDITION_ENTRY_UNLOCKED, "Requires entry %s to be unlocked");
+        this.add(Tooltips.CONDITION_ITEM_CRAFTED, "Requires crafting %s");
+        this.add(Tooltips.CONDITION_ITEM_ACQUIRED, "Requires obtaining %s");
         this.add(Tooltips.ITEM_NO_BOOK_FOUND_FOR_STACK, "No book found for this item in the modonomicon book database! Nbt: %s");
         this.add(Tooltips.ASSOCIATED_HOLD_TO_OPEN, "Hold %s for %ss");
         this.add(Tooltips.ASSOCIATED_LOCKED, "Locked: unlock in the book");
@@ -140,6 +144,62 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.NO_ERRORS_FOUND, "No errors found. You should not see this page!");
         this.add(Gui.BOOK_BUILD_FAILED, "This book failed to build and cannot be opened. Please report this to the author of the mod providing the book.");
         this.add(Gui.BOOK_NOT_FOUND, "The book '%s' was not found or failed to load. Please check the log for errors.");
+        this.add(Gui.SCHOLARSHIP_TITLE, "Requirements");
+        this.add(Gui.SCHOLARSHIP_PAGE_TEXT, "These are the requirements of the next stage of this entry. Completed requirements get a check mark. Once all requirements are met, the content behind this stage is unlocked.");
+        this.add(ResearchGroups.translationKey(ResearchGroups.RESEARCH), "Research");
+        this.add(ResearchGroups.translationKey(ResearchGroups.RESEARCH) + ".description", "Research steps, e.g. reaching other research stages.");
+        this.add(ResearchGroups.translationKey(ResearchGroups.ITEMS), "Items");
+        this.add(ResearchGroups.translationKey(ResearchGroups.ITEMS) + ".description", "Crafting or obtaining items.");
+        this.add(ResearchGroups.translationKey(ResearchGroups.KNOWLEDGE), "Knowledge");
+        this.add(ResearchGroups.translationKey(ResearchGroups.KNOWLEDGE) + ".description", "Reading entries and earning advancements.");
+        this.add(ResearchGroups.translationKey(ResearchGroups.PROGRESS), "Progress");
+        this.add(ResearchGroups.translationKey(ResearchGroups.PROGRESS) + ".description", "Counted actions that have to reach a number.");
+        this.add(ResearchGroups.translationKey(ResearchGroups.EFFECTS), "Effects");
+        this.add(ResearchGroups.translationKey(ResearchGroups.EFFECTS) + ".description", "Granted when the stage is completed.");
+        this.add(Gui.SCHOLARSHIP_NEXT_STEPS, "Next steps");
+        this.add(Gui.SCHOLARSHIP_NEXT, "Next: %s");
+        this.add(Gui.SCHOLARSHIP_COMPLETE, "Research complete");
+        this.add(Gui.SCHOLARSHIP_STAGE_LINE, "Stage %s/%s");
+        this.add(Gui.SCHOLARSHIP_CRAFT_ITEM, "Craft %s");
+        this.add(Gui.SCHOLARSHIP_OBTAIN_ITEM, "Obtain %s");
+        this.add(Gui.SCHOLARSHIP_READ_ENTRY, "Read %s");
+        this.add(Gui.SCHOLARSHIP_STAGE_TITLE, "%s: %s");
+        this.add(Gui.SCHOLARSHIP_PROGRESS, "Progress: %s/%s");
+        this.add(Gui.SCHOLARSHIP_MET, "\u2714 Done");
+        this.add(Gui.SCHOLARSHIP_NOT_MET, "\u2718 Not done yet");
+        this.add(Gui.SCHOLARSHIP_NOT_MET_CRAFT, "\u2718 Not crafted yet");
+        this.add(Gui.SCHOLARSHIP_NOT_MET_OBTAIN, "\u2718 Not obtained yet");
+        this.add(Gui.SCHOLARSHIP_NOT_MET_PROGRESS, "\u2718 %s more to go");
+        this.add(Gui.SCHOLARSHIP_NOT_MET_HINT, "Do this to unlock more of this entry.");
+        this.add(Gui.SCHOLARSHIP_CLICK_TO_OPEN, "Click to open");
+        this.add(Gui.SCHOLARSHIP_COSTS, "Costs:");
+        this.add(Gui.SCHOLARSHIP_COST_ITEM, "%s\u00d7 %s");
+        this.add(Gui.SCHOLARSHIP_COST_LEVELS, "%s levels");
+        this.add(Gui.SCHOLARSHIP_COST_DURABILITY, "%s durability: %s");
+        this.add(Gui.SCHOLARSHIP_ACTION_PERFORM_TITLED, "Click to perform: %s");
+        this.add(Gui.SCHOLARSHIP_ACTION_TAKE, "Click to take %s");
+        this.add(Gui.SCHOLARSHIP_ACTION_TAKE_AGAIN, "Click to take another %s");
+        this.add(Gui.SCHOLARSHIP_ACTION_PERFORM, "Click to perform this action");
+        this.add(Gui.SCHOLARSHIP_ACTION_ALREADY_HELD, "You already have this.");
+        this.add(Gui.SCHOLARSHIP_CONSUMED_ON_COMPLETION, "Consumed on completion");
+        this.add(Gui.SCHOLARSHIP_COST_NOT_HELD, "Not held");
+        this.add(Gui.SCHOLARSHIP_COST_SPECIAL, "Special cost");
+        this.add(Gui.SCHOLARSHIP_USE_ITEM, "Use %s");
+        this.add(Gui.SCHOLARSHIP_NOT_USED, "\u2718 Not used yet");
+        this.add(Gui.SCHOLARSHIP_STAGE_COMPLETE, "Complete");
+        this.add(Gui.SCHOLARSHIP_STAGE_COMPLETING, "Completing...");
+        this.add(Gui.SCHOLARSHIP_STAGE_COMPLETE_HINT, "Click to complete this stage");
+        this.add(Gui.SCHOLARSHIP_STAGE_MANUAL, "Requires completion by hand");
+        this.add(Gui.SCHOLARSHIP_EFFECT, "Effect: %s");
+        this.add(Gui.SCHOLARSHIP_EFFECT_EXPERIENCE, "%s experience points");
+        this.add(Gui.SCHOLARSHIP_EFFECT_LEVELS, "%s levels");
+        this.add(Gui.SCHOLARSHIP_EFFECT_VALUE, "+%s %s");
+        this.add(Gui.SCHOLARSHIP_EFFECT_SPECIAL, "Special effect");
+        this.add(Gui.SCHOLARSHIP_TRIGGER_SPECIAL, "Special requirement");
+        this.add(Gui.SCHOLARSHIP_EFFECT_PENDING, "Granted when the stage is completed.");
+        this.add(Gui.FEEDBACK_MISSING, "Missing: %s");
+        this.add(Gui.FEEDBACK_UNAVAILABLE, "You cannot do that right now.");
+        this.add(Gui.FEEDBACK_INVALID, "Nothing to do here.");
 
         //Multiblock Preview
         this.add(Multiblock.COMPLETE, "Complete!");

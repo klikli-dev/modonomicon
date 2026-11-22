@@ -32,6 +32,7 @@ import java.util.Optional;
  * @param stages ordered stages; empty list means single-stage (node activates = complete)
  * @param requiredStages dependencies on other nodes reaching specific stages
  * @param toast optional toast display data for full node completion
+ * @param display optional display data used in requirement blocks
  */
 public record ResearchNodeDefinition(
         Identifier id,
@@ -39,7 +40,8 @@ public record ResearchNodeDefinition(
         List<ValueRequirement> requiredValues,
         List<ResearchStageDefinition> stages,
         List<StageDependency> requiredStages,
-        Optional<ResearchToastDefinition> toast
+        Optional<ResearchToastDefinition> toast,
+        Optional<ResearchDisplay> display
 ) {
 
     /**
@@ -82,13 +84,18 @@ public record ResearchNodeDefinition(
         return this.toast;
     }
 
+    public Optional<ResearchDisplay> displayOrEmpty() {
+        return this.display;
+    }
+
     public static final Codec<ResearchNodeDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Identifier.CODEC.fieldOf("id").forGetter(ResearchNodeDefinition::id),
             Identifier.CODEC.listOf().optionalFieldOf("required_facts", List.of()).forGetter(ResearchNodeDefinition::requiredFacts),
             ValueRequirement.CODEC.listOf().optionalFieldOf("required_values", List.of()).forGetter(ResearchNodeDefinition::requiredValues),
             ResearchStageDefinition.CODEC.listOf().optionalFieldOf("stages", List.of()).forGetter(ResearchNodeDefinition::stages),
             StageDependency.CODEC.listOf().optionalFieldOf("required_stages", List.of()).forGetter(ResearchNodeDefinition::requiredStages),
-            ResearchToastDefinition.CODEC.optionalFieldOf("toast").forGetter(ResearchNodeDefinition::toastOrEmpty)
+            ResearchToastDefinition.CODEC.optionalFieldOf("toast").forGetter(ResearchNodeDefinition::toastOrEmpty),
+            ResearchDisplay.CODEC.optionalFieldOf("display").forGetter(ResearchNodeDefinition::displayOrEmpty)
     ).apply(instance, ResearchNodeDefinition::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, ResearchNodeDefinition> STREAM_CODEC =
             StreamCodec.composite(
@@ -104,6 +111,8 @@ public record ResearchNodeDefinition(
                     ResearchNodeDefinition::requiredStages,
                     ByteBufCodecs.optional(ResearchToastDefinition.STREAM_CODEC),
                     ResearchNodeDefinition::toast,
+                    ByteBufCodecs.optional(ResearchDisplay.STREAM_CODEC),
+                    ResearchNodeDefinition::display,
                     ResearchNodeDefinition::new
             );
 }

@@ -1,42 +1,76 @@
 [
   {
-    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_1",
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_1_hook",
-    "trigger_target": "modonomicon:features/condition_level_1",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_trailing_page",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_trailing_page_hook",
+    "trigger_target": "modonomicon:scholarship/trailing_page",
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {
-    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/markers_marker_intro",
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/markers_marker_intro_hook",
-    "trigger_target": "modonomicon:markers/marker_intro",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_sources",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_sources_hook",
+    "trigger_target": "modonomicon:scholarship/sources",
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {
-    "fact_id": "modonomicon:generated/demo/facts/item_crafted/minecraft/stick",
-    "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/stick_hook",
+    "fact_id": "modonomicon:generated/demo/facts/item_crafted/minecraft/crafting_table",
+    "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/crafting_table_hook",
     "trigger_target": {
-      "id": "minecraft:stick"
+      "id": "minecraft:crafting_table"
     },
     "trigger_type": "modonomicon:item_crafted"
   },
   {
-    "fact_id": "modonomicon:generated/demo/facts/item_acquired/minecraft/cobblestone",
-    "id": "modonomicon:generated/demo/facts/item_acquired/minecraft/cobblestone_hook",
+    "fact_id": "modonomicon:generated/demo/facts/item_crafted/minecraft/writable_book",
+    "id": "modonomicon:generated/demo/facts/item_crafted/minecraft/writable_book_hook",
     "trigger_target": {
-      "id": "minecraft:cobblestone"
+      "id": "minecraft:writable_book"
+    },
+    "trigger_type": "modonomicon:item_crafted"
+  },
+  {
+    "fact_id": "modonomicon:generated/demo/facts/item_acquired/tag_minecraft/logs",
+    "id": "modonomicon:generated/demo/facts/item_acquired/tag_minecraft/logs_hook",
+    "trigger_target": {
+      "tag": "minecraft:logs"
     },
     "trigger_type": "modonomicon:item_acquired"
   },
   {
-    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_root",
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_root_hook",
-    "trigger_target": "modonomicon:features/condition_root",
+    "fact_id": "modonomicon:generated/demo/facts/item_acquired/minecraft/diamond",
+    "id": "modonomicon:generated/demo/facts/item_acquired/minecraft/diamond_hook",
+    "trigger_target": {
+      "id": "minecraft:diamond"
+    },
+    "trigger_type": "modonomicon:item_acquired"
+  },
+  {
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_notes",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_notes_hook",
+    "trigger_target": "modonomicon:scholarship/notes",
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {
-    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_2",
-    "id": "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_2_hook",
-    "trigger_target": "modonomicon:features/condition_level_2",
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_first_page_display",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_first_page_display_hook",
+    "trigger_target": "modonomicon:scholarship/first_page_display",
+    "trigger_type": "modonomicon:entry_viewed_once"
+  },
+  {
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_placed_pages",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_placed_pages_hook",
+    "trigger_target": "modonomicon:scholarship/placed_pages",
+    "trigger_type": "modonomicon:entry_viewed_once"
+  },
+  {
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_two_parents",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_two_parents_hook",
+    "trigger_target": "modonomicon:scholarship/two_parents",
+    "trigger_type": "modonomicon:entry_viewed_once"
+  },
+  {
+    "fact_id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_condition_advancement",
+    "id": "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_condition_advancement_hook",
+    "trigger_target": "modonomicon:scholarship/condition_advancement",
     "trigger_type": "modonomicon:entry_viewed_once"
   },
   {

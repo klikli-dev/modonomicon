@@ -81,6 +81,11 @@ public class Book {
     @Nullable
     protected BookLockedCategoryDisplay lockedCategoryDisplay;
 
+    /**
+     * Where the requirements of entries with a research are shown, unless the entry overrides it.
+     */
+    protected ScholarshipDisplay defaultScholarshipDisplay = ScholarshipDisplay.FIRST_PAGE;
+
     protected Identifier leafletEntry;
 
     protected PageDisplayMode pageDisplayMode = PageDisplayMode.DOUBLE_PAGE;
@@ -125,7 +130,7 @@ public class Book {
                 PageDisplayMode pageDisplayMode, boolean allowOpenBooksWithInvalidLinks, boolean showRecentlyUnlocked,
                 boolean defaultAutoScale, boolean defaultAllowPageSplit,
                 BookThemeData themeData, @Nullable ItemStackTemplate associatedItemBadge,
-                @Nullable BookLockedCategoryDisplay lockedCategoryDisplay) {
+                @Nullable BookLockedCategoryDisplay lockedCategoryDisplay, ScholarshipDisplay defaultScholarshipDisplay) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -154,6 +159,7 @@ public class Book {
         this.themeData = themeData;
         this.associatedItemBadge = associatedItemBadge;
         this.lockedCategoryDisplay = lockedCategoryDisplay;
+        this.defaultScholarshipDisplay = defaultScholarshipDisplay;
     }
 
     public static Book fromJson(Identifier id, JsonObject json, HolderLookup.Provider provider) {
@@ -194,6 +200,11 @@ public class Book {
             lockedCategoryDisplay = BookLockedCategoryDisplay.byName(GsonHelper.getAsString(json, "locked_category_display"));
         }
 
+        ScholarshipDisplay defaultScholarshipDisplay = ScholarshipDisplay.FIRST_PAGE;
+        if (json.has("default_scholarship_display")) {
+            defaultScholarshipDisplay = ScholarshipDisplay.byName(GsonHelper.getAsString(json, "default_scholarship_display"));
+        }
+
         ItemStackTemplate associatedItemBadge = null;
         if (json.has("associated_item_badge")) {
             associatedItemBadge = ItemStackTemplate.CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), json.get("associated_item_badge"))
@@ -201,7 +212,7 @@ public class Book {
         }
 
         return new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
-                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData, associatedItemBadge, lockedCategoryDisplay);
+                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData, associatedItemBadge, lockedCategoryDisplay, defaultScholarshipDisplay);
     }
 
 
@@ -235,8 +246,9 @@ public class Book {
         var associatedItemBadge = ByteBufCodecs.optional(ItemStackTemplate.STREAM_CODEC).decode(buffer).orElse(null);
         var hasLockedCategoryDisplay = buffer.readBoolean();
         var lockedCategoryDisplay = hasLockedCategoryDisplay ? BookLockedCategoryDisplay.byId(buffer.readByte()) : null;
+        var defaultScholarshipDisplay = buffer.readEnum(ScholarshipDisplay.class);
         var book = new Book(id, name, description, tooltip, model, displayMode, generateBookItem, customBookItem, creativeTab, font,
-                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData, associatedItemBadge, lockedCategoryDisplay);
+                turnPageSound, leafletEntry, pageDisplayMode, allowOpenBooksWithInvalidLinks, showRecentlyUnlocked, defaultAutoScale, defaultAllowPageSplit, themeData, associatedItemBadge, lockedCategoryDisplay, defaultScholarshipDisplay);
 
         book.textMacros().putAll(textMacros);
 
@@ -334,6 +346,7 @@ public class Book {
         if (this.lockedCategoryDisplay != null) {
             buffer.writeByte(this.lockedCategoryDisplay.ordinal());
         }
+        buffer.writeEnum(this.defaultScholarshipDisplay);
     }
 
     //FriendlyByteBuf#readMap/writeMap were removed in 26.3, so we replicate the previous wire format here
@@ -497,6 +510,10 @@ public class Book {
     @Nullable
     public BookLockedCategoryDisplay getLockedCategoryDisplay() {
         return this.lockedCategoryDisplay;
+    }
+
+    public ScholarshipDisplay getDefaultScholarshipDisplay() {
+        return this.defaultScholarshipDisplay;
     }
 
     /**

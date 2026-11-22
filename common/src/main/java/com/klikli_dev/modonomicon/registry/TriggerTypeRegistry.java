@@ -12,6 +12,7 @@ import com.klikli_dev.modonomicon.data.TriggerType;
 import com.klikli_dev.modonomicon.research.hook.NoTriggerTarget;
 import com.klikli_dev.modonomicon.research.hook.*;
 import com.klikli_dev.modonomicon.research.hook.handlers.*;
+import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
@@ -38,18 +39,25 @@ public final class TriggerTypeRegistry {
             new EntryViewedOnceTriggerHandler()
     );
 
-    public static final TriggerType<ItemStackTemplate, ItemCraftedContext> ITEM_CRAFTED = register(
+    public static final TriggerType<ResearchItemMatcher, ItemCraftedContext> ITEM_CRAFTED = register(
             Modonomicon.loc("item_crafted"),
-            ItemStackTemplate.CODEC,
-            ItemStackTemplate.STREAM_CODEC.cast(),
+            ResearchItemMatcher.CODEC,
+            ResearchItemMatcher.STREAM_CODEC.cast(),
             new ItemCraftedTriggerHandler()
     );
 
-    public static final TriggerType<ItemStackTemplate, ItemAcquiredContext> ITEM_ACQUIRED = register(
+    public static final TriggerType<ResearchItemMatcher, ItemAcquiredContext> ITEM_ACQUIRED = register(
             Modonomicon.loc("item_acquired"),
-            ItemStackTemplate.CODEC,
-            ItemStackTemplate.STREAM_CODEC.cast(),
+            ResearchItemMatcher.CODEC,
+            ResearchItemMatcher.STREAM_CODEC.cast(),
             new ItemAcquiredTriggerHandler()
+    );
+
+    public static final TriggerType<ResearchItemMatcher, ItemUsedContext> ITEM_USED = register(
+            Modonomicon.loc("item_used"),
+            ResearchItemMatcher.CODEC,
+            ResearchItemMatcher.STREAM_CODEC.cast(),
+            new ItemUsedTriggerHandler()
     );
 
     public static final TriggerType<Identifier, AdvancementContext> ADVANCEMENT = register(

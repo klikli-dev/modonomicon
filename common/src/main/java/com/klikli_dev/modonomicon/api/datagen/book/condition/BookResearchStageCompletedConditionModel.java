@@ -6,12 +6,12 @@
 
 package com.klikli_dev.modonomicon.api.datagen.book.condition;
 
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Research;
 import com.klikli_dev.modonomicon.book.conditions.BookCondition;
 import com.klikli_dev.modonomicon.book.conditions.BookResearchStageCompletedCondition;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Util;
 
 public class BookResearchStageCompletedConditionModel extends BookConditionModel<BookResearchStageCompletedConditionModel> {
     protected Identifier nodeId;
@@ -48,7 +48,7 @@ public class BookResearchStageCompletedConditionModel extends BookConditionModel
      * Ensure matching translations exist, otherwise the raw keys will be displayed.
      */
     public BookResearchStageCompletedConditionModel withStageName() {
-        this.tooltip = Component.translatable(Util.makeDescriptionId("research_stage", this.stageId));
+        this.tooltip = Component.translatable(Research.stageKey(this.stageId));
         return this;
     }
 }

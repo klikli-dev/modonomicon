@@ -20,6 +20,7 @@ subprojects {
         exclude "**/data/modonomicon/modonomicon/books/**"
         exclude "**/data/modonomicon/modonomicon/multiblocks/**"
         exclude "**/data/modonomicon/recipe/**"
+        exclude "**/data/modonomicon_gametest/**"
 
         manifest {
             attributes([

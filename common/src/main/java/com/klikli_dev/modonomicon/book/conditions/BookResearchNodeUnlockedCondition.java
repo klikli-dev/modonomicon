@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.book.conditions;
 
 import com.klikli_dev.modonomicon.Modonomicon;
+import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Research;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.conditions.context.BookConditionContext;
@@ -24,7 +25,6 @@ import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
@@ -73,21 +73,23 @@ public class BookResearchNodeUnlockedCondition extends BookCondition {
             Modonomicon.LOG.error(message);
             return false;
         }
+        return isNodeComplete(player, this.nodeId);
+    }
+
+    /**
+     * True if the node is unlocked and all of its stages are completed. Multi-stage nodes need every stage, not just the one in progress.
+     */
+    public static boolean isNodeComplete(Player player, Identifier nodeId) {
         var state = ResearchServices.state().getStateFor(player);
-        if (!state.isNodeUnlocked(this.nodeId)) {
+        if (!state.isNodeUnlocked(nodeId)) {
             return false;
         }
         // For multi-stage nodes, all stages must be complete
         var data = ResearchDataManager.get().data();
-        int totalStages = 0;
-        for (var rule : data.nodeStageRules()) {
-            if (rule.nodeId().equals(this.nodeId)) {
-                totalStages++;
-            }
-        }
+        int totalStages = data.stageCount(nodeId);
         if (totalStages > 0) {
-            // Multi-stage: stageIndex >= totalStages means all stages complete
-            return state.getNodeStageIndex(this.nodeId) >= totalStages;
+            // Multi-stage: all stages must be completed, not just the last one started
+            return state.completedStageCount(nodeId) >= totalStages;
         }
         // Single-stage: unlocked = complete
         return true;
@@ -97,7 +99,7 @@ public class BookResearchNodeUnlockedCondition extends BookCondition {
     public List<Component> getTooltip(Player player, BookConditionContext context) {
         if (this.tooltip == null && context instanceof BookConditionEntryContext) {
             this.tooltip = Component.translatable(Tooltips.CONDITION_RESEARCH_NODE_UNLOCKED,
-                    Component.translatable(Util.makeDescriptionId("research_node", this.nodeId)));
+                    Component.translatable(Research.nodeKey(this.nodeId)));
         }
         return super.getTooltip(player, context);
     }

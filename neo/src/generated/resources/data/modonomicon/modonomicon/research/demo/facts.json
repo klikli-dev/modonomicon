@@ -1,20 +1,139 @@
 [
   {
-    "id": "modonomicon:demo/condition_root_viewed"
-  },
-  {
+    "display": {
+      "icon": {
+        "id": "minecraft:stone"
+      },
+      "title": {
+        "translate": "modonomicon.demo.research.advancement_mine_stone.title"
+      }
+    },
     "id": "modonomicon:demo/advancement_mine_stone_completed"
   },
   {
+    "display": {
+      "icon": {
+        "id": "minecraft:oak_boat"
+      },
+      "title": {
+        "translate": "modonomicon.demo.research.advancement_ride_boat_with_goat.title"
+      }
+    },
     "id": "modonomicon:demo/advancement_ride_boat_with_goat_completed"
   },
   {
-    "id": "modonomicon:demo/stick_crafted"
+    "id": "modonomicon:demo/marker_index_viewed"
   },
   {
-    "id": "modonomicon:demo/cobblestone_acquired"
+    "display": {
+      "icon": {
+        "id": "minecraft:writable_book"
+      },
+      "title": {
+        "translate": "modonomicon.demo.research.notes_read.title"
+      }
+    },
+    "id": "modonomicon:demo/research/notes_read"
   },
   {
-    "id": "modonomicon:demo/marker_intro_viewed"
+    "display": {
+      "action": {
+        "cost": [
+          {
+            "type": "modonomicon:item",
+            "item": {
+              "id": "minecraft:paper"
+            }
+          },
+          {
+            "type": "modonomicon:durability",
+            "amount": 1,
+            "item": {
+              "id": "minecraft:shears"
+            }
+          }
+        ],
+        "effects": [
+          {
+            "type": "modonomicon:give_item",
+            "stack": {
+              "components": {
+                "minecraft:custom_data": {
+                  "modonomicon_demo": "blank_research_note"
+                },
+                "minecraft:custom_name": "Blank Research Note"
+              },
+              "id": "minecraft:paper"
+            }
+          }
+        ],
+        "grants_fact": true,
+        "repeatable": true
+      },
+      "group": "modonomicon:knowledge",
+      "icon": {
+        "id": "minecraft:paper"
+      },
+      "title": {
+        "translate": "modonomicon.demo.research.note_taken.title"
+      }
+    },
+    "id": "modonomicon:demo/research/note_taken"
+  },
+  {
+    "display": {
+      "description": {
+        "translate": "modonomicon.demo.research.note_crafted.description"
+      },
+      "group": "modonomicon:knowledge",
+      "icon": {
+        "components": {
+          "minecraft:custom_data": {
+            "modonomicon_demo": "research_note"
+          },
+          "minecraft:custom_name": "Research Note"
+        },
+        "id": "minecraft:paper"
+      },
+      "title": {
+        "translate": "modonomicon.demo.research.note_crafted.title"
+      }
+    },
+    "id": "modonomicon:demo/research/note_crafted"
+  },
+  {
+    "display": {
+      "group": "modonomicon:knowledge",
+      "icon": {
+        "components": {
+          "minecraft:custom_data": {
+            "modonomicon_demo": "research_note"
+          },
+          "minecraft:custom_name": "Research Note"
+        },
+        "id": "minecraft:paper"
+      },
+      "title": {
+        "translate": "modonomicon.demo.research.note_studied.title"
+      }
+    },
+    "id": "modonomicon:demo/research/note_studied"
+  },
+  {
+    "display": {
+      "icon": {
+        "id": "minecraft:ink_sac"
+      },
+      "title": {
+        "translate": "modonomicon.demo.research.ink_sac_acquired.title"
+      }
+    },
+    "id": "modonomicon:demo/research/ink_sac_acquired"
+  },
+  {
+    "display": {
+      "group": "modonomicon:demo_smithing"
+    },
+    "id": "modonomicon:demo/research/iron_ingot_acquired"
   }
 ]

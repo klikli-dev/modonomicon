@@ -1,0 +1,27 @@
+{
+  "type": "modonomicon:content",
+  "background": {
+    "height": 26,
+    "sprite": "modonomicon:modonomicon/themes/default/node/entry_backgrounds/square_gray",
+    "width": 26
+  },
+  "category": "modonomicon:scholarship",
+  "condition": {
+    "type": "modonomicon:none"
+  },
+  "description": "book.modonomicon.demo.scholarship.notes.description",
+  "icon": {
+    "id": "minecraft:writable_book"
+  },
+  "id": "modonomicon:scholarship/notes",
+  "marker_condition": {
+    "type": "modonomicon:none"
+  },
+  "name": "book.modonomicon.demo.scholarship.notes.name",
+  "research": {
+    "node": "modonomicon:generated/demo/nodes/entry_research/scholarship_notes"
+  },
+  "sort_number": 0,
+  "x": 0,
+  "y": 0
+}

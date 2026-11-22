@@ -58,9 +58,41 @@ public abstract class BookPageRenderer<T extends BookPage> {
 
     private List<Button> buttons = new ArrayList<>();
 
+    /**
+     * False if the page is displayed somewhere its continuation fragments cannot be reached, e.g. in an entry tab overlay.
+     * Split pages then scale their text to fit instead of only showing the first fragment.
+     */
+    protected boolean pageSplitAllowed = true;
+    /**
+     * Pixels at the bottom of the page reserved for other content (e.g. the entry requirements block).
+     */
+    protected int reservedBottomHeight;
+
 
     public BookPageRenderer(T page) {
         this.page = page;
+    }
+
+    public boolean isPageSplitAllowed() {
+        return this.pageSplitAllowed;
+    }
+
+    /**
+     * @see #pageSplitAllowed
+     */
+    public void setPageSplitAllowed(boolean pageSplitAllowed) {
+        this.pageSplitAllowed = pageSplitAllowed;
+    }
+
+    public void setReservedBottomHeight(int reservedBottomHeight) {
+        this.reservedBottomHeight = reservedBottomHeight;
+    }
+
+    /**
+     * @return the height of the page that text may use, i.e. the page height minus any reserved bottom area.
+     */
+    public int getAvailablePageHeight() {
+        return BookEntryScreen.PAGE_HEIGHT - this.reservedBottomHeight;
     }
 
 
@@ -180,35 +212,22 @@ public abstract class BookPageRenderer<T extends BookPage> {
 
     /**
      * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
-     *
-     * @deprecated use {@link #renderBookTextHolder(GuiGraphicsExtractor, BookTextHolder, Font, int, int, int, int)} instead and provide the desired height.
-     * This exists only for backwards compatibility of custom pages and may estimate the wrong height.
-     */
-    @Deprecated
-    public void renderBookTextHolder(GuiGraphicsExtractor guiGraphics, BookTextHolder text, int x, int y, int width) {
-        var textY = 0;
-        if (this instanceof PageWithTextRenderer pageWithTextRenderer)
-            textY = pageWithTextRenderer.getTextY();
-
-        renderBookTextHolder(guiGraphics, text, this.font, x, y, width, BookEntryScreen.PAGE_HEIGHT - textY, this.parentScreen.getBook().theme().palette().defaultTextColor());
-    }
-
-    /**
-     * Will render the given BookTextHolder as (left-aligned) content text. Will automatically handle markdown.
      * Applies the page's split/auto-scale configuration: split pages render only the first
      * fragment at scale 1.0, pages with auto-scaling disabled render unscaled without splitting.
      */
     public void renderBookTextHolder(GuiGraphicsExtractor guiGraphics, BookTextHolder text, int x, int y, int width, int height) {
         var bounds = this.getBookTextHolderBounds(x, y, width, height);
         var book = this.parentScreen != null ? this.parentScreen.getBook() : null;
-        if (this.page != null && PageSplitter.isSplitEnabled(this.page) && book != null) {
+        var splitEnabled = this.page != null && PageSplitter.isSplitEnabled(this.page);
+        if (splitEnabled && this.pageSplitAllowed && book != null) {
             var continuationHeight = PageSplitter.continuationBounds(book).height;
             var fragments = PageSplitter.split(text, this.font, bounds.width, bounds.height, continuationHeight);
             var first = fragments.isEmpty() ? List.<FormattedCharSequence>of() : fragments.get(0);
             renderFragmentLines(guiGraphics, this.font, first, bounds.x, bounds.y, this.parentScreen.getBook().theme().palette().defaultTextColor());
             return;
         }
-        if (this.page != null && !PageSplitter.isAutoScaleEnabled(this.page)) {
+        //split pages that cannot split here fall back to scale-to-fit, so no text is lost
+        if (this.page != null && !PageSplitter.isAutoScaleEnabled(this.page) && !(splitEnabled && !this.pageSplitAllowed)) {
             var lines = PageSplitter.wrapForSplit(text, this.font, bounds.width);
             renderFragmentLines(guiGraphics, this.font, lines, bounds.x, bounds.y, this.parentScreen.getBook().theme().palette().defaultTextColor());
             return;
@@ -309,7 +328,7 @@ public abstract class BookPageRenderer<T extends BookPage> {
                     BookDebugOverlay.CONTENT_FILL, BookDebugOverlay.CONTENT_OUTLINE);
 
             //text area: the bounds the text holder is rendered into, after applying the theme text offsets
-            var bounds = this.getBookTextHolderBounds(0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY);
+            var bounds = this.getBookTextHolderBounds(0, textY, BookEntryScreen.PAGE_WIDTH, this.getAvailablePageHeight() - textY);
             BookDebugOverlay.renderRegion(guiGraphics, bounds.x, bounds.y, bounds.width, bounds.height,
                     BookDebugOverlay.TEXT_FILL, BookDebugOverlay.TEXT_OUTLINE);
         }
@@ -350,23 +369,10 @@ public abstract class BookPageRenderer<T extends BookPage> {
         return BookTextInteraction.hitTestTitle(this.font, this.page.getBook(), title, x, y, pMouseX, pMouseY);
     }
 
-    /**
-     * @deprecated use {@link #getClickedComponentStyleAtForTextHolder(BookTextHolder, int, int, int, int, double, double)} and provide the desired height.
-     * This exists only for backwards compatibility of custom pages and may estimate the wrong height.
-     */
-    @Nullable
-    @Deprecated
-    protected Style getClickedComponentStyleAtForTextHolder(BookTextHolder text, int x, int y, int width, double pMouseX, double pMouseY) {
-        var textY = 0;
-        if (this instanceof PageWithTextRenderer pageWithTextRenderer)
-            textY = pageWithTextRenderer.getTextY();
-        return this.getClickedComponentStyleAtForTextHolder(text, x, y, width, BookEntryScreen.PAGE_HEIGHT - textY, pMouseX, pMouseY);
-    }
-
     @Nullable
     protected Style getClickedComponentStyleAtForTextHolder(BookTextHolder text, int x, int y, int width, int height, double pMouseX, double pMouseY) {
         var book = this.parentScreen != null ? this.parentScreen.getBook() : null;
-        return BookTextInteraction.hitTestTextHolder(this.font, this.page, book, text, x, y, width, height, pMouseX, pMouseY);
+        return BookTextInteraction.hitTestTextHolder(this.font, this.page, book, text, x, y, width, height, pMouseX, pMouseY, this.pageSplitAllowed);
     }
 
     /**

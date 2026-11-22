@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.book.entries;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.book.BookCategory;
+import com.klikli_dev.modonomicon.book.ScholarshipDisplay;
 import com.klikli_dev.modonomicon.book.error.BookErrorManager;
 import com.klikli_dev.modonomicon.book.page.BookPage;
 import com.klikli_dev.modonomicon.bookstate.BookServices;
@@ -16,6 +17,7 @@ import com.klikli_dev.modonomicon.client.gui.book.BookAddress;
 import com.klikli_dev.modonomicon.client.gui.book.markdown.BookTextRenderer;
 import com.klikli_dev.modonomicon.data.BookEntryType;
 import com.klikli_dev.modonomicon.registry.BookEntryTypeRegistry;
+import com.klikli_dev.modonomicon.research.ResearchServices;
 import com.klikli_dev.modonomicon.util.Codecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -26,6 +28,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,22 +42,39 @@ public class BookContentEntry extends BookEntry {
             Identifier.CODEC.fieldOf("id").forGetter(BookEntry::getId),
             BookEntry.BookEntryData.CODEC.forGetter(entry -> entry.data),
             Identifier.CODEC.optionalFieldOf("command_to_run_on_first_read").forGetter(entry -> Optional.ofNullable(entry.commandToRunOnFirstReadId)),
-            BookPage.CODEC.listOf().optionalFieldOf("pages", List.of()).forGetter(entry -> entry.pages)
-    ).apply(instance, (id, data, commandToRunOnFirstReadId, pages) -> new BookContentEntry(id, data, commandToRunOnFirstReadId.orElse(null), pages)));
+            BookPage.CODEC.listOf().optionalFieldOf("pages", List.of()).forGetter(entry -> entry.pages),
+            BookEntryTab.CODEC.listOf().optionalFieldOf("tabs", List.of()).forGetter(entry -> entry.tabs),
+            BookEntryResearch.CODEC.optionalFieldOf("research").forGetter(entry -> Optional.ofNullable(entry.research))
+    ).apply(instance, (id, data, commandToRunOnFirstReadId, pages, tabs, research) -> new BookContentEntry(id, data, commandToRunOnFirstReadId.orElse(null), pages, tabs, research.orElse(null))));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BookContentEntry> STREAM_CODEC = StreamCodec.composite(
             Identifier.STREAM_CODEC, BookEntry::getId,
             BookEntry.BookEntryData.STREAM_CODEC, entry -> entry.data,
             ByteBufCodecs.optional(Identifier.STREAM_CODEC), entry -> Optional.ofNullable(entry.commandToRunOnFirstReadId),
             BookPage.STREAM_CODEC.apply(ByteBufCodecs.list()), entry -> entry.pages,
-            (id, data, commandToRunOnFirstReadId, pages) -> new BookContentEntry(id, data, commandToRunOnFirstReadId.orElse(null), pages)
+            BookEntryTab.STREAM_CODEC.apply(ByteBufCodecs.list()), entry -> entry.tabs,
+            ByteBufCodecs.optional(BookEntryResearch.STREAM_CODEC), entry -> Optional.ofNullable(entry.research),
+            (id, data, commandToRunOnFirstReadId, pages, tabs, research) -> new BookContentEntry(id, data, commandToRunOnFirstReadId.orElse(null), pages, tabs, research.orElse(null))
     );
 
     protected List<BookPage> pages;
+    protected List<BookEntryTab> tabs;
+    @Nullable
+    protected BookEntryResearch research;
 
     public BookContentEntry(Identifier id, BookEntryData data, Identifier commandToRunOnFirstReadId, List<BookPage> pages) {
+        this(id, data, commandToRunOnFirstReadId, pages, List.of());
+    }
+
+    public BookContentEntry(Identifier id, BookEntryData data, Identifier commandToRunOnFirstReadId, List<BookPage> pages, List<BookEntryTab> tabs) {
+        this(id, data, commandToRunOnFirstReadId, pages, tabs, null);
+    }
+
+    public BookContentEntry(Identifier id, BookEntryData data, Identifier commandToRunOnFirstReadId, List<BookPage> pages, List<BookEntryTab> tabs, @Nullable BookEntryResearch research) {
         super(id, data, commandToRunOnFirstReadId);
         this.pages = new ArrayList<>(pages);
+        this.tabs = new ArrayList<>(tabs);
+        this.research = research;
     }
 
     @Override
@@ -77,6 +97,14 @@ public class BookContentEntry extends BookEntry {
             BookErrorManager.get().getContextHelper().pageNumber = -1;
             pageNum++;
         }
+
+        //tab pages are numbered after the authored pages, so they never collide with them
+        for (var tab : this.tabs) {
+            BookErrorManager.get().getContextHelper().pageNumber = pageNum;
+            tab.getPage().build(level, this, pageNum);
+            BookErrorManager.get().getContextHelper().pageNumber = -1;
+            pageNum++;
+        }
     }
 
     @Override
@@ -86,11 +114,49 @@ public class BookContentEntry extends BookEntry {
             page.prerenderMarkdown(textRenderer);
             BookErrorManager.get().getContextHelper().pageNumber = -1;
         }
+        for (var tab : this.tabs) {
+            var page = tab.getPage();
+            BookErrorManager.get().getContextHelper().pageNumber = page.getPageNumber();
+            page.prerenderMarkdown(textRenderer);
+            BookErrorManager.get().getContextHelper().pageNumber = -1;
+        }
     }
 
     @Override
     public List<BookPage> getPages() {
         return this.pages;
+    }
+
+    public List<BookEntryTab> getTabs() {
+        return this.tabs;
+    }
+
+    /**
+     * The research of this entry, or null if the entry has none.
+     */
+    @Nullable
+    public BookEntryResearch getResearch() {
+        return this.research;
+    }
+
+    /**
+     * The scholarship display of this entry: the entry's own override, or the book default.
+     */
+    public ScholarshipDisplay getScholarshipDisplay() {
+        if (this.research != null && this.research.scholarshipDisplay().isPresent()) {
+            return this.research.scholarshipDisplay().get();
+        }
+        return this.getBook() != null ? this.getBook().getDefaultScholarshipDisplay() : ScholarshipDisplay.FIRST_PAGE;
+    }
+
+    /**
+     * True if the player completed this entry. Entries with a research are complete once their research node is complete, other entries once they are read.
+     */
+    public boolean isComplete(Player player) {
+        if (this.research != null) {
+            return ResearchServices.state().isNodeComplete(player, this.research.node());
+        }
+        return BookServices.stateAccess().isEntryRead(player, this);
     }
 
     public void addPage(BookPage page) {
@@ -123,6 +189,12 @@ public class BookContentEntry extends BookEntry {
 
         for (var page : this.getPages()) {
             if (page.matchesQuery(query, level)) {
+                return true;
+            }
+        }
+
+        for (var tab : this.tabs) {
+            if (tab.getPage().matchesQuery(query, level)) {
                 return true;
             }
         }

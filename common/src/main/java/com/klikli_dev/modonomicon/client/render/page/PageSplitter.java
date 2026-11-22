@@ -97,7 +97,15 @@ public final class PageSplitter {
      * Theme-adjusted bounds for the first fragment of a page whose body text starts at {@code textY}.
      */
     public static BookPageRenderer.TextHolderBounds firstFragmentBounds(Book book, int textY) {
-        return adjustBounds(book, 0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY);
+        return firstFragmentBounds(book, textY, 0);
+    }
+
+    /**
+     * Theme-adjusted bounds for the first fragment of a page whose body text starts at {@code textY}, leaving
+     * {@code reservedBottom} pixels free at the bottom of the page (e.g. for the entry requirements block).
+     */
+    public static BookPageRenderer.TextHolderBounds firstFragmentBounds(Book book, int textY, int reservedBottom) {
+        return adjustBounds(book, 0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY - reservedBottom);
     }
 
     /**
@@ -196,8 +204,15 @@ public final class PageSplitter {
      * @return fragments of wrapped lines, always containing at least one fragment.
      */
     public static List<List<FormattedCharSequence>> splitForPage(BookPage page, Book book, Font font, int textY) {
+        return splitForPage(page, book, font, textY, 0);
+    }
+
+    /**
+     * Like {@link #splitForPage(BookPage, Book, Font, int)}, but reserves {@code reservedBottom} pixels at the bottom of the first fragment.
+     */
+    public static List<List<FormattedCharSequence>> splitForPage(BookPage page, Book book, Font font, int textY, int reservedBottom) {
         var text = getSplitText(page);
-        var first = firstFragmentBounds(book, textY);
+        var first = firstFragmentBounds(book, textY, reservedBottom);
         var continuation = continuationBounds(book);
         return split(text, font, first.width, first.height, continuation.height);
     }

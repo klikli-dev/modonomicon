@@ -6,43 +6,37 @@
 
 package com.klikli_dev.modonomicon.research.hook.handlers;
 
-import com.klikli_dev.modonomicon.book.associated.AssociatedItemMatcher;
 import com.klikli_dev.modonomicon.data.TriggerType;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.klikli_dev.modonomicon.research.hook.ItemCraftedContext;
 import com.klikli_dev.modonomicon.research.hook.TriggerHandler;
+import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStackTemplate;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemCraftedTriggerHandler implements TriggerHandler<ItemStackTemplate, ItemCraftedContext> {
+public class ItemCraftedTriggerHandler implements TriggerHandler<ResearchItemMatcher, ItemCraftedContext> {
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public List<ResearchHookDefinition<ItemStackTemplate>> resolve(
-            TriggerType<ItemStackTemplate, ItemCraftedContext> type,
+    public List<ResearchHookDefinition<ResearchItemMatcher>> resolve(
+            TriggerType<ResearchItemMatcher, ItemCraftedContext> type,
             ServerPlayer player,
             ItemCraftedContext context
     ) {
-        return (List) ResearchDataManager.get().hooksForType(type).stream()
-                .filter(h -> matches((ItemStackTemplate) h.triggerTarget(), context))
-                .toList();
+        return ResearchDataManager.get().hooksFor(type, context);
     }
 
     @Override
-    public boolean matches(ItemStackTemplate target, ItemCraftedContext context) {
-        //Item equality plus subset matching of the template's components, shared with associated items.
-        //A template without components matches any stack of the item.
-        return AssociatedItemMatcher.matches(target, context.stack());
+    public boolean matches(ResearchItemMatcher target, ItemCraftedContext context) {
+        return target.matches(context.stack());
     }
 
     @Override
-    public @Nullable Object indexKey(ItemStackTemplate target) {
-        return target.item().unwrapKey().map(ResourceKey::identifier).orElse(null);
+    public @Nullable Object indexKey(ResearchItemMatcher target) {
+        return target.itemId();
     }
 
     //NB: Mojang's deprecation is usage guidance, not removal; resolving the intrusive

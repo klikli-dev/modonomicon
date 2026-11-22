@@ -6,14 +6,21 @@
 
 package com.klikli_dev.modonomicon.research.data;
 
+import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.data.TriggerType;
+import com.klikli_dev.modonomicon.research.effect.ResearchEffect;
 import com.klikli_dev.modonomicon.research.hook.TriggerContext;
 import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -27,7 +34,7 @@ import java.util.stream.Collectors;
  * @param stageIds set of all known stage ids
  * @param nodeRules node activation rules (facts + values + stage dependencies)
  * @param nodeStageRules stage advancement rules per node
- * @param hooksByType hooks indexed by trigger type
+ * @param hookIndexesByType hook indices per trigger type, see {@link ResearchHookIndex}
  * @param graphFactIds facts grouped by graph id
  * @param graphNodeIds nodes grouped by graph id
  * @param graphValueIds values grouped by graph id
@@ -36,6 +43,14 @@ import java.util.stream.Collectors;
  * @param nodeToasts toast definitions indexed by node id
  * @param stageToasts toast definitions indexed by stage id
  * @param stageLocations maps stage id to its owning node and index for fast lookup
+ * @param stageRulesByLocation stage advancement rule per node and stage index
+ * @param stageIdsByLocation stage id per node and stage index, the reverse of stageLocations
+ * @param stageCountsByNode number of stages per node id
+ * @param factDefinitions fact definitions indexed by fact id
+ * @param valueDefinitions value definitions indexed by value id
+ * @param nodeDefinitions node definitions indexed by node id
+ * @param groupDefinitions requirement group definitions indexed by group id, including built-ins
+ * @param triggerGroupIds group id claiming each trigger type by default, indexed by trigger type id
  */
 public record ResearchData(
         Set<Identifier> factIds,
@@ -44,7 +59,7 @@ public record ResearchData(
         Set<Identifier> stageIds,
         List<NodeRule> nodeRules,
         List<NodeStageRule> nodeStageRules,
-        Map<TriggerType<?, ?>, List<ResearchHookDefinition<?>>> hooksByType,
+        Map<TriggerType<?, ?>, ResearchHookIndex<?>> hookIndexesByType,
         Map<Identifier, Set<Identifier>> graphFactIds,
         Map<Identifier, Set<Identifier>> graphNodeIds,
         Map<Identifier, Set<Identifier>> graphValueIds,
@@ -52,33 +67,37 @@ public record ResearchData(
         Map<Identifier, ResearchToastDefinition> valueToasts,
         Map<Identifier, ResearchToastDefinition> nodeToasts,
         Map<Identifier, ResearchToastDefinition> stageToasts,
-        Map<Identifier, StageLocation> stageLocations
+        Map<Identifier, StageLocation> stageLocations,
+        Map<StageLocation, NodeStageRule> stageRulesByLocation,
+        Map<StageLocation, Identifier> stageIdsByLocation,
+        Map<Identifier, Integer> stageCountsByNode,
+        Map<Identifier, ResearchFactDefinition> factDefinitions,
+        Map<Identifier, ResearchValueDefinition> valueDefinitions,
+        Map<Identifier, ResearchNodeDefinition> nodeDefinitions,
+        Map<Identifier, ResearchGroupDefinition> groupDefinitions,
+        Map<Identifier, Identifier> triggerGroupIds
 ) {
 
     /**
+     * Returns the group that claims the given trigger type by default, if any.
+     */
+    public Optional<ResearchGroupDefinition> groupForTriggerType(Identifier triggerTypeId) {
+        var groupId = this.triggerGroupIds.get(triggerTypeId);
+        return groupId != null ? Optional.ofNullable(this.groupDefinitions.get(groupId)) : Optional.empty();
+    }
+
+    /**
      * Returns hooks for a specific trigger type that match the given context.
-     * Uses the handler's indexKey for fast-path lookup when available.
+     * Uses the handler's indexKey to only check hooks that target the context, see {@link ResearchHookIndex}.
      */
     public <TTarget, TContext extends TriggerContext> List<ResearchHookDefinition<TTarget>> hooksFor(
             TriggerType<TTarget, TContext> type,
             TContext context
     ) {
-        @SuppressWarnings("unchecked")
-        List<ResearchHookDefinition<TTarget>> allHooks = (List<ResearchHookDefinition<TTarget>>) (List) this.hooksByType.getOrDefault(type, List.of());
+        var index = this.hookIndex(type);
         var handler = type.handler();
-
-        var contextKey = handler.indexKey(context);
-        if (contextKey != null) {
-            return allHooks.stream()
-                    .filter(h -> {
-                        var targetKey = handler.indexKey(h.triggerTarget());
-                        return targetKey != null && targetKey.equals(contextKey)
-                                && handler.matches(h.triggerTarget(), context);
-                    })
-                    .toList();
-        }
-
-        return allHooks.stream()
+        var candidates = index.candidatesFor(handler.indexKey(context));
+        return candidates.stream()
                 .filter(h -> handler.matches(h.triggerTarget(), context))
                 .toList();
     }
@@ -87,9 +106,42 @@ public record ResearchData(
      * Returns all hooks for a specific trigger type.
      */
     public <TTarget> List<ResearchHookDefinition<TTarget>> hooksForType(TriggerType<TTarget, ?> type) {
-        @SuppressWarnings("unchecked")
-        List<ResearchHookDefinition<TTarget>> result = (List<ResearchHookDefinition<TTarget>>) (List) this.hooksByType.getOrDefault(type, List.of());
-        return result;
+        return this.hookIndex(type).all();
+    }
+
+    /**
+     * Returns all hooks of all trigger types.
+     */
+    public List<ResearchHookDefinition<?>> allHooks() {
+        var result = new ArrayList<ResearchHookDefinition<?>>();
+        for (var index : this.hookIndexesByType.values()) {
+            result.addAll(index.all());
+        }
+        return List.copyOf(result);
+    }
+
+    /**
+     * Returns the number of stages of the given node, 0 for unknown nodes.
+     */
+    public int stageCount(Identifier nodeId) {
+        return this.stageCountsByNode.getOrDefault(nodeId, 0);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <TTarget> ResearchHookIndex<TTarget> hookIndex(TriggerType<TTarget, ?> type) {
+        return (ResearchHookIndex<TTarget>) this.hookIndexesByType.getOrDefault(type, ResearchHookIndex.empty());
+    }
+
+    /**
+     * Returns the ids of all known graphs, i.e. every graph that contributes at least one fact, node or value.
+     * A graph does not need a {@code nodes.json} to be known.
+     */
+    public Set<Identifier> graphIds() {
+        var graphIds = new HashSet<Identifier>();
+        graphIds.addAll(this.graphFactIds.keySet());
+        graphIds.addAll(this.graphNodeIds.keySet());
+        graphIds.addAll(this.graphValueIds.keySet());
+        return Set.copyOf(graphIds);
     }
 
     public static ResearchData validate(
@@ -99,7 +151,8 @@ public record ResearchData(
             List<ResearchHookDefinition<?>> hooks,
             Map<Identifier, Set<Identifier>> graphFactIds,
             Map<Identifier, Set<Identifier>> graphNodeIds,
-            Map<Identifier, Set<Identifier>> graphValueIds
+            Map<Identifier, Set<Identifier>> graphValueIds,
+            List<ResearchGroupDefinition> groups
     ) {
         var factIds = uniqueIds(facts.stream().map(ResearchFactDefinition::id).toList(), "fact");
         var nodeIds = uniqueIds(nodes.stream().map(ResearchNodeDefinition::id).toList(), "node");
@@ -181,8 +234,11 @@ public record ResearchData(
                 nodeStageRules.add(new NodeStageRule(
                         node.id(),
                         i,
+                        stage.id(),
+                        stage.completion(),
                         List.copyOf(stage.requiredFacts()),
-                        List.copyOf(stage.requiredValues())
+                        List.copyOf(stage.requiredValues()),
+                        List.copyOf(stage.effects())
                 ));
             }
 
@@ -194,12 +250,29 @@ public record ResearchData(
             ));
         }
 
-        // Group all hooks by trigger type
+        // Group all hooks by trigger type and index them
+        Map<TriggerType<?, ?>, ResearchHookIndex<?>> hookIndexesByType = new HashMap<>();
         Map<TriggerType<?, ?>, List<ResearchHookDefinition<?>>> grouped = new HashMap<>();
         for (var hook : hooks) {
             grouped.computeIfAbsent(hook.triggerType(), k -> new ArrayList<>())
                     .add(hook);
         }
+        for (var entry : grouped.entrySet()) {
+            hookIndexesByType.put(entry.getKey(), ResearchHookIndex.of(entry.getKey(), entry.getValue()));
+        }
+
+        var stageRulesByLocation = new HashMap<StageLocation, NodeStageRule>();
+        for (var rule : nodeStageRules) {
+            stageRulesByLocation.put(new StageLocation(rule.nodeId(), rule.stageIndex()), rule);
+        }
+        var stageIdsByLocation = new HashMap<StageLocation, Identifier>();
+        stageLocations.forEach((stageId, location) -> stageIdsByLocation.put(location, stageId));
+        var stageCountsByNode = new HashMap<Identifier, Integer>();
+        for (var rule : nodeStageRules) {
+            stageCountsByNode.merge(rule.nodeId(), 1, Integer::sum);
+        }
+        var groupDefinitions = validateGroups(groups);
+        var triggerGroupIds = triggerGroups(groupDefinitions);
 
         // Build toast lookup maps
         var factToasts = facts.stream()
@@ -219,7 +292,7 @@ public record ResearchData(
                 Set.copyOf(stageIds),
                 nodeRules,
                 nodeStageRules,
-                grouped,
+                Map.copyOf(hookIndexesByType),
                 graphFactIds,
                 graphNodeIds,
                 graphValueIds,
@@ -227,8 +300,50 @@ public record ResearchData(
                 Map.copyOf(valueToasts),
                 Map.copyOf(nodeToasts),
                 Map.copyOf(stageToasts),
-                Map.copyOf(stageLocations)
+                Map.copyOf(stageLocations),
+                Map.copyOf(stageRulesByLocation),
+                Map.copyOf(stageIdsByLocation),
+                Map.copyOf(stageCountsByNode),
+                facts.stream().collect(Collectors.toUnmodifiableMap(ResearchFactDefinition::id, Function.identity())),
+                values.stream().collect(Collectors.toUnmodifiableMap(ResearchValueDefinition::id, Function.identity())),
+                nodes.stream().collect(Collectors.toUnmodifiableMap(ResearchNodeDefinition::id, Function.identity())),
+                groupDefinitions,
+                triggerGroupIds
         );
+    }
+
+    /**
+     * Merges the built-in groups with the given ones. Given groups replace built-ins with the same id.
+     * Returns the groups by id, ordered by sort order then id.
+     */
+    private static Map<Identifier, ResearchGroupDefinition> validateGroups(List<ResearchGroupDefinition> groups) {
+        var byId = new LinkedHashMap<Identifier, ResearchGroupDefinition>();
+        for (var group : ResearchGroups.builtins()) {
+            byId.put(group.id(), group);
+        }
+        ensureUniqueIds(groups.stream().map(ResearchGroupDefinition::id).toList(), "group");
+        for (var group : groups) {
+            byId.put(group.id(), group);
+        }
+        var sorted = new ArrayList<>(byId.values());
+        sorted.sort(Comparator.comparingInt(ResearchGroupDefinition::sortOrder).thenComparing(group -> group.id().toString()));
+
+        var result = new LinkedHashMap<Identifier, ResearchGroupDefinition>();
+        sorted.forEach(group -> result.put(group.id(), group));
+        return Collections.unmodifiableMap(result);
+    }
+
+    private static Map<Identifier, Identifier> triggerGroups(Map<Identifier, ResearchGroupDefinition> groups) {
+        var result = new HashMap<Identifier, Identifier>();
+        for (var group : groups.values()) {
+            for (var triggerType : group.triggerTypes()) {
+                var existing = result.putIfAbsent(triggerType, group.id());
+                if (existing != null && !existing.equals(group.id())) {
+                    Modonomicon.LOG.warn("Trigger type '{}' is claimed by groups '{}' and '{}', using '{}'", triggerType, existing, group.id(), existing);
+                }
+            }
+        }
+        return Collections.unmodifiableMap(result);
     }
 
     private static Set<Identifier> uniqueIds(List<Identifier> ids, String type) {
@@ -261,13 +376,17 @@ public record ResearchData(
 
     /**
      * Stage advancement rule: stage advances when all required facts are present
-     * and all required values have reached their thresholds.
+     * and all required values have reached their thresholds. Manual stages never advance automatically,
+     * see {@link ResearchStageCompletion}.
      */
     public record NodeStageRule(
             Identifier nodeId,
             int stageIndex,
+            Identifier stageId,
+            ResearchStageCompletion completion,
             List<Identifier> requiredFactIds,
-            List<ResearchNodeDefinition.ValueRequirement> requiredValueRequirements
+            List<ResearchNodeDefinition.ValueRequirement> requiredValueRequirements,
+            List<ResearchEffect> effects
     ) {
     }
 

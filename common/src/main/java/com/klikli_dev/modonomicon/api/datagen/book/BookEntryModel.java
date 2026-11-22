@@ -18,10 +18,12 @@ import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchStageCo
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageRef;
 import com.klikli_dev.modonomicon.api.datagen.book.page.BookPageModel;
-import com.klikli_dev.modonomicon.book.conditions.BookNoneCondition;
+import com.klikli_dev.modonomicon.book.ScholarshipDisplay;
+import com.klikli_dev.modonomicon.book.entries.BookEntryResearch;
 import com.klikli_dev.modonomicon.book.entries.BookContentEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntry;
 import com.klikli_dev.modonomicon.book.entries.BookEntryNameStyle;
+import com.klikli_dev.modonomicon.book.entries.BookEntryTab;
 import com.klikli_dev.modonomicon.book.entries.CategoryLinkBookEntry;
 import com.klikli_dev.modonomicon.book.entries.EntryLinkBookEntry;
 import com.klikli_dev.modonomicon.book.entries.EntryNameRenderType;
@@ -38,9 +40,11 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.phys.Vec2;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class BookEntryModel {
@@ -75,6 +79,12 @@ public class BookEntryModel {
     protected List<ItemStackTemplate> markerUntilAcquiredTargets = new ArrayList<>();
     protected Identifier categoryToOpen;
     protected Identifier commandToRunOnFirstRead;
+    @Nullable
+    protected Identifier researchNode;
+    @Nullable
+    protected ScholarshipDisplay scholarshipDisplay;
+    @Nullable
+    protected ResearchStageRef researchCompletionStage;
     protected Identifier entryToOpen;
     protected List<Either<ItemStackTemplate, Ingredient>> associatedItems = new ArrayList<>();
 
@@ -86,6 +96,13 @@ public class BookEntryModel {
      * If false, pages are included inline in the entry's JSON (legacy behavior).
      */
     protected boolean generatePagesAsFiles = true;
+    protected List<BookEntryTabModel> tabs = new ArrayList<>();
+    /**
+     * If true (default), tabs are generated as separate JSON files in
+     * `entries/&lt;entry-id&gt;/tabs/&lt;tab-id&gt;.json`.
+     * If false, tabs are included inline in the entry's JSON.
+     */
+    protected boolean generateTabsAsFiles = true;
 
     protected BookEntryModel(Identifier id, String name) {
         this.id = id;
@@ -135,7 +152,11 @@ public class BookEntryModel {
             List<BookPage> pagesToEncode = this.generatePagesAsFiles
                     ? List.of()
                     : this.pages.stream().map(page -> page.toBookPage(provider)).collect(Collectors.toList());
-            entry = new BookContentEntry(this.id, data, this.commandToRunOnFirstRead, pagesToEncode);
+            //tabs are written as files unless generateTabsAsFiles is disabled, then they are inline
+            List<BookEntryTab> tabsToEncode = this.generateTabsAsFiles
+                    ? List.of()
+                    : this.tabs.stream().map(tab -> tab.toBookEntryTab(provider)).collect(Collectors.toList());
+            entry = new BookContentEntry(this.id, data, this.commandToRunOnFirstRead, pagesToEncode, tabsToEncode, this.researchToEncode());
         }
 
         var json = BookEntry.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), entry)
@@ -149,6 +170,12 @@ public class BookEntryModel {
         if (!this.generatePagesAsFiles && json.get("pages") instanceof JsonArray inlinePages) {
             for (int i = 0; i < inlinePages.size() && i < this.pages.size(); i++) {
                 this.pages.get(i).addLoadConditionToJson(inlinePages.get(i).getAsJsonObject(), this.getId(), provider);
+            }
+        }
+
+        if (!this.generateTabsAsFiles && json.get("tabs") instanceof JsonArray inlineTabs) {
+            for (int i = 0; i < inlineTabs.size() && i < this.tabs.size(); i++) {
+                this.tabs.get(i).addLoadConditionToJson(inlineTabs.get(i).getAsJsonObject(), this.getId(), provider);
             }
         }
 
@@ -302,6 +329,10 @@ public class BookEntryModel {
 
     public List<BookPageModel<?>> getPages() {
         return this.pages;
+    }
+
+    public List<BookEntryTabModel> getTabs() {
+        return this.tabs;
     }
 
     /**
@@ -604,6 +635,107 @@ public class BookEntryModel {
     }
 
     /**
+     * Links this entry to the research node that tracks its research. The entry is complete once the node is complete,
+     * and the requirements of the node's next stage are shown in the entry.
+     * <p>
+     * This is a low-level escape hatch for hand-authored nodes. To declare a research from requirements, use
+     * {@code EntryProvider#stage(String, Consumer)} instead, which generates the node, its stages and their facts.
+     * Do not combine it with stages in the same entry.
+     */
+    public BookEntryModel withResearch(ResearchNodeRef node) {
+        this.researchNode = node.id();
+        return this;
+    }
+
+    /**
+     * Links this entry to a hand-authored research node like {@link #withResearch(ResearchNodeRef)}, and names the node's
+     * last stage. Child entries of this entry require the completion of that stage, i.e. the completion of the node.
+     * <p>
+     * This is a low-level escape hatch for hand-authored nodes. To declare a research from requirements, use
+     * {@code EntryProvider#stage(String, Consumer)} instead, which generates the node, its stages and their facts.
+     * Do not combine it with stages in the same entry.
+     */
+    public BookEntryModel withResearch(ResearchNodeRef node, ResearchStageRef completionStage) {
+        this.withResearch(node);
+        this.researchCompletionStage = completionStage;
+        return this;
+    }
+
+    public boolean hasResearch() {
+        return this.researchNode != null;
+    }
+
+    @Nullable
+    public Identifier getResearchNode() {
+        return this.researchNode;
+    }
+
+    @Nullable
+    public ResearchStageRef getResearchCompletionStage() {
+        return this.researchCompletionStage;
+    }
+
+    /**
+     * Overrides the book's default scholarship display for this entry. Only has an effect together with a research.
+     */
+    public BookEntryModel withScholarshipDisplay(ScholarshipDisplay scholarshipDisplay) {
+        this.scholarshipDisplay = scholarshipDisplay;
+        return this;
+    }
+
+    @Nullable
+    public ScholarshipDisplay getScholarshipDisplay() {
+        return this.scholarshipDisplay;
+    }
+
+    @Nullable
+    private BookEntryResearch researchToEncode() {
+        if (this.researchNode == null) {
+            return null;
+        }
+        return new BookEntryResearch(this.researchNode, Optional.ofNullable(this.scholarshipDisplay));
+    }
+
+    /**
+     * Adds the given tab to the entry's tabs.
+     * The tab's sort number is automatically set to its position in the list if not already set.
+     */
+    public BookEntryModel withTab(BookEntryTabModel tab) {
+        if (tab.sortNumber < 0) {
+            tab.sortNumber = this.tabs.size();
+        }
+        this.tabs.add(tab);
+        return this;
+    }
+
+    public BookEntryModel withTabs(BookEntryTabModel... tabs) {
+        for (var tab : tabs) {
+            this.withTab(tab);
+        }
+        return this;
+    }
+
+    /**
+     * Returns whether tabs should be generated as separate JSON files.
+     * Default is {@code true}.
+     */
+    public boolean generateTabsAsFiles() {
+        return this.generateTabsAsFiles;
+    }
+
+    /**
+     * Controls whether tabs are written as separate files.
+     * <p>
+     * If {@code true} (default), each tab is written to its own file at
+     * {@code entries/<entry-id>/tabs/<tab-id>.json}.
+     * If {@code false}, tabs are included inline in the entry's JSON.
+     */
+    public BookEntryModel withGenerateTabsAsFiles(boolean generateTabsAsFiles) {
+        this.generateTabsAsFiles = generateTabsAsFiles;
+        return this;
+    }
+
+    /**
      * Sets the condition that needs to be met for this entry to be unlocked.
      * If no condition is set, the entry will be unlocked by default.
      * Use {@link com.klikli_dev.modonomicon.api.datagen.book.condition.BookAndConditionModel} or {@link com.klikli_dev.modonomicon.api.datagen.book.condition.BookOrConditionModel} to combine multiple conditions.
@@ -817,4 +949,3 @@ public class BookEntryModel {
         return this;
     }
 }
-

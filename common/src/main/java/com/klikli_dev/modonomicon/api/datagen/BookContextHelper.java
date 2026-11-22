@@ -22,6 +22,7 @@ public class BookContextHelper {
     protected String categoryId;
     protected String entryId;
     protected String pageId;
+    protected String tabId;
 
     public BookContextHelper(String modId) {
         this.modId = modId;
@@ -39,11 +40,18 @@ public class BookContextHelper {
 
     public BookContextHelper entry(String entry) {
         this.entryId = entry;
+        this.pageId = null;
+        this.tabId = null;
         return this;
     }
 
     public BookContextHelper page(String page) {
         this.pageId = page;
+        return this;
+    }
+
+    public BookContextHelper tab(String tab) {
+        this.tabId = tab;
         return this;
     }
 
@@ -126,6 +134,18 @@ public class BookContextHelper {
 
     public String pageText() {
         return this.page() + ".text";
+    }
+
+    public String tab() {
+        return this.entry() + ".tab." + this.tabId;
+    }
+
+    public String tabTitle() {
+        return this.tab() + ".title";
+    }
+
+    public String tabText() {
+        return this.tab() + ".text";
     }
 
     //TODO: should we cache the key everytime we get a string so we can compare in lang gen?

@@ -51,7 +51,7 @@ public abstract class SingleResearchSubProvider extends ResearchProviderBase imp
     }
 
     /**
-     * Implement this to author the research facts, nodes, and ingress mappings for this bundle.
+     * Implement this to author the research facts, nodes, and hook mappings for this bundle.
      */
     protected abstract void generateResearch();
 }

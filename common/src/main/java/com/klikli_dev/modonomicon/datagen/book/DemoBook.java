@@ -10,17 +10,10 @@ import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.api.datagen.SingleBookSubProvider;
 import com.klikli_dev.modonomicon.api.datagen.book.BookCommandModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
-import com.klikli_dev.modonomicon.datagen.book.demo.AcquiringCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.CraftingCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.ConditionalCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FeaturesCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.FormattingCategory;
 import com.klikli_dev.modonomicon.datagen.book.demo.IndexModeCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.MarkersCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.StagesCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.ValuesCategory;
-import com.klikli_dev.modonomicon.datagen.book.demo.features.ConditionRootEntry;
-import com.klikli_dev.modonomicon.datagen.research.DemoResearch;
+import com.klikli_dev.modonomicon.datagen.book.demo.ScholarshipCategory;
 import net.minecraft.resources.Identifier;
 
 public class DemoBook extends SingleBookSubProvider {
@@ -34,8 +27,8 @@ public class DemoBook extends SingleBookSubProvider {
     @Override
     protected BookModel additionalSetup(BookModel book) {
         //if we want to handle a second language in here we can add book-related (not category or entry or page) translations here
-        //this.add(this.lang("ru_ru"), this.context().bookName(), "Демонстрационная книга");
-        //this.add(lang("ru_ru"), this.context().bookTooltip(), "Книга для демонстрации и тестирования функций \"Модономикона\".");
+        //this.add(this.lang("ru_ru"), this.context().bookName(), "Ð”ÐµÐ¼Ð¾Ð½ÑÑ‚Ñ€Ð°Ñ†Ð¸Ð¾Ð½Ð½Ð°Ñ ÐºÐ½Ð¸Ð³Ð°");
+        //this.add(lang("ru_ru"), this.context().bookTooltip(), "ÐšÐ½Ð¸Ð³Ð° Ð´Ð»Ñ Ð´ÐµÐ¼Ð¾Ð½ÑÑ‚Ñ€Ð°Ñ†Ð¸Ð¸ Ð¸ Ñ‚ÐµÑÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¹ \"ÐœÐ¾Ð´Ð¾Ð½Ð¾Ð¼Ð¸ÐºÐ¾Ð½Ð°\".");
 
         var commandEntryCommand = BookCommandModel.create(this.modLoc("test_command"), "/give @s minecraft:apple 1")
                 .withSuccessMessage("modonomicon.command.test_command.success");
@@ -64,21 +57,15 @@ public class DemoBook extends SingleBookSubProvider {
 
     @Override
     protected void generateCategories() {
-        //for the two big categories we use the category provider
+        //for the two big categories we use the category provider, the sort numbers keep the tab order explicit
         var featuresCategory = this.add(new FeaturesCategory(this).generate());
-        var formattingCategory = this.add(new FormattingCategory(this).generate());
 
-        var conditionalCategory = this.add(new ConditionalCategory(this).generate())
-                .withCondition(DemoResearch.CONDITION_LEVEL_1);
+        //the scholarship category is the storyline of the book, it is not gated, so it is shown right after features
+        var scholarshipCategory = this.add(new ScholarshipCategory(this).generate().withSortNumber(2));
 
-        var indexModeCategory = this.add(new IndexModeCategory(this).generate());
+        var formattingCategory = this.add(new FormattingCategory(this).generate().withSortNumber(3));
 
-        var valuesCategory = this.add(new ValuesCategory(this).generate());
-
-        var craftingCategory = this.add(new CraftingCategory(this).generate());
-        var acquiringCategory = this.add(new AcquiringCategory(this).generate());
-        var stagesCategory = this.add(new StagesCategory(this).generate());
-        var markersCategory = this.add(new MarkersCategory(this).generate());
+        var indexModeCategory = this.add(new IndexModeCategory(this).generate().withSortNumber(4));
     }
 
     @Override
@@ -91,3 +78,4 @@ public class DemoBook extends SingleBookSubProvider {
         return "A book to showcase & test Modonomicon features.";
     }
 }
+

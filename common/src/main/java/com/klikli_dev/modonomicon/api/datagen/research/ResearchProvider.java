@@ -10,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.klikli_dev.modonomicon.api.ModonomiconConstants;
 import com.klikli_dev.modonomicon.api.datagen.LanguageProviderCache;
+import com.klikli_dev.modonomicon.research.data.ResearchGroupDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchFactDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
@@ -104,12 +105,24 @@ public class ResearchProvider implements DataProvider {
                 var data = entry.getValue().data();
                 var base = dataFolder.resolve(id.getNamespace()).resolve(ModonomiconConstants.Data.RESEARCH_DATA_PATH).resolve(id.getPath());
 
-                futures.add(this.save(cache, ResearchFactDefinition.CODEC, data.factDefinitions(), base.resolve("facts.json")));
-                futures.add(this.save(cache, ResearchValueDefinition.CODEC, data.valueDefinitions(), base.resolve("values.json")));
-                futures.add(this.save(cache, ResearchNodeDefinition.CODEC, data.nodeDefinitions(), base.resolve("nodes.json")));
+                // Empty lists are not written. ResearchDataManager treats a missing file the same as an empty one.
+                if (!data.factDefinitions().isEmpty()) {
+                    futures.add(this.save(cache, ResearchFactDefinition.CODEC, data.factDefinitions(), base.resolve("facts.json")));
+                }
+                if (!data.valueDefinitions().isEmpty()) {
+                    futures.add(this.save(cache, ResearchValueDefinition.CODEC, data.valueDefinitions(), base.resolve("values.json")));
+                }
+                if (!data.nodeDefinitions().isEmpty()) {
+                    futures.add(this.save(cache, ResearchNodeDefinition.CODEC, data.nodeDefinitions(), base.resolve("nodes.json")));
+                }
+                if (!data.groupDefinitions().isEmpty()) {
+                    futures.add(this.save(cache, ResearchGroupDefinition.CODEC, data.groupDefinitions(), base.resolve("groups.json")));
+                }
 
                 // All hooks (all trigger types) go into a single hooks.json
-                futures.add(this.save(cache, ResearchHookDefinition.CODEC, data.hookDefinitions(), base.resolve("hooks.json")));
+                if (!data.hookDefinitions().isEmpty()) {
+                    futures.add(this.save(cache, ResearchHookDefinition.CODEC, data.hookDefinitions(), base.resolve("hooks.json")));
+                }
             }
 
             return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));

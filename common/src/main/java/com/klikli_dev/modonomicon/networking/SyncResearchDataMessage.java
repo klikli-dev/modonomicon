@@ -8,6 +8,7 @@ package com.klikli_dev.modonomicon.networking;
 
 import com.klikli_dev.modonomicon.Modonomicon;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
+import com.klikli_dev.modonomicon.research.data.ResearchGroupDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchFactDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
@@ -39,6 +40,7 @@ public class SyncResearchDataMessage implements Message {
     public List<ResearchNodeDefinition> nodes;
     public List<ResearchValueDefinition> values;
     public List<ResearchHookDefinition<?>> hooks;
+    public List<ResearchGroupDefinition> groups;
     public Map<Identifier, Set<Identifier>> graphFactIds;
     public Map<Identifier, Set<Identifier>> graphNodeIds;
     public Map<Identifier, Set<Identifier>> graphValueIds;
@@ -48,6 +50,7 @@ public class SyncResearchDataMessage implements Message {
             List<ResearchNodeDefinition> nodes,
             List<ResearchValueDefinition> values,
             List<ResearchHookDefinition<?>> hooks,
+            List<ResearchGroupDefinition> groups,
             Map<Identifier, Set<Identifier>> graphFactIds,
             Map<Identifier, Set<Identifier>> graphNodeIds,
             Map<Identifier, Set<Identifier>> graphValueIds
@@ -56,6 +59,7 @@ public class SyncResearchDataMessage implements Message {
         this.nodes = List.copyOf(nodes);
         this.values = List.copyOf(values);
         this.hooks = List.copyOf(hooks);
+        this.groups = List.copyOf(groups);
         this.graphFactIds = copyGraphMap(graphFactIds);
         this.graphNodeIds = copyGraphMap(graphNodeIds);
         this.graphValueIds = copyGraphMap(graphValueIds);
@@ -70,6 +74,7 @@ public class SyncResearchDataMessage implements Message {
         writeList(buf, this.nodes, ResearchNodeDefinition.STREAM_CODEC);
         writeList(buf, this.values, ResearchValueDefinition.STREAM_CODEC);
         writeList(buf, this.hooks, ResearchHookDefinition.STREAM_CODEC);
+        writeList(buf, this.groups, ResearchGroupDefinition.STREAM_CODEC);
         writeGraphMap(buf, this.graphFactIds);
         writeGraphMap(buf, this.graphNodeIds);
         writeGraphMap(buf, this.graphValueIds);
@@ -80,6 +85,7 @@ public class SyncResearchDataMessage implements Message {
         this.nodes = readList(buf, ResearchNodeDefinition.STREAM_CODEC);
         this.values = readList(buf, ResearchValueDefinition.STREAM_CODEC);
         this.hooks = readList(buf, ResearchHookDefinition.STREAM_CODEC);
+        this.groups = readList(buf, ResearchGroupDefinition.STREAM_CODEC);
         this.graphFactIds = readGraphMap(buf);
         this.graphNodeIds = readGraphMap(buf);
         this.graphValueIds = readGraphMap(buf);

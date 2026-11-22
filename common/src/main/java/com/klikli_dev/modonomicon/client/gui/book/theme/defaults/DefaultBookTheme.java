@@ -27,6 +27,12 @@ public class DefaultBookTheme implements BookTheme {
     private final GuiSprite doublePageBackground;
     private final GuiSprite singlePageBackground;
     private final GuiSprite titleSeparator;
+    private final GuiSprite scholarshipSeparator;
+    private final GuiSprite scholarshipCheck;
+    private final GuiSprite completeButtonNormal;
+    private final GuiSprite completeButtonHover;
+    private final GuiSprite completeButtonDisabled;
+    private final GuiSprite scholarshipRowLine;
     private final GuiSprite lockIcon;
     private final GuiButtonSprites unreadIndicator;
     private final GuiSprite markerIndicator;
@@ -43,6 +49,12 @@ public class DefaultBookTheme implements BookTheme {
     private final GuiButtonSprites categoryButton;
     private final GuiSprite collectionButtonNormal;
     private final GuiSprite collectionButtonGolden;
+    private final GuiButtonSprites entryTabRight;
+    private final GuiButtonSprites entryTabLeft;
+    private final GuiSprite entryTabRightActive;
+    private final GuiSprite entryTabLeftActive;
+    private final GuiSprite tabPageBackground;
+    private final GuiButtonSprites tabCloseButton;
     private final GuiSprite searchButtonIcon;
     private final GuiSprite showBookmarksButtonIcon;
     private final GuiSprite showRecentlyUnlockedButtonIcon;
@@ -101,6 +113,36 @@ public class DefaultBookTheme implements BookTheme {
         @Override
         public GuiSprite titleSeparator() {
             return DefaultBookTheme.this.titleSeparator;
+        }
+
+        @Override
+        public GuiSprite scholarshipSeparator() {
+            return DefaultBookTheme.this.scholarshipSeparator;
+        }
+
+        @Override
+        public GuiSprite scholarshipCheck() {
+            return DefaultBookTheme.this.scholarshipCheck;
+        }
+
+        @Override
+        public GuiSprite completeButtonNormal() {
+            return DefaultBookTheme.this.completeButtonNormal;
+        }
+
+        @Override
+        public GuiSprite completeButtonHover() {
+            return DefaultBookTheme.this.completeButtonHover;
+        }
+
+        @Override
+        public GuiSprite completeButtonDisabled() {
+            return DefaultBookTheme.this.completeButtonDisabled;
+        }
+
+        @Override
+        public GuiSprite scholarshipRowLine() {
+            return DefaultBookTheme.this.scholarshipRowLine;
         }
 
         @Override
@@ -181,6 +223,36 @@ public class DefaultBookTheme implements BookTheme {
         @Override
         public GuiSprite collectionButtonGolden() {
             return DefaultBookTheme.this.collectionButtonGolden;
+        }
+
+        @Override
+        public GuiButtonSprites entryTabRight() {
+            return DefaultBookTheme.this.entryTabRight;
+        }
+
+        @Override
+        public GuiButtonSprites entryTabLeft() {
+            return DefaultBookTheme.this.entryTabLeft;
+        }
+
+        @Override
+        public GuiSprite entryTabRightActive() {
+            return DefaultBookTheme.this.entryTabRightActive;
+        }
+
+        @Override
+        public GuiSprite entryTabLeftActive() {
+            return DefaultBookTheme.this.entryTabLeftActive;
+        }
+
+        @Override
+        public GuiSprite tabPageBackground() {
+            return DefaultBookTheme.this.tabPageBackground;
+        }
+
+        @Override
+        public GuiButtonSprites tabCloseButton() {
+            return DefaultBookTheme.this.tabCloseButton;
         }
 
         @Override
@@ -413,6 +485,12 @@ public class DefaultBookTheme implements BookTheme {
         this.doublePageBackground = this.sprite("content/backgrounds/book/double_page_background.png", 272, 178);
         this.singlePageBackground = this.sprite("content/backgrounds/book/single_page_background.png", 145, 178);
         this.titleSeparator = this.sprite("content/decorations/book/title_separator.png", 110, 3);
+        this.scholarshipSeparator = this.sprite("content/decorations/book/scholarship_separator.png", 112, 7);
+        this.scholarshipCheck = this.sprite("content/icons/book/scholarship_check.png", 10, 7);
+        this.completeButtonNormal = this.sprite("content/buttons/scholarship/complete_button_normal.png", 12, 10);
+        this.completeButtonHover = this.sprite("content/buttons/scholarship/complete_button_hover.png", 12, 10);
+        this.completeButtonDisabled = this.sprite("content/buttons/scholarship/complete_button_disabled.png", 12, 10);
+        this.scholarshipRowLine = this.sprite("content/decorations/book/scholarship_row_line.png", 64, 3);
         this.lockIcon = this.sprite("content/icons/book/lock_icon.png", 16, 16);
         this.unreadIndicator = this.button("content/indicators/book/unread_indicator", 11, 11, true);
         var markerOverride = data.content().markerIndicator();
@@ -435,6 +513,14 @@ public class DefaultBookTheme implements BookTheme {
                 : new GuiButtonSprites(defaultCategoryButtonSprite, defaultCategoryButtonSprite);
         this.collectionButtonNormal = this.sprite("content/buttons/collection/collection_button_normal.png", 44, 20);
         this.collectionButtonGolden = this.sprite("content/buttons/collection/collection_button_golden.png", 44, 20);
+        var entryTabRightSprite = this.sprite("content/buttons/entry_tab/entry_tab_right.png", 44, 20);
+        var entryTabLeftSprite = this.sprite("content/buttons/entry_tab/entry_tab_left.png", 44, 20);
+        this.entryTabRight = new GuiButtonSprites(entryTabRightSprite, entryTabRightSprite);
+        this.entryTabLeft = new GuiButtonSprites(entryTabLeftSprite, entryTabLeftSprite);
+        this.entryTabRightActive = this.sprite("content/buttons/entry_tab/entry_tab_right_active.png", 44, 20);
+        this.entryTabLeftActive = this.sprite("content/buttons/entry_tab/entry_tab_left_active.png", 44, 20);
+        this.tabPageBackground = this.sprite("content/backgrounds/book/tab_page_background.png", 145, 178);
+        this.tabCloseButton = this.button("content/buttons/entry_tab/tab_close_button", 12, 12, true);
         this.searchButtonIcon = this.sprite("content/buttons/collection/search_icon.png", 16, 16);
         this.showBookmarksButtonIcon = this.sprite("content/buttons/collection/show_bookmarks_icon.png", 16, 16);
         this.showRecentlyUnlockedButtonIcon = this.sprite("content/buttons/collection/unlocked_icon.png", 16, 16);

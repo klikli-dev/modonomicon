@@ -1,0 +1,13 @@
+{
+  "type": "modonomicon:text",
+  "condition": {
+    "type": "modonomicon:research_stage_completed",
+    "node_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_notes",
+    "stage_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_notes/stages/observation"
+  },
+  "id": "observation_done",
+  "show_title_separator": true,
+  "sort_number": 1,
+  "text": "book.modonomicon.demo.scholarship.notes.observation_done.text",
+  "title": "book.modonomicon.demo.scholarship.notes.observation_done.title"
+}

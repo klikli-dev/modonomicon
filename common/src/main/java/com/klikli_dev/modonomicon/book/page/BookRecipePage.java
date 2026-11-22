@@ -101,6 +101,7 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage imple
 
     protected BookTextHolder title1;
     protected ResourceKey<Recipe<?>> recipeKey1;
+    protected ItemStack tabIcon = ItemStack.EMPTY;
 
     /**
      * Can be null during serverside construction. On both server and client it can be null if the recipe does not exist.
@@ -182,6 +183,11 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage imple
 
     public BookTextHolder getTitle1() {
         return this.title1;
+    }
+
+    @Override
+    public ItemStack getTabIcon() {
+        return this.tabIcon;
     }
 
     public ResourceKey<Recipe<?>> getRecipeKey1() {
@@ -274,6 +280,8 @@ public abstract class BookRecipePage<T extends Recipe<?>> extends BookPage imple
         }
 
         this.swapRecipes();
+
+        this.tabIcon = this.recipeDisplayEntry1 != null ? this.getRecipeOutput(level, this.recipeDisplayEntry1) : ItemStack.EMPTY;
 
         if (this.recipeDisplayEntry1 != null && this.title1.isEmpty()) {
             //use recipe title if we don't have a custom one

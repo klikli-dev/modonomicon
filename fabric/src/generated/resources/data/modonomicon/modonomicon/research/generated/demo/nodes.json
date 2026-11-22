@@ -1,33 +1,294 @@
 [
   {
-    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/required/features_condition_level_1",
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/required/scholarship_trailing_page",
     "required_facts": [
-      "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_1"
+      "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_trailing_page"
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/required/markers_marker_intro",
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/required/scholarship_sources",
     "required_facts": [
-      "modonomicon:generated/demo/facts/entry_viewed_once/markers_marker_intro"
+      "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_sources"
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/item_crafted/minecraft/stick",
+    "id": "modonomicon:generated/demo/nodes/item_crafted/minecraft/crafting_table",
     "required_facts": [
-      "modonomicon:generated/demo/facts/item_crafted/minecraft/stick"
+      "modonomicon:generated/demo/facts/item_crafted/minecraft/crafting_table"
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/item_acquired/minecraft/cobblestone",
+    "id": "modonomicon:generated/demo/nodes/item_crafted/minecraft/writable_book",
     "required_facts": [
-      "modonomicon:generated/demo/facts/item_acquired/minecraft/cobblestone"
+      "modonomicon:generated/demo/facts/item_crafted/minecraft/writable_book"
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_two_parents",
+    "id": "modonomicon:generated/demo/nodes/item_acquired/tag_minecraft/logs",
     "required_facts": [
-      "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_root",
-      "modonomicon:generated/demo/facts/entry_viewed_once/features_condition_level_2"
+      "modonomicon:generated/demo/facts/item_acquired/tag_minecraft/logs"
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/item_acquired/minecraft/diamond",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/item_acquired/minecraft/diamond"
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_notes",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_notes"
+    ],
+    "stages": [
+      {
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.scholarship.notes.stage.observation.description"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.scholarship.notes.stage.observation.title"
+          }
+        },
+        "effects": [
+          {
+            "type": "modonomicon:experience",
+            "amount": 10
+          }
+        ],
+        "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_notes/stages/observation",
+        "required_facts": [
+          "modonomicon:generated/demo/nodes/entry_research/scholarship_notes/stages/observation/observation"
+        ]
+      },
+      {
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.scholarship.notes.stage.transcription.description"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.scholarship.notes.stage.transcription.title"
+          }
+        },
+        "effects": [
+          {
+            "type": "modonomicon:add_value",
+            "value": "modonomicon:demo/insight"
+          },
+          {
+            "type": "modonomicon:grant_fact",
+            "fact": "modonomicon:demo/research/notes_read"
+          }
+        ],
+        "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_notes/stages/transcription",
+        "required_facts": [
+          "modonomicon:demo/research/note_taken",
+          "modonomicon:demo/research/note_crafted",
+          "modonomicon:demo/research/note_studied"
+        ]
+      },
+      {
+        "completion": {
+          "cost": [
+            {
+              "type": "modonomicon:item",
+              "count": 2,
+              "item": {
+                "count": 2,
+                "id": "minecraft:iron_ingot"
+              }
+            }
+          ],
+          "mode": "manual"
+        },
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.scholarship.notes.stage.synthesis.description"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.scholarship.notes.stage.synthesis.title"
+          }
+        },
+        "effects": [
+          {
+            "type": "modonomicon:give_item",
+            "stack": {
+              "id": "minecraft:emerald"
+            }
+          },
+          {
+            "type": "modonomicon:function",
+            "function": "modonomicon:demo/synthesis_effect"
+          }
+        ],
+        "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_notes/stages/synthesis"
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_first_page_display",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_first_page_display"
+    ],
+    "stages": [
+      {
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.scholarship.first_page_display.stage.desk.description"
+          },
+          "icon": {
+            "id": "minecraft:crafting_table"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.scholarship.first_page_display.stage.desk.title"
+          }
+        },
+        "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_first_page_display/stages/desk",
+        "required_facts": [
+          "modonomicon:generated/demo/facts/item_crafted/minecraft/crafting_table",
+          "modonomicon:generated/demo/facts/item_acquired/tag_minecraft/logs"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_trailing_page",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_trailing_page"
+    ],
+    "stages": [
+      {
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.scholarship.trailing_page.stage.paper.description"
+          },
+          "icon": {
+            "id": "minecraft:paper"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.scholarship.trailing_page.stage.paper.title"
+          }
+        },
+        "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_trailing_page/stages/paper",
+        "required_values": [
+          {
+            "threshold": 5,
+            "value_id": "modonomicon:demo/research/paper_collected"
+          }
+        ]
+      },
+      {
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.scholarship.trailing_page.stage.sources.description"
+          },
+          "icon": {
+            "id": "minecraft:book"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.scholarship.trailing_page.stage.sources.title"
+          }
+        },
+        "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_trailing_page/stages/sources",
+        "required_values": [
+          {
+            "threshold": 1,
+            "value_id": "modonomicon:demo/research/sources_consulted"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_placed_pages",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_placed_pages"
+    ],
+    "stages": [
+      {
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.scholarship.placed_pages.stage.iron.description"
+          },
+          "icon": {
+            "id": "minecraft:iron_ingot"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.scholarship.placed_pages.stage.iron.title"
+          }
+        },
+        "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_placed_pages/stages/iron",
+        "required_facts": [
+          "modonomicon:demo/research/iron_ingot_acquired"
+        ]
+      },
+      {
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.scholarship.placed_pages.stage.ink.description"
+          },
+          "icon": {
+            "id": "minecraft:ink_sac"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.scholarship.placed_pages.stage.ink.title"
+          }
+        },
+        "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_placed_pages/stages/ink",
+        "required_facts": [
+          "modonomicon:demo/research/ink_sac_acquired"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_two_parents",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_two_parents"
+    ],
+    "stages": [
+      {
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.scholarship.two_parents.stage.ride.description"
+          },
+          "icon": {
+            "id": "minecraft:oak_boat"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.scholarship.two_parents.stage.ride.title"
+          }
+        },
+        "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_two_parents/stages/ride",
+        "required_facts": [
+          "modonomicon:demo/advancement_ride_boat_with_goat_completed"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_condition_advancement",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/scholarship_condition_advancement"
+    ],
+    "stages": [
+      {
+        "display": {
+          "description": {
+            "translate": "book.modonomicon.demo.scholarship.condition_advancement.stage.mine.description"
+          },
+          "icon": {
+            "id": "minecraft:stone_pickaxe"
+          },
+          "title": {
+            "translate": "book.modonomicon.demo.scholarship.condition_advancement.stage.mine.title"
+          }
+        },
+        "id": "modonomicon:generated/demo/nodes/entry_research/scholarship_condition_advancement/stages/mine",
+        "required_facts": [
+          "modonomicon:demo/advancement_mine_stone_completed"
+        ]
+      }
     ]
   },
   {
@@ -49,6 +310,12 @@
     ]
   },
   {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_page_splitting",
+    "required_facts": [
+      "modonomicon:generated/demo/facts/entry_viewed_once/features_spotlight"
+    ]
+  },
+  {
     "id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_image",
     "required_facts": [
       "modonomicon:generated/demo/facts/entry_viewed_once/features_empty"
@@ -61,9 +328,52 @@
     ]
   },
   {
-    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/features_page_splitting",
-    "required_facts": [
-      "modonomicon:generated/demo/facts/entry_viewed_once/features_spotlight"
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/scholarship_first_page_display",
+    "required_stages": [
+      {
+        "node_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_notes",
+        "stage_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_notes/stages/synthesis"
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/scholarship_trailing_page",
+    "required_stages": [
+      {
+        "node_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_first_page_display",
+        "stage_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_first_page_display/stages/desk"
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/scholarship_two_parents",
+    "required_stages": [
+      {
+        "node_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_first_page_display",
+        "stage_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_first_page_display/stages/desk"
+      },
+      {
+        "node_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_placed_pages",
+        "stage_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_placed_pages/stages/ink"
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/scholarship_hand_authored",
+    "required_stages": [
+      {
+        "node_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_condition_advancement",
+        "stage_id": "modonomicon:generated/demo/nodes/entry_research/scholarship_condition_advancement/stages/mine"
+      }
+    ]
+  },
+  {
+    "id": "modonomicon:generated/demo/nodes/entry_viewed_once/scholarship_stages",
+    "required_stages": [
+      {
+        "node_id": "modonomicon:demo/hand_authored",
+        "stage_id": "modonomicon:demo/hand_authored_stage_2"
+      }
     ]
   },
   {

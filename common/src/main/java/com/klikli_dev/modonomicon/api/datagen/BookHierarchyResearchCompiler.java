@@ -7,39 +7,39 @@
 package com.klikli_dev.modonomicon.api.datagen;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Tooltips;
+import com.klikli_dev.modonomicon.api.datagen.GeneratedBookResearchStore.ActionFact;
+import com.klikli_dev.modonomicon.api.datagen.GeneratedBookResearchStore.EntryResearchRequest;
 import com.klikli_dev.modonomicon.api.datagen.book.BookEntryModel;
 import com.klikli_dev.modonomicon.api.datagen.book.BookModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookAndConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookConditionModel;
 import com.klikli_dev.modonomicon.api.datagen.book.condition.BookResearchNodeUnlockedConditionModel;
-import com.klikli_dev.modonomicon.api.datagen.research.ResearchBundle;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchDataBuilder;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchFactRef;
-import com.klikli_dev.modonomicon.api.datagen.research.ResearchIngressHelper;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchHookHelper;
 import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeRef;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchNodeSpec;
+import com.klikli_dev.modonomicon.api.datagen.research.ResearchStageSpec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public final class BookHierarchyResearchCompiler {
 
     /**
-     * Compiles generated research for a book from both parent hierarchy and explicit store requests.
+     * Compiles generated research for a book from the explicit store requests, staged researches and the parent hierarchy.
      *
      * @param book  the book model
-     * @param store the generated research store (may be null for legacy callers)
+     * @param store the generated research store (may be null, then only model-based marker intents are compiled)
      */
     public Optional<CompiledBookResearch> compile(BookModel book, GeneratedBookResearchStore store) {
         var research = new ResearchDataBuilder(book.getId().getNamespace());
-        var ingress = new ResearchIngressHelper(research);
-        var parentFacts = new HashMap<Identifier, ResearchFactRef>();
+        var hooks = new ResearchHookHelper(research);
         var generatedEntries = new ArrayList<BookEntryModel>();
-        var generatedNodes = new HashMap<Identifier, ResearchNodeRef>();
         var generatedFacts = new HashMap<Identifier, ResearchFactRef>();
         var generatedItemFacts = new HashMap<String, ResearchFactRef>();
         var generatedItemNodes = new HashMap<String, ResearchNodeRef>();
@@ -77,16 +77,15 @@ public final class BookHierarchyResearchCompiler {
         for (var request : effectiveStore.getEntryViewedOnceRequests()) {
             var requiredId = request.requiredEntryId();
             var fact = generatedFacts.computeIfAbsent(requiredId,
-                    id -> ingress.onEntryViewedOnce(id).declareFact(effectiveStore.factPath(id)));
-            var node = generatedNodes.computeIfAbsent(requiredId,
-                    id -> research.node(effectiveStore.nodePath(id), fact));
+                    id -> hooks.onEntryViewedOnce(id).declareFact(effectiveStore.factPath(id)));
+            research.node(effectiveStore.nodePath(requiredId), fact);
         }
 
         // --- Process item-crafted requests from the store ---
         for (var request : effectiveStore.getItemCraftedRequests()) {
             var target = request.target();
             var fact = generatedItemFacts.computeIfAbsent(effectiveStore.craftedFactPath(target),
-                    path -> ingress.onItemCrafted(target).declareFact(path));
+                    path -> hooks.onItemCrafted(target).declareFact(path));
             generatedItemNodes.computeIfAbsent(effectiveStore.craftedNodePath(target),
                     path -> research.node(path, fact));
         }
@@ -95,23 +94,90 @@ public final class BookHierarchyResearchCompiler {
         for (var request : effectiveStore.getItemAcquiredRequests()) {
             var target = request.target();
             var fact = generatedItemFacts.computeIfAbsent(effectiveStore.acquiredFactPath(target),
-                    path -> ingress.onItemAcquired(target).declareFact(path));
+                    path -> hooks.onItemAcquired(target).declareFact(path));
             generatedItemNodes.computeIfAbsent(effectiveStore.acquiredNodePath(target),
                     path -> research.node(path, fact));
         }
 
-        // --- Process parent hierarchy (existing behavior) ---
+        // --- Process item-used requests from the store ---
+        for (var request : effectiveStore.getItemUsedRequests()) {
+            var target = request.target();
+            var consume = request.consume();
+            var fact = generatedItemFacts.computeIfAbsent(effectiveStore.usedFactPath(target, consume),
+                    path -> hooks.onItemUsed(target).consume(consume).declareFact(path));
+            generatedItemNodes.computeIfAbsent(effectiveStore.usedNodePath(target, consume),
+                    path -> research.node(path, fact));
+        }
+
+        // --- Process staged entry researches: one node whose stages are the stages of the entry ---
+        for (var entryResearch : effectiveStore.getEntryResearches()) {
+            var baseFact = generatedFacts.computeIfAbsent(entryResearch.entryId(),
+                    id -> hooks.onEntryViewedOnce(id).declareFact(effectiveStore.factPath(id)));
+            var stages = new ArrayList<ResearchStageSpec>();
+            for (var stage : entryResearch.stages()) {
+                var facts = new ArrayList<ResearchFactRef>(stage.facts());
+                for (var target : stage.crafted()) {
+                    facts.add(generatedItemFacts.computeIfAbsent(effectiveStore.craftedFactPath(target),
+                            path -> hooks.onItemCrafted(target).declareFact(path)));
+                }
+                for (var target : stage.acquired()) {
+                    facts.add(generatedItemFacts.computeIfAbsent(effectiveStore.acquiredFactPath(target),
+                            path -> hooks.onItemAcquired(target).declareFact(path)));
+                }
+                for (var used : stage.used()) {
+                    var target = used.target();
+                    var consume = used.consume();
+                    facts.add(generatedItemFacts.computeIfAbsent(effectiveStore.usedFactPath(target, consume),
+                            path -> hooks.onItemUsed(target).consume(consume).declareFact(path)));
+                }
+                for (var viewedId : stage.viewed()) {
+                    facts.add(generatedFacts.computeIfAbsent(viewedId,
+                            id -> hooks.onEntryViewedOnce(id).declareFact(effectiveStore.factPath(id))));
+                }
+                for (ActionFact action : stage.actionFacts()) {
+                    var actionRef = research.fact(stage.ref().id().getPath() + "/" + action.id());
+                    research.display(actionRef, action.display());
+                    facts.add(actionRef);
+                }
+                stages.add(new ResearchStageSpec(stage.ref(), facts, stage.values(), Optional.empty(),
+                        Optional.ofNullable(stage.display()), stage.completion(), stage.effects()));
+            }
+            research.nodeBuilder(ResearchNodeRef.of(effectiveStore.researchNodeId(entryResearch.entryId())))
+                    .withFact(baseFact)
+                    .withStages(stages)
+                    .build();
+        }
+
+        // --- Process parent hierarchy ---
         if (book.generateEntryHierarchyResearch()) {
+            var entriesById = new HashMap<Identifier, BookEntryModel>();
+            for (var category : book.getCategories()) {
+                for (var entry : category.getEntries()) {
+                    entriesById.put(entry.getId(), entry);
+                }
+            }
             for (var category : book.getCategories()) {
                 for (var entry : category.getEntries()) {
                     if (entry.hasCondition() || entry.getParents().isEmpty()) continue;
+                    //parents with a research unlock their children on completion, all others once viewed
                     var requiredFacts = new ArrayList<ResearchFactRef>();
+                    var requiredStages = new ArrayList<ResearchNodeSpec.StageDependencySpec>();
                     for (var parent : entry.getParents()) {
                         var parentId = parent.getEntryId();
-                        var fact = parentFacts.computeIfAbsent(parentId, id -> ingress.onEntryViewedOnce(id).declareFact(hierarchyFactPath(book, id)));
+                        var parentModel = entriesById.get(parentId);
+                        if (parentModel != null && parentModel.hasResearch()) {
+                            requiredStages.add(researchCompletion(parentModel));
+                            continue;
+                        }
+                        var fact = generatedFacts.computeIfAbsent(parentId,
+                                id -> hooks.onEntryViewedOnce(id).declareFact(GeneratedResearchPaths.entryViewedOnceFact(book.getId().getPath(), id)));
                         requiredFacts.add(fact);
                     }
-                    ResearchNodeRef node = research.node(hierarchyNodePath(book, entry), requiredFacts.toArray(ResearchFactRef[]::new));
+                    var nodeRef = ResearchNodeRef.of(Identifier.fromNamespaceAndPath(book.getId().getNamespace(), hierarchyNodePath(book, entry)));
+                    var node = research.nodeBuilder(nodeRef)
+                            .withFacts(requiredFacts)
+                            .withStageDependencies(requiredStages)
+                            .build();
                     entry.withCondition(
                             BookResearchNodeUnlockedConditionModel.create()
                                     .withNode(node.id())
@@ -152,9 +218,22 @@ public final class BookHierarchyResearchCompiler {
         return this.compile(book, null);
     }
 
-    private String bundleId(BookModel book) { return "generated/" + book.getId().getPath(); }
-    private String hierarchyFactPath(BookModel book, Identifier entryId) { return bundleId(book) + "/facts/entry_viewed_once/" + entryId.getPath().replace('/', '_'); }
-    private String hierarchyNodePath(BookModel book, BookEntryModel entry) { return bundleId(book) + "/nodes/entry_viewed_once/" + entry.getId().getPath().replace('/', '_'); }
+    private String bundleId(BookModel book) {
+        return GeneratedResearchPaths.bundle(book.getId().getPath());
+    }
+
+    private String hierarchyNodePath(BookModel book, BookEntryModel entry) {
+        return GeneratedResearchPaths.entryHierarchyNode(book.getId().getPath(), entry.getId());
+    }
+
+    private ResearchNodeSpec.StageDependencySpec researchCompletion(BookEntryModel parent) {
+        var stage = parent.getResearchCompletionStage();
+        if (stage == null) {
+            throw new IllegalStateException("Entry '" + parent.getId() + "' has research, but no completion stage. "
+                    + "Declare it with this.stage(...) in EntryProvider, or use BookEntryModel.withResearch(node, lastStage) for a hand-authored node.");
+        }
+        return new ResearchNodeSpec.StageDependencySpec(ResearchNodeRef.of(parent.getResearchNode()), stage);
+    }
 
     public record CompiledBookResearch(Identifier bundleId, ResearchDataBuilder research) {}
 }

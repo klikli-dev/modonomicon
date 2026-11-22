@@ -22,6 +22,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -102,6 +103,13 @@ public abstract class BookPage {
     }
 
     /**
+     * Item used as the icon of an entry tab that opens this page, if the tab does not define its own icon.
+     */
+    public ItemStack getTabIcon() {
+        return ItemStack.EMPTY;
+    }
+
+    /**
      * Items that should show a "linked book page" tooltip and open this page on hold.
      * Page-level associations take precedence over entry-level ones.
      * Each entry is either an exact item template or an ingredient (e.g. a tag).
@@ -124,6 +132,13 @@ public abstract class BookPage {
      * call after loading the book jsons to finalize.
      */
     public void build(Level level, BookContentEntry parentEntry, int pageNum) {
+        this.attach(parentEntry, pageNum);
+    }
+
+    /**
+     * Binds the page to its entry and number, without loading anything. Used for pages that only exist on the client.
+     */
+    public void attach(BookContentEntry parentEntry, int pageNum) {
         this.parentEntry = parentEntry;
         this.pageNumber = pageNum;
         this.book = this.parentEntry.getBook();

@@ -1,11 +1,5 @@
 [
   {
-    "fact_id": "modonomicon:demo/condition_root_viewed",
-    "id": "modonomicon:demo/condition_root_viewed_hook",
-    "trigger_target": "modonomicon:features/condition_root",
-    "trigger_type": "modonomicon:entry_viewed_once"
-  },
-  {
     "fact_id": "modonomicon:demo/advancement_mine_stone_completed",
     "id": "modonomicon:demo/advancement_mine_stone_completed_hook",
     "trigger_target": "minecraft:story/mine_stone",
@@ -18,51 +12,76 @@
     "trigger_type": "modonomicon:advancement"
   },
   {
-    "id": "modonomicon:demo/collector_a_hook",
-    "trigger_target": "modonomicon:values/collector_a",
+    "id": "modonomicon:demo/research/source_hook",
+    "trigger_target": "modonomicon:scholarship/sources",
     "trigger_type": "modonomicon:entry_viewed_once",
-    "value_id": "modonomicon:demo/collector_count"
+    "value_id": "modonomicon:demo/research/sources_consulted"
   },
   {
-    "id": "modonomicon:demo/collector_b_hook",
-    "trigger_target": "modonomicon:values/collector_b",
-    "trigger_type": "modonomicon:entry_viewed_once",
-    "value_id": "modonomicon:demo/collector_count"
+    "fact_id": "modonomicon:demo/marker_index_viewed",
+    "id": "modonomicon:demo/marker_index_viewed_hook",
+    "trigger_target": "modonomicon:scholarship/placed_pages",
+    "trigger_type": "modonomicon:entry_viewed_once"
   },
   {
-    "id": "modonomicon:demo/collector_c_hook",
-    "trigger_target": "modonomicon:values/collector_c",
-    "trigger_type": "modonomicon:entry_viewed_once",
-    "value_id": "modonomicon:demo/collector_count"
-  },
-  {
-    "fact_id": "modonomicon:demo/stick_crafted",
-    "id": "modonomicon:demo/stick_crafted_hook",
+    "fact_id": "modonomicon:demo/research/note_crafted",
+    "id": "modonomicon:demo/research/note_crafted_hook",
     "trigger_target": {
-      "id": "minecraft:stick"
+      "components": {
+        "minecraft:custom_data": {
+          "modonomicon_demo": "research_note"
+        },
+        "minecraft:custom_name": "Research Note"
+      },
+      "id": "minecraft:paper"
     },
     "trigger_type": "modonomicon:item_crafted"
   },
   {
-    "fact_id": "modonomicon:demo/cobblestone_acquired",
-    "id": "modonomicon:demo/cobblestone_acquired_hook",
+    "consume": 1,
+    "fact_id": "modonomicon:demo/research/note_studied",
+    "id": "modonomicon:demo/research/note_studied_hook",
     "trigger_target": {
-      "id": "minecraft:cobblestone"
+      "components": {
+        "minecraft:custom_data": {
+          "modonomicon_demo": "research_note"
+        },
+        "minecraft:custom_name": "Research Note"
+      },
+      "id": "minecraft:paper"
+    },
+    "trigger_type": "modonomicon:item_used"
+  },
+  {
+    "id": "modonomicon:demo/writable_books_hook",
+    "trigger_target": {
+      "id": "minecraft:writable_book"
+    },
+    "trigger_type": "modonomicon:item_crafted",
+    "value_id": "modonomicon:demo/writable_books_crafted"
+  },
+  {
+    "fact_id": "modonomicon:demo/research/ink_sac_acquired",
+    "id": "modonomicon:demo/research/ink_sac_acquired_hook",
+    "trigger_target": {
+      "id": "minecraft:ink_sac"
     },
     "trigger_type": "modonomicon:item_acquired"
   },
   {
-    "id": "modonomicon:demo/stages_planks_hook",
+    "fact_id": "modonomicon:demo/research/iron_ingot_acquired",
+    "id": "modonomicon:demo/research/iron_ingot_acquired_hook",
     "trigger_target": {
-      "id": "minecraft:oak_planks"
+      "id": "minecraft:iron_ingot"
     },
-    "trigger_type": "modonomicon:item_crafted",
-    "value_id": "modonomicon:demo/stages_planks_crafted"
+    "trigger_type": "modonomicon:item_acquired"
   },
   {
-    "fact_id": "modonomicon:demo/marker_intro_viewed",
-    "id": "modonomicon:demo/marker_intro_viewed_hook",
-    "trigger_target": "modonomicon:markers/marker_intro",
-    "trigger_type": "modonomicon:entry_viewed_once"
+    "id": "modonomicon:demo/research/paper_hook",
+    "trigger_target": {
+      "id": "minecraft:paper"
+    },
+    "trigger_type": "modonomicon:item_acquired",
+    "value_id": "modonomicon:demo/research/paper_collected"
   }
 ]

@@ -19,6 +19,11 @@ import org.jetbrains.annotations.Nullable;
 
 public class BookEntryDoublePageScreen extends BookEntryScreen {
 
+    /**
+     * Mouse position used for underlying pages while the tab overlay is open, so they do not react to hover.
+     */
+    private static final int MOUSE_OUT_OF_BOOK = -10000;
+
     private DisplayPage leftDisplay;
     private DisplayPage rightDisplay;
 
@@ -47,23 +52,26 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
     @Override
     protected int getPageForOpenPagesIndex(int openPagesIndex) {
         if (!this.displayPages.isEmpty() && openPagesIndex >= 0 && openPagesIndex < this.displayPages.size()) {
-            return this.displayPages.get(openPagesIndex).page().getPageNumber();
+            return this.getAuthoredPageNumber(this.displayPages.get(openPagesIndex));
         }
-        return openPagesIndex / 2;
+        return openPagesIndex / PAGES_PER_SPREAD;
     }
 
     @Override
     public boolean canSeeArrowButton(boolean left) {
-        return left ? this.openPagesIndex > 0 : (this.openPagesIndex + 2) < this.displayPages.size();
+        if (this.entryTabs.isOpen()) {
+            return false;
+        }
+        return left ? this.openPagesIndex > 0 : (this.openPagesIndex + PAGES_PER_SPREAD) < this.displayPages.size();
     }
 
     @Override
     protected void flipPage(boolean left, boolean playSound) {
         if (this.canSeeArrowButton(left)) {
             if (left) {
-                this.openPagesIndex -= 2;
+                this.openPagesIndex -= PAGES_PER_SPREAD;
             } else {
-                this.openPagesIndex += 2;
+                this.openPagesIndex += PAGES_PER_SPREAD;
             }
 
             this.onPageChanged();
@@ -73,10 +81,18 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
         }
     }
 
+    @Override
+    protected boolean supportsEntryTabs() {
+        return true;
+    }
 
     @Override
     @Nullable
     public Style getClickedComponentStyleAt(double pMouseX, double pMouseY) {
+        if (this.entryTabs.isOpen()) {
+            return this.getClickedComponentStyleAtForPage(this.entryTabs.getPageRenderer(), pMouseX, pMouseY);
+        }
+
         var leftPageClickedStyle = this.getClickedComponentStyleAtForPage(this.leftPageRenderer, pMouseX, pMouseY);
         if (leftPageClickedStyle != null) {
             return leftPageClickedStyle;
@@ -86,12 +102,20 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
 
     @Override
     protected boolean mouseClickedPage(MouseButtonEvent event, boolean isDoubleClick) {
+        if (this.entryTabs.isOpen()) {
+            return this.clickPage(this.entryTabs.getPageRenderer(), event, isDoubleClick);
+        }
+
         return this.clickPage(this.leftPageRenderer, event, isDoubleClick)
                 || this.clickPage(this.rightPageRenderer, event, isDoubleClick);
     }
 
     @Override
     protected boolean mouseClickedPageIngredient(MouseButtonEvent event, boolean isDoubleClick) {
+        if (this.entryTabs.isOpen()) {
+            return this.clickIngredientPage(this.entryTabs.getPageRenderer(), event);
+        }
+
         return this.clickIngredientPage(this.leftPageRenderer, event)
                 || this.clickIngredientPage(this.rightPageRenderer, event);
     }
@@ -115,6 +139,7 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
         //allow pages to prepare for being displayed
         if (this.leftDisplay != null) {
             this.leftPageRenderer = this.createDisplayRenderer(this.leftDisplay);
+            this.leftPageRenderer.setReservedBottomHeight(leftPageIndex == 0 ? this.scholarship.getReservedFirstPageHeight() : 0);
             this.leftPageRenderer.onBeginDisplayPage(this, LEFT_PAGE_X, TOP_PADDING);
         } else {
             this.leftPageRenderer = null;
@@ -124,6 +149,16 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
             this.rightPageRenderer.onBeginDisplayPage(this, RIGHT_PAGE_X, TOP_PADDING);
         } else {
             this.rightPageRenderer = null;
+        }
+
+        //while the tab overlay is open the underlying pages must not keep their widgets
+        if (this.entryTabs.isOpen()) {
+            if (this.leftPageRenderer != null) {
+                this.leftPageRenderer.onEndDisplayPage(this);
+            }
+            if (this.rightPageRenderer != null) {
+                this.rightPageRenderer.onEndDisplayPage(this);
+            }
         }
     }
 
@@ -137,6 +172,11 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
     @Override
     public void extractRenderState(GuiGraphicsExtractor guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         this.resetTooltip();
+        this.scholarship.beginFrame();
+
+        boolean overlayOpen = this.entryTabs.isOpen();
+        int underlyingMouseX = overlayOpen ? MOUSE_OUT_OF_BOOK : pMouseX;
+        int underlyingMouseY = overlayOpen ? MOUSE_OUT_OF_BOOK : pMouseY;
 
         //TODO we had -1000z here //push the page background to the front. Otherwise the entries render over it.
         guiGraphics.pose().pushMatrix();
@@ -149,10 +189,15 @@ public class BookEntryDoublePageScreen extends BookEntryScreen {
         //TODO we had -1000z here //push the page background to the front. Otherwise the entries render over it.
         guiGraphics.pose().translate(this.bookLeft, this.bookTop);
 
-        this.renderPage(guiGraphics, this.leftPageRenderer, pMouseX, pMouseY, pPartialTick);
-        this.renderPage(guiGraphics, this.rightPageRenderer, pMouseX, pMouseY, pPartialTick);
+        this.renderPage(guiGraphics, this.leftPageRenderer, underlyingMouseX, underlyingMouseY, pPartialTick);
+        this.renderPage(guiGraphics, this.rightPageRenderer, underlyingMouseX, underlyingMouseY, pPartialTick);
+        this.scholarship.renderFirstPage(guiGraphics, underlyingMouseX, underlyingMouseY, !overlayOpen);
         guiGraphics.pose().popMatrix();
         guiGraphics.nextStratum();
+
+        if (overlayOpen) {
+            this.entryTabs.renderOverlay(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        }
 
         //do not translate super (= widget rendering) -> otherwise our buttons are messed up
         //manually call the renderables like super does -> otherwise super renders the background again on top of our stuff

@@ -50,7 +50,7 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
         }
 
         var textY = this.getTextY();
-        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - textY);
+        this.renderBookTextHolder(guiGraphics, this.getPage().getText(), 0, textY, BookEntryScreen.PAGE_WIDTH, this.getAvailablePageHeight() - textY);
 
 
         var style = this.getClickedComponentStyleAt(mouseX, mouseY);
@@ -66,7 +66,7 @@ public abstract class BookRecipePageRenderer<R extends Recipe<?>, T extends Book
 
             //titles are not markdown enabled here, so no links
 
-            var bounds = this.getBookTextHolderBounds(0, this.getTextY(), BookEntryScreen.PAGE_WIDTH, BookEntryScreen.PAGE_HEIGHT - this.getTextY());
+            var bounds = this.getBookTextHolderBounds(0, this.getTextY(), BookEntryScreen.PAGE_WIDTH, this.getAvailablePageHeight() - this.getTextY());
             var textStyle = this.getClickedComponentStyleAtForTextHolder(this.page.getText(), bounds.x, bounds.y, bounds.width, bounds.height, pMouseX, pMouseY);
             if (textStyle != null) {
                 return textStyle;
