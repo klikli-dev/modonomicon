@@ -51,7 +51,7 @@ public final class BookSideButtonRenderer {
             scissorWidth -= 1;
         }
 
-        guiGraphics.enableScissor(absoluteScissorX, scissorY, absoluteScissorX + scissorWidth - 1, scissorY + scissorHeight - 1);
+        guiGraphics.enableScissor(absoluteScissorX, scissorY, absoluteScissorX + scissorWidth, scissorY + scissorHeight);
         background.extractRenderState(guiGraphics, renderX, widgetY, widgetWidth, widgetHeight);
         renderRightIcon(guiGraphics, icon, renderX, widgetY, widgetWidth);
         guiGraphics.disableScissor();
@@ -78,7 +78,7 @@ public final class BookSideButtonRenderer {
             scissorWidth -= 1;
         }
 
-        guiGraphics.enableScissor(absoluteScissorLeft, scissorY, absoluteScissorLeft + scissorWidth - 1, scissorY + scissorHeight - 1);
+        guiGraphics.enableScissor(absoluteScissorLeft, scissorY, absoluteScissorLeft + scissorWidth, scissorY + scissorHeight);
         background.extractRenderState(guiGraphics, renderX, widgetY, widgetWidth, widgetHeight);
         renderLeftIcon(guiGraphics, icon, renderX, widgetY);
         guiGraphics.disableScissor();
