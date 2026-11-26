@@ -48,6 +48,11 @@ public record GuiDirectEntryConnectionRenderState(
                 PictureInPictureRenderState.getBounds(x0, y0, x1, y1, scissorArea));
     }
 
-    public record Connection(float startX, float startY, float endX, float endY, int color, boolean wiggle) {
+    /**
+     * @param dominantX whether the connection runs mainly along the x axis. This is decided from the logical grid coordinates
+     *                  of the entries, not from the screen coordinates, because screen coordinates are floats that are scaled by the zoom
+     *                  and their rounding can flip the decision for connections that are (logically) exactly diagonal.
+     */
+    public record Connection(float startX, float startY, float endX, float endY, int color, boolean wiggle, boolean dominantX) {
     }
 }
