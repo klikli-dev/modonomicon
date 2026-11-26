@@ -263,9 +263,9 @@ public final class EntryScholarshipRenderer {
         for (var slot : layout(block, x, top, width)) {
             if (slot.contains(mouseX, mouseY)) {
                 var row = slot.row();
-                if (shiftDown && row.factId() != null && !row.met() && ScholarshipInteractions.canGrantFacts(ScholarshipInteractions.player())) {
-                    //the server validates the permission and the fact again
-                    ScholarshipInteractions.grantFact(row.factId());
+                if (shiftDown && row.grant() != null && !row.met() && ScholarshipInteractions.canGrantFacts(ScholarshipInteractions.player())) {
+                    //the server validates the permission and the ids again
+                    ScholarshipInteractions.grant(row.grant());
                     return true;
                 }
                 if (row.action() != null) {

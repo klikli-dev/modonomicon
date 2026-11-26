@@ -24,7 +24,7 @@ public class Networking {
         registrar.playToServer(ClickResearchProgressButtonMessage.TYPE, ClickResearchProgressButtonMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(PerformResearchActionMessage.TYPE, PerformResearchActionMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(CompleteResearchStageMessage.TYPE, CompleteResearchStageMessage.STREAM_CODEC, MessageHandler::handle);
-        registrar.playToServer(GrantResearchFactMessage.TYPE, GrantResearchFactMessage.STREAM_CODEC, MessageHandler::handle);
+        registrar.playToServer(GrantResearchRequirementMessage.TYPE, GrantResearchRequirementMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(SaveBookStateMessage.TYPE, SaveBookStateMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(SaveCategoryStateMessage.TYPE, SaveCategoryStateMessage.STREAM_CODEC, MessageHandler::handle);
         registrar.playToServer(SaveEntryStateMessage.TYPE, SaveEntryStateMessage.STREAM_CODEC, MessageHandler::handle);
