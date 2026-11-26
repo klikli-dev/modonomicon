@@ -7,6 +7,7 @@
 package com.klikli_dev.modonomicon.client.gui.book.entry.scholarship;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
+import com.klikli_dev.modonomicon.networking.GrantResearchFactMessage;
 import com.klikli_dev.modonomicon.networking.PerformResearchActionMessage;
 import com.klikli_dev.modonomicon.networking.CompleteResearchStageMessage;
 import com.klikli_dev.modonomicon.platform.Services;
@@ -17,7 +18,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
@@ -65,6 +68,33 @@ public final class ScholarshipInteractions {
             case ScholarshipRowAction.Perform perform -> performAction(perform);
             case ScholarshipRowAction.OpenEntry open -> openEntry.accept(open.bookId(), open.entryId());
         }
+    }
+
+    /**
+     * True if the player may grant the fact of a requirement by shift-clicking it. Same permission as the grant fact command.
+     * The server checks the permission again, see {@link GrantResearchFactMessage}.
+     */
+    public static boolean canGrantFacts(@Nullable Player player) {
+        return player != null && player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER);
+    }
+
+    /**
+     * Asks the server to grant the fact of a requirement row. Only sent for rows that are not met yet, the server ignores unknown facts.
+     */
+    public static void grantFact(Identifier factId) {
+        Services.NETWORK.sendToServer(new GrantResearchFactMessage(factId));
+        playSound(SoundEvents.UI_BUTTON_CLICK.value());
+    }
+
+    /**
+     * The hint line of a requirement row that shift-clicking grants, only shown to players that may grant facts.
+     */
+    @Nullable
+    public static Component grantHint(ScholarshipRow row, @Nullable Player player) {
+        if (row.factId() == null || row.met() || !canGrantFacts(player)) {
+            return null;
+        }
+        return Component.translatable(Gui.SCHOLARSHIP_GRANT_FACT_HINT).withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_GREEN).withItalic(true));
     }
 
     private static void performAction(ScholarshipRowAction.Perform info) {
