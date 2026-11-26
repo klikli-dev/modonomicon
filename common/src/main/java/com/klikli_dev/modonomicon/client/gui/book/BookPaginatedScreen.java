@@ -81,6 +81,13 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
                 || pMouseY > this.bookTop + BookEntryScreen.FULL_HEIGHT + BookEntryScreen.CLICK_SAFETY_MARGIN;
     }
 
+    /**
+     * Whether the mouse is over any widget (including widgets that extend outside the book, like side buttons).
+     */
+    protected boolean isMouseOverWidget(double mouseX, double mouseY) {
+        return this.children().stream().anyMatch(child -> child.isMouseOver(mouseX, mouseY));
+    }
+
     protected boolean isArrowKeyCode(int keyCode) {
         return keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_RIGHT || keyCode == GLFW.GLFW_KEY_UP || keyCode == GLFW.GLFW_KEY_DOWN;
     }
@@ -155,6 +162,12 @@ public abstract class BookPaginatedScreen extends Screen implements BookScreenWi
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
         if (this.isClickOutsideEntry(event.x(), event.y())) {
+            //side buttons (entry tabs, bookmarks, ...) can extend past the click safety margin.
+            //They show their hover state there, so a click on them must activate them instead of closing the book.
+            if (this.isMouseOverWidget(event.x(), event.y())) {
+                return super.mouseClicked(event, isDoubleClick);
+            }
+
             this.onClose();
             return true; //need to return, otherwise a right click outside the entry causes a double-close (the whole book, due to calling .back() below)
         }
