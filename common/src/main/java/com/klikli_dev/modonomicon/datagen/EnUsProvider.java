@@ -173,6 +173,7 @@ public class EnUsProvider extends AbstractModonomiconLanguageProvider {
         this.add(Gui.SCHOLARSHIP_NOT_MET_HINT, "Do this to unlock more of this entry.");
         this.add(Gui.SCHOLARSHIP_CLICK_TO_OPEN, "Click to open");
         this.add(Gui.SCHOLARSHIP_GRANT_HINT, "Shift-click to satisfy this requirement (game master only)");
+        this.add(Gui.SCHOLARSHIP_VIEW_ENTRY_HINT, "Open %s in the book to fulfil this requirement.");
         this.add(Gui.SCHOLARSHIP_COSTS, "Costs:");
         this.add(Gui.SCHOLARSHIP_COST_ITEM, "%s\u00d7 %s");
         this.add(Gui.SCHOLARSHIP_COST_LEVELS, "%s levels");

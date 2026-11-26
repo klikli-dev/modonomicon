@@ -19,6 +19,7 @@ import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchStageDefinition;
 import com.klikli_dev.modonomicon.research.effect.ResearchEffect;
+import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
 import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
 import net.minecraft.ChatFormatting;
@@ -134,18 +135,38 @@ public final class ScholarshipRows {
         var grant = viewedEntry != null
                 ? new ScholarshipRowGrant.Entry(viewedEntry)
                 : new ScholarshipRowGrant.Value(valueId, threshold);
+        boolean met = forceMet || current >= threshold;
+
+        //tell the player what fulfils the requirement, as the value itself does not say it
+        var details = new ArrayList<Component>(descriptionOr(display, List.of()));
+        if (viewedEntry != null && !met) {
+            details.add(Component.translatable(Gui.SCHOLARSHIP_VIEW_ENTRY_HINT, entryTitle(viewedEntry)).withStyle(ChatFormatting.GRAY));
+        }
 
         return new ScholarshipRow(
                 rowGroup(display, hookRow, ResearchGroups.PROGRESS, context),
                 iconsOr(display.icon(), hookRows),
                 title,
-                descriptionOr(display, List.of()),
-                forceMet || current >= threshold,
+                details,
+                met,
                 new ScholarshipRow.Progress(shown, threshold),
                 null,
                 null,
                 grant
         );
+    }
+
+    /**
+     * The name of an entry of any book, or its id if no book has it.
+     */
+    private static Component entryTitle(Identifier entryId) {
+        for (var book : BookDataManager.get().getBooks().values()) {
+            var entry = book.getEntry(entryId);
+            if (entry != null) {
+                return Component.translatable(entry.getName());
+            }
+        }
+        return Component.literal(entryId.getPath());
     }
 
     /**

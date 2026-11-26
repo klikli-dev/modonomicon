@@ -682,6 +682,7 @@
   "modonomicon.gui.scholarship.title": "Requirements",
   "modonomicon.gui.scholarship.trigger.special": "Special requirement",
   "modonomicon.gui.scholarship.use_item": "Use %s",
+  "modonomicon.gui.scholarship.view_entry_hint": "Open %s in the book to fulfil this requirement.",
   "modonomicon.gui.search.entry.locked": "(Locked)",
   "modonomicon.gui.search.entry_list_title": "Entries",
   "modonomicon.gui.search.info": "To search for entries, simply start typing what you are looking for.\n",
