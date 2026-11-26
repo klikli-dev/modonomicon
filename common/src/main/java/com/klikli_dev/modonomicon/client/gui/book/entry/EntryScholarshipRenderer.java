@@ -243,13 +243,15 @@ public final class EntryScholarshipRenderer {
 
     /**
      * Handles a click on the block, coordinates relative to the same origin as the layout.
-     * Stage arrows are passed to browse. A requirement icon performs its action if it has one, else runs its click handler.
+     * Stage arrows are passed to browse. A shift-clicked requirement fact is granted to players that may grant facts.
+     * Otherwise a requirement icon performs its action if it has one.
      *
+     * @param shiftDown whether shift is held, shift-clicking a requirement grants its fact if the player may grant facts
      * @param browse browses the stages by the given delta, returns true if the click was consumed
      * @param onScholarshipRowAction receives the action of a clicked row, see {@link ScholarshipRowAction}
      * @return true if the click was consumed
      */
-    public boolean click(ScholarshipBlock block, Font font, int x, int top, int width, double mouseX, double mouseY,
+    public boolean click(ScholarshipBlock block, Font font, int x, int top, int width, double mouseX, double mouseY, boolean shiftDown,
                                 IntPredicate browse, Consumer<ScholarshipRowAction> onScholarshipRowAction) {
         int stageDelta = stageLineClick(block, font, x, top, width, mouseX, mouseY);
         if (stageDelta != 0) {
@@ -261,6 +263,11 @@ public final class EntryScholarshipRenderer {
         for (var slot : layout(block, x, top, width)) {
             if (slot.contains(mouseX, mouseY)) {
                 var row = slot.row();
+                if (shiftDown && row.factId() != null && !row.met() && ScholarshipInteractions.canGrantFacts(ScholarshipInteractions.player())) {
+                    //the server validates the permission and the fact again
+                    ScholarshipInteractions.grantFact(row.factId());
+                    return true;
+                }
                 if (row.action() != null) {
                     onScholarshipRowAction.accept(row.action());
                     return true;
@@ -514,6 +521,10 @@ public final class EntryScholarshipRenderer {
                 var player = ScholarshipInteractions.player();
                 if (row.action() != null && player != null) {
                     tooltip.addAll(ScholarshipInteractions.actionTooltip(row, player));
+                }
+                var grantHint = ScholarshipInteractions.grantHint(row, player);
+                if (grantHint != null) {
+                    tooltip.add(grantHint);
                 }
                 tooltipSink.accept(tooltip);
             }

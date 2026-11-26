@@ -280,7 +280,8 @@ public class EntryScholarshipController {
      * @return true if the click was consumed
      */
     public boolean clickBlock(ScholarshipBlock block, int x, int top, int width, double mouseX, double mouseY) {
-        return this.renderer.click(block, this.screen.getContentFont(), x, top, width, mouseX, mouseY, this::browseStage, this::performScholarshipRowAction);
+        return this.renderer.click(block, this.screen.getContentFont(), x, top, width, mouseX, mouseY,
+                this.screen.getMinecraft().hasShiftDown(), this::browseStage, this::performScholarshipRowAction);
     }
 
     private void performScholarshipRowAction(ScholarshipRowAction action) {

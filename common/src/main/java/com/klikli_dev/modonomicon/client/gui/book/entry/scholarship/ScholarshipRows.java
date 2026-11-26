@@ -98,7 +98,8 @@ public final class ScholarshipRows {
                 met,
                 null,
                 hookRow != null ? hookRow.missing() : null,
-                firstAction(hookRows)
+                firstAction(hookRows),
+                factId
         );
         if (actionNode != null) {
             var action = display.action();
@@ -134,6 +135,7 @@ public final class ScholarshipRows {
                 descriptionOr(display, List.of()),
                 forceMet || current >= threshold,
                 new ScholarshipRow.Progress(shown, threshold),
+                null,
                 null,
                 null
         );
@@ -305,6 +307,7 @@ public final class ScholarshipRows {
                 Component.translatable(Gui.SCHOLARSHIP_STAGE_TITLE, nodeName, stageName),
                 descriptionOr(display, List.of()),
                 met,
+                null,
                 null,
                 null,
                 null

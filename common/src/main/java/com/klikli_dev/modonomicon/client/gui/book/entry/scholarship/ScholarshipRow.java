@@ -12,6 +12,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.List;
  * @param progress optional progress, shown as count on the icon and in the tooltip, e.g. 3/5
  * @param missing  optional line stating what is still missing, defaults to a generic line
  * @param action   optional action the click on the row asks for, see {@link ScholarshipRowAction}
+ * @param factId   the research fact the row is a requirement for, or null if the row is not a fact. Used to grant the fact to players with game master permission
  */
 public record ScholarshipRow(
         ResearchGroupDefinition group,
@@ -37,7 +39,8 @@ public record ScholarshipRow(
         boolean met,
         @Nullable Progress progress,
         @Nullable Component missing,
-        @Nullable ScholarshipRowAction action
+        @Nullable ScholarshipRowAction action,
+        @Nullable Identifier factId
 ) {
 
     /**
@@ -47,39 +50,39 @@ public record ScholarshipRow(
     }
 
     public static ScholarshipRow of(List<ScholarshipIcon> icons, Component title) {
-        return new ScholarshipRow(null, icons, title, List.of(), false, null, null, null);
+        return new ScholarshipRow(null, icons, title, List.of(), false, null, null, null, null);
     }
 
     public ScholarshipRow withGroup(ResearchGroupDefinition group) {
-        return new ScholarshipRow(group, this.icons, this.title, this.details, this.met, this.progress, this.missing, this.action);
+        return new ScholarshipRow(group, this.icons, this.title, this.details, this.met, this.progress, this.missing, this.action, this.factId);
     }
 
     public ScholarshipRow withIcons(List<ScholarshipIcon> icons) {
-        return new ScholarshipRow(this.group, icons, this.title, this.details, this.met, this.progress, this.missing, this.action);
+        return new ScholarshipRow(this.group, icons, this.title, this.details, this.met, this.progress, this.missing, this.action, this.factId);
     }
 
     public ScholarshipRow withTitle(Component title) {
-        return new ScholarshipRow(this.group, this.icons, title, this.details, this.met, this.progress, this.missing, this.action);
+        return new ScholarshipRow(this.group, this.icons, title, this.details, this.met, this.progress, this.missing, this.action, this.factId);
     }
 
     public ScholarshipRow withDetails(List<Component> details) {
-        return new ScholarshipRow(this.group, this.icons, this.title, details, this.met, this.progress, this.missing, this.action);
+        return new ScholarshipRow(this.group, this.icons, this.title, details, this.met, this.progress, this.missing, this.action, this.factId);
     }
 
     public ScholarshipRow withMet(boolean met) {
-        return new ScholarshipRow(this.group, this.icons, this.title, this.details, met, this.progress, this.missing, this.action);
+        return new ScholarshipRow(this.group, this.icons, this.title, this.details, met, this.progress, this.missing, this.action, this.factId);
     }
 
     public ScholarshipRow withProgress(@Nullable Progress progress) {
-        return new ScholarshipRow(this.group, this.icons, this.title, this.details, this.met, progress, this.missing, this.action);
+        return new ScholarshipRow(this.group, this.icons, this.title, this.details, this.met, progress, this.missing, this.action, this.factId);
     }
 
     public ScholarshipRow withMissing(@Nullable Component missing) {
-        return new ScholarshipRow(this.group, this.icons, this.title, this.details, this.met, this.progress, missing, this.action);
+        return new ScholarshipRow(this.group, this.icons, this.title, this.details, this.met, this.progress, missing, this.action, this.factId);
     }
 
     public ScholarshipRow withAction(@Nullable ScholarshipRowAction action) {
-        return new ScholarshipRow(this.group, this.icons, this.title, this.details, this.met, this.progress, this.missing, action);
+        return new ScholarshipRow(this.group, this.icons, this.title, this.details, this.met, this.progress, this.missing, action, this.factId);
     }
 
     /**
