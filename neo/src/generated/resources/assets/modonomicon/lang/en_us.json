@@ -659,7 +659,7 @@
   "modonomicon.gui.scholarship.effect.pending": "Granted when the stage is completed.",
   "modonomicon.gui.scholarship.effect.special": "Special effect",
   "modonomicon.gui.scholarship.effect.value": "+%s %s",
-  "modonomicon.gui.scholarship.grant_fact_hint": "Shift-click to grant this fact (game master only)",
+  "modonomicon.gui.scholarship.grant_hint": "Shift-click to satisfy this requirement (game master only)",
   "modonomicon.gui.scholarship.met": "✔ Done",
   "modonomicon.gui.scholarship.next": "Next: %s",
   "modonomicon.gui.scholarship.next_steps": "Next steps",

@@ -7,7 +7,7 @@
 package com.klikli_dev.modonomicon.command;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Command;
-import com.klikli_dev.modonomicon.research.action.ResearchFactGrants;
+import com.klikli_dev.modonomicon.research.action.ResearchGrants;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -42,7 +42,7 @@ public class GrantFactCommand implements com.mojang.brigadier.Command<CommandSou
             throw ERROR_UNKNOWN_FACT.create(factId);
         }
 
-        ResearchFactGrants.grant(context.getSource().getPlayer(), factId);
+        ResearchGrants.grantFact(context.getSource().getPlayer(), factId);
 
         context.getSource().sendSuccess(() -> Component.translatable(Command.SUCCESS_GRANT_FACT, factId.toString()), true);
         return 1;

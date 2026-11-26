@@ -7,7 +7,8 @@
 package com.klikli_dev.modonomicon.client.gui.book.entry.scholarship;
 
 import com.klikli_dev.modonomicon.api.ModonomiconConstants.I18n.Gui;
-import com.klikli_dev.modonomicon.networking.GrantResearchFactMessage;
+import com.klikli_dev.modonomicon.networking.GrantResearchRequirementMessage;
+import com.klikli_dev.modonomicon.networking.GrantResearchRequirementMessage.Kind;
 import com.klikli_dev.modonomicon.networking.PerformResearchActionMessage;
 import com.klikli_dev.modonomicon.networking.CompleteResearchStageMessage;
 import com.klikli_dev.modonomicon.platform.Services;
@@ -72,29 +73,34 @@ public final class ScholarshipInteractions {
 
     /**
      * True if the player may grant the fact of a requirement by shift-clicking it. Same permission as the grant fact command.
-     * The server checks the permission again, see {@link GrantResearchFactMessage}.
+     * The server checks the permission again, see {@link GrantResearchRequirementMessage}.
      */
     public static boolean canGrantFacts(@Nullable Player player) {
         return player != null && player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER);
     }
 
     /**
-     * Asks the server to grant the fact of a requirement row. Only sent for rows that are not met yet, the server ignores unknown facts.
+     * Asks the server to satisfy a requirement by its grant. Only sent for rows that are not met yet, the server ignores unknown ids.
      */
-    public static void grantFact(Identifier factId) {
-        Services.NETWORK.sendToServer(new GrantResearchFactMessage(factId));
+    public static void grant(ScholarshipRowGrant grant) {
+        var message = switch (grant) {
+            case ScholarshipRowGrant.Fact fact -> new GrantResearchRequirementMessage(Kind.FACT, fact.factId(), 0);
+            case ScholarshipRowGrant.Value value -> new GrantResearchRequirementMessage(Kind.VALUE, value.valueId(), value.threshold());
+            case ScholarshipRowGrant.Entry entry -> new GrantResearchRequirementMessage(Kind.ENTRY, entry.entryId(), 0);
+        };
+        Services.NETWORK.sendToServer(message);
         playSound(SoundEvents.UI_BUTTON_CLICK.value());
     }
 
     /**
-     * The hint line of a requirement row that shift-clicking grants, only shown to players that may grant facts.
+     * The hint line of a requirement row that shift-clicking satisfies, only shown to players that may grant facts.
      */
     @Nullable
     public static Component grantHint(ScholarshipRow row, @Nullable Player player) {
-        if (row.factId() == null || row.met() || !canGrantFacts(player)) {
+        if (row.grant() == null || row.met() || !canGrantFacts(player)) {
             return null;
         }
-        return Component.translatable(Gui.SCHOLARSHIP_GRANT_FACT_HINT).withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_GREEN).withItalic(true));
+        return Component.translatable(Gui.SCHOLARSHIP_GRANT_HINT).withStyle(Style.EMPTY.withColor(ChatFormatting.DARK_GREEN).withItalic(true));
     }
 
     private static void performAction(ScholarshipRowAction.Perform info) {

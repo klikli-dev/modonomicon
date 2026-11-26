@@ -19,6 +19,7 @@ import com.klikli_dev.modonomicon.research.data.ResearchHookDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchNodeDefinition;
 import com.klikli_dev.modonomicon.research.data.ResearchStageDefinition;
 import com.klikli_dev.modonomicon.research.effect.ResearchEffect;
+import com.klikli_dev.modonomicon.registry.TriggerTypeRegistry;
 import com.klikli_dev.modonomicon.research.item.ResearchItemMatcher;
 import net.minecraft.ChatFormatting;
 import net.minecraft.locale.Language;
@@ -99,7 +100,7 @@ public final class ScholarshipRows {
                 null,
                 hookRow != null ? hookRow.missing() : null,
                 firstAction(hookRows),
-                factId
+                new ScholarshipRowGrant.Fact(factId)
         );
         if (actionNode != null) {
             var action = display.action();
@@ -128,6 +129,12 @@ public final class ScholarshipRows {
                 .or(() -> translated(Research.valueKey(valueId)))
                 .orElseGet(() -> Component.literal(valueId.getPath()));
 
+        //a value raised by viewing an entry is satisfied by opening that entry, any other value is raised directly
+        var viewedEntry = viewedEntry(context.hooksIncrementing(valueId));
+        var grant = viewedEntry != null
+                ? new ScholarshipRowGrant.Entry(viewedEntry)
+                : new ScholarshipRowGrant.Value(valueId, threshold);
+
         return new ScholarshipRow(
                 rowGroup(display, hookRow, ResearchGroups.PROGRESS, context),
                 iconsOr(display.icon(), hookRows),
@@ -137,8 +144,21 @@ public final class ScholarshipRows {
                 new ScholarshipRow.Progress(shown, threshold),
                 null,
                 null,
-                null
+                grant
         );
+    }
+
+    /**
+     * The entry of the first entry viewed hook that raises a value, e.g. viewing the sources shelf counts one source consulted.
+     */
+    @Nullable
+    private static Identifier viewedEntry(List<ResearchHookDefinition<?>> hooks) {
+        for (var hook : hooks) {
+            if (hook.triggerType().id().equals(TriggerTypeRegistry.ENTRY_VIEWED_ONCE.id()) && hook.triggerTarget() instanceof Identifier entryId) {
+                return entryId;
+            }
+        }
+        return null;
     }
 
     /**

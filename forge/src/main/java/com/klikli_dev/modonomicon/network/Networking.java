@@ -30,7 +30,7 @@ public class Networking {
             .addMain(ClickResearchProgressButtonMessage.TYPE, ClickResearchProgressButtonMessage.STREAM_CODEC, MessageHandler::handle)
             .addMain(PerformResearchActionMessage.TYPE, PerformResearchActionMessage.STREAM_CODEC, MessageHandler::handle)
             .addMain(CompleteResearchStageMessage.TYPE, CompleteResearchStageMessage.STREAM_CODEC, MessageHandler::handle)
-            .addMain(GrantResearchFactMessage.TYPE, GrantResearchFactMessage.STREAM_CODEC, MessageHandler::handle)
+            .addMain(GrantResearchRequirementMessage.TYPE, GrantResearchRequirementMessage.STREAM_CODEC, MessageHandler::handle)
             .addMain(SaveBookStateMessage.TYPE, SaveBookStateMessage.STREAM_CODEC, MessageHandler::handle)
             .addMain(SaveCategoryStateMessage.TYPE, SaveCategoryStateMessage.STREAM_CODEC, MessageHandler::handle)
             .addMain(SaveEntryStateMessage.TYPE, SaveEntryStateMessage.STREAM_CODEC, MessageHandler::handle)
