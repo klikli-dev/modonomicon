@@ -130,15 +130,11 @@ public final class ScholarshipRows {
                 .or(() -> translated(Research.valueKey(valueId)))
                 .orElseGet(() -> Component.literal(valueId.getPath()));
 
-        //a value raised by viewing an entry is satisfied by opening that entry, any other value is raised directly
-        var viewedEntry = viewedEntry(context.hooksIncrementing(valueId));
-        var grant = viewedEntry != null
-                ? new ScholarshipRowGrant.Entry(viewedEntry)
-                : new ScholarshipRowGrant.Value(valueId, threshold);
         boolean met = forceMet || current >= threshold;
 
         //tell the player what fulfils the requirement, as the value itself does not say it
         var details = new ArrayList<Component>(descriptionOr(display, List.of()));
+        var viewedEntry = viewedEntry(context.hooksIncrementing(valueId));
         if (viewedEntry != null && !met) {
             details.add(Component.translatable(Gui.SCHOLARSHIP_VIEW_ENTRY_HINT, entryTitle(viewedEntry)).withStyle(ChatFormatting.GRAY));
         }
@@ -152,7 +148,7 @@ public final class ScholarshipRows {
                 new ScholarshipRow.Progress(shown, threshold),
                 null,
                 null,
-                grant
+                new ScholarshipRowGrant.Value(valueId, threshold)
         );
     }
 
