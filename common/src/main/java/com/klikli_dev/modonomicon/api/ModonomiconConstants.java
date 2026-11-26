@@ -77,6 +77,7 @@ public class ModonomiconConstants {
             public static final String SCHOLARSHIP_NOT_MET_HINT = PREFIX + "scholarship.not_met.hint";
             public static final String SCHOLARSHIP_CLICK_TO_OPEN = PREFIX + "scholarship.click_to_open";
             public static final String SCHOLARSHIP_GRANT_HINT = PREFIX + "scholarship.grant_hint";
+            public static final String SCHOLARSHIP_VIEW_ENTRY_HINT = PREFIX + "scholarship.view_entry_hint";
             public static final String SCHOLARSHIP_COSTS = PREFIX + "scholarship.costs";
             public static final String SCHOLARSHIP_COST_ITEM = PREFIX + "scholarship.cost.item";
             public static final String SCHOLARSHIP_COST_LEVELS = PREFIX + "scholarship.cost.levels";
