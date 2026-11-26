@@ -86,7 +86,6 @@ public final class ScholarshipInteractions {
         var message = switch (grant) {
             case ScholarshipRowGrant.Fact fact -> new GrantResearchRequirementMessage(Kind.FACT, fact.factId(), 0);
             case ScholarshipRowGrant.Value value -> new GrantResearchRequirementMessage(Kind.VALUE, value.valueId(), value.threshold());
-            case ScholarshipRowGrant.Entry entry -> new GrantResearchRequirementMessage(Kind.ENTRY, entry.entryId(), 0);
         };
         Services.NETWORK.sendToServer(message);
         playSound(SoundEvents.UI_BUTTON_CLICK.value());

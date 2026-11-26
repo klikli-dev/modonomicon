@@ -7,8 +7,6 @@
 package com.klikli_dev.modonomicon.networking;
 
 import com.klikli_dev.modonomicon.Modonomicon;
-import com.klikli_dev.modonomicon.bookstate.BookEntryViewing;
-import com.klikli_dev.modonomicon.data.BookDataManager;
 import com.klikli_dev.modonomicon.research.action.ResearchGrants;
 import com.klikli_dev.modonomicon.research.data.ResearchDataManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -20,15 +18,12 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
 
-import java.util.Objects;
-
 /**
  * Client request by a player with game master permission (the level of the reload command) to satisfy a research requirement
  * by shift-clicking it. The server checks the permission and the ids again, the client only decides whether to send the request.
  * <ul>
  *     <li>{@link Kind#FACT}: grants the fact, see {@link ResearchGrants#grantFact}.</li>
  *     <li>{@link Kind#VALUE}: raises the value to the amount, see {@link ResearchGrants#raiseValue}.</li>
- *     <li>{@link Kind#ENTRY}: opens the entry, like the player would, see {@link BookEntryViewing#view}.</li>
  * </ul>
  */
 public class GrantResearchRequirementMessage implements Message {
@@ -47,8 +42,7 @@ public class GrantResearchRequirementMessage implements Message {
 
     public enum Kind {
         FACT,
-        VALUE,
-        ENTRY;
+        VALUE;
 
         /**
          * Unknown ordinals fall back to {@link #FACT}, so a malformed packet cannot throw while it is decoded.
@@ -90,11 +84,6 @@ public class GrantResearchRequirementMessage implements Message {
                     ResearchGrants.raiseValue(player, this.id, this.amount);
                 }
             }
-            case ENTRY -> BookDataManager.get().getBooks().values().stream()
-                    .map(book -> book.getEntry(this.id))
-                    .filter(Objects::nonNull)
-                    .findFirst()
-                    .ifPresent(entry -> BookEntryViewing.view(player, entry));
         }
     }
 

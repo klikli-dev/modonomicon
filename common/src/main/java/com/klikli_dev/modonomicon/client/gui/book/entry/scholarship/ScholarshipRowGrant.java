@@ -22,19 +22,11 @@ public sealed interface ScholarshipRowGrant {
     }
 
     /**
-     * Raises a research value to the threshold, for values that no entry view or other hook can be used for.
+     * Raises a counter (value) requirement directly to its threshold.
      *
      * @param valueId   the value to raise
      * @param threshold the value the requirement needs
      */
     record Value(Identifier valueId, int threshold) implements ScholarshipRowGrant {
-    }
-
-    /**
-     * Opens the entry that a value requirement is counting, which is how the player would satisfy it.
-     *
-     * @param entryId the entry to open
-     */
-    record Entry(Identifier entryId) implements ScholarshipRowGrant {
     }
 }
