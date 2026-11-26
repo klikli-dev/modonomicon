@@ -24,3 +24,9 @@ Most mods need at least two of them:
 Custom conditions overriding `BookCondition#testOnLoad()` need to override `supportsLoadTime()` and `testOnLoad(BookLoadConditionContext)` instead.
 
 :::
+
+:::warning Command permission level
+
+The `permission_level` attribute of [Commands](../../basics/structure/commands.md) has been removed. Commands now always run with the game master permission level (`2`). A `permission_level` in existing command JSON files is ignored, and calls to `BookCommandModel#withPermissionLevel(...)` in datagen have to be removed. Commands that need a higher permission level can no longer be run from a book.
+
+:::

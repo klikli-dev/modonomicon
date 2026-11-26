@@ -5,7 +5,7 @@ sidebar_position: 50
 # Commands
 
 Commands are defined in json files placed in the `/data/<mod_id>/modonomicon/books/<book_id>/commands/` folder.  
-They are intended to give book creators more flexibility. Commands can be triggered either via a [Command Link](../formatting.md#command-link) or when an entry is first read/openend(See [Entry - command_to_run_on_first_read](./entries.md#attributes)).  
+They are intended to give book creators more flexibility. Commands can be triggered either via a [Command Link](../formatting.md#command-link) or when an entry is first read/opened (See [Entry - command_to_run_on_first_read](./entries.md#attributes)).  
 
 Commands are guarded against abuse and by default can only be run once per player per world (even if the player resets the book).  
 In the book you need to specify the command's id (Identifier) instead of the actual minecraft command.
@@ -23,6 +23,15 @@ For `/data/<mod_id>/modonomicon/books/my_book/commands/rewards/apple` the id wou
 ### **command** (String, _mandatory_)
 
 The minecraft command to run. Commands will be run with the player as "sender", so take that into account.
+
+:::info Permission level
+
+Commands always run with the **game master** permission level (permission level `2`), independent of the player's actual permissions. This is enough for most commands used for rewards, such as `/give`, `/effect`, `/xp` or `/function`.  
+Commands that require a higher permission level (e.g. `/op`, `/ban` or `/stop`) cannot be run from a book.
+
+The `permission_level` attribute known from earlier versions has been removed and is ignored if present. In datagen, `BookCommandModel#withPermissionLevel(...)` no longer exists.
+
+:::
 
 ### **allowed_entries** (List of Identifiers, _optional_)
 
@@ -51,8 +60,8 @@ Sets whether the command's default output should be suppressed to silence it tow
 ### **failure_message** (DescriptionId, _optional_)
 
 A custom failure message to display, if the command has been used beyond `max_uses` already.  
-I none is provided, a default message will be shown.
-Other failures (such as invalid command syntax) are handled by minecraft and have a failure message rom there.   
+If none is provided, a default message will be shown.
+Other failures (such as invalid command syntax) are handled by minecraft and have a failure message from there.   
 
 :::tip
 
@@ -63,7 +72,7 @@ In most cases this message will never show. One of the possible scenarios is wit
 ### **success_message** (DescriptionId, _optional_)
 
 A custom success message to display, if the command has executed successfully. 
-I none is provided, **no** message will be shown.
+If none is provided, **no** message will be shown.
 
 :::tip
 
