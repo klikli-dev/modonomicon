@@ -71,13 +71,18 @@ public class DirectEntryConnectionRenderer {
                     continue;
                 }
 
+                //decide the dominant axis on the logical grid coordinates: they are integers and do not depend on zoom or scroll offset.
+                //Deciding on the scaled float coordinates makes near-diagonal connections flip their axis while zooming.
+                boolean dominantX = Math.abs(entry.getX() - parentEntry.getX()) > Math.abs(entry.getY() - parentEntry.getY());
+
                 connections.add(new GuiDirectEntryConnectionRenderState.Connection(
                         startX,
                         startY,
                         endX,
                         endY,
                         this.getConnectionColor(entryDisplayState, parentDisplayState),
-                        this.theme.oscillation() && entryDisplayState != EntryDisplayState.UNLOCKED
+                        this.theme.oscillation() && entryDisplayState != EntryDisplayState.UNLOCKED,
+                        dominantX
                 ));
             }
         }

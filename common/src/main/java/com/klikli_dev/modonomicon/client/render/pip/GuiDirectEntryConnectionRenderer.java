@@ -42,7 +42,7 @@ public class GuiDirectEntryConnectionRenderer extends PictureInPictureRenderer<G
         int inc = Math.max(1, (int) (dist / 2.0F));
         float dx = (float) (d3 / inc);
         float dy = (float) (d4 / inc);
-        boolean dominantX = Math.abs(d3) > Math.abs(d4);
+        boolean dominantX = connection.dominantX();
         if (dominantX) {
             dx *= 2.0F;
         } else {
